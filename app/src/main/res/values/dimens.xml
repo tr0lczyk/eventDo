@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="main_title_margin_top">80dp</dimen>
+    <dimen name="rainbow_line_margin_sides">48dp</dimen>
+    <dimen name="ccp_sides_margin">16dp</dimen>
+    <dimen name="header_margin">16dp</dimen>
+    <dimen name="version_margin">100dp</dimen>
+    <dimen name="settings_point_title">18sp</dimen>
+    <dimen name="settings_point_description">13sp</dimen>
+    <dimen name="start_margin_setiings_subtitle">24dp</dimen>
+    <dimen name="arrow_right_margin">4dp</dimen>
+    <dimen name="new_event_text_size">18sp</dimen>
+    <dimen name="new_event_separator_height">0.5dp</dimen>
+</resources>

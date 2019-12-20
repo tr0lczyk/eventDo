@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:tools="http://schemas.android.com/tools"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.rad4m.eventdo.ui.introfragment.IntroViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/titleIntro2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:fontFamily="@font/myriad_bold"
+            android:gravity="center"
+            android:text="@string/how_it_works"
+            android:textColor="@android:color/black"
+            android:textSize="25sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/numberOne"
+            android:src="@drawable/one"
+            style="@style/number_style" />
+
+        <TextView
+            android:id="@+id/titleOne"
+            android:text="@string/sign_up"
+            style="@style/title_style" />
+
+        <TextView
+            android:id="@+id/subtitleOne"
+            android:text="@string/you_sign_up_quickly_and_easily_with_your_mobile_number"
+            style="@style/subtitle_style" />
+
+        <androidx.constraintlayout.helper.widget.Flow
+            android:id="@+id/groupOne"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="numberOne,titleOne,subtitleOne"
+            app:layout_constraintTop_toBottomOf="@+id/titleIntro2"
+            android:layout_marginTop="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:flow_verticalGap="16dp"/>
+
+        <ImageView
+            android:id="@+id/numberTwo"
+            style="@style/number_style"
+            android:src="@drawable/two" />
+
+        <TextView
+            android:id="@+id/titleTwo"
+            android:text="@string/book"
+            style="@style/title_style" />
+
+        <TextView
+            android:id="@+id/subtitleTwo"
+            android:text="@string/you_book"
+            style="@style/subtitle_style" />
+
+        <androidx.constraintlayout.helper.widget.Flow
+            android:id="@+id/groupTwo"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="numberTwo,titleTwo,subtitleTwo"
+            app:layout_constraintTop_toBottomOf="@+id/groupOne"
+            android:layout_marginTop="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:flow_verticalGap="16dp"/>
+
+        <ImageView
+            android:id="@+id/numberThree"
+            style="@style/number_style"
+            android:src="@drawable/three" />
+
+        <TextView
+            android:id="@+id/titleThree"
+            android:text="@string/added_to_your_calendar"
+            style="@style/title_style" />
+
+        <TextView
+            android:id="@+id/subtitleThree"
+            android:text="@string/automatic_reservation"
+            style="@style/subtitle_style" />
+
+        <androidx.constraintlayout.helper.widget.Flow
+            android:id="@+id/groupThree"
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="numberThree,titleThree,subtitleThree"
+            app:layout_constraintTop_toBottomOf="@+id/groupTwo"
+            android:layout_marginTop="20dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:flow_verticalGap="16dp"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

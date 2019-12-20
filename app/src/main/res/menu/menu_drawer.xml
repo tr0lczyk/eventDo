@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigationView">
+
+    <group
+        android:id="@+id/contentGroup"
+        android:checkableBehavior="single">
+        <item
+            android:checkable="false"
+            android:id="@+id/accountItem"
+            android:icon="@drawable/user"
+            android:title="@string/drawer_my_account" />
+        <item
+            android:checkable="false"
+            android:id="@+id/infoItem"
+            android:icon="@drawable/info"
+            android:title="@string/drawer_about" />
+        <item
+            android:checkable="false"
+            android:id="@+id/rateItem"
+            android:icon="@drawable/star"
+            android:title="@string/drawer_rate_us" />
+        <item
+            android:checkable="false"
+            android:id="@+id/shareItem"
+            android:icon="@drawable/share"
+            android:title="@string/drawer_tell_a_friend" />
+        <item
+            android:checkable="false"
+            android:id="@+id/settingsItem"
+            android:icon="@drawable/setting"
+            android:title="@string/drawer_settings" />
+    </group>
+
+</menu>

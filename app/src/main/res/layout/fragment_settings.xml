@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.rad4m.eventdo.ui.settingsfragment.SettingsViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/mainTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:fontFamily="@font/roboto_bold"
+            android:text="@string/settings"
+            android:textAllCaps="true"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/backArrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:src="@drawable/back_arrow"
+            android:tint="@{viewModel.backIconTintColor}"
+            android:onClick="@{() -> viewModel.startBackNavigation()}"
+            app:layout_constraintBottom_toBottomOf="@+id/mainTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/mainTitle" />
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/lightGray"
+            app:layout_constraintTop_toBottomOf="@+id/mainTitle" />
+
+        <TextView
+            android:id="@+id/autoAddTitle"
+            android:text="@string/auto_add_events"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view"
+            style="@style/setting_title" />
+
+        <TextView
+            android:id="@+id/autoAddDescription"
+            android:text="@string/automatically_add_events_from_eventdo_to_my_calendar"
+            app:layout_constraintEnd_toEndOf="@+id/mainTitle"
+            app:layout_constraintStart_toStartOf="@+id/autoAddTitle"
+            app:layout_constraintTop_toBottomOf="@+id/autoAddTitle"
+            style="@style/setting_subtitle" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/autoAddSwitch"
+            app:trackTint="@color/darkRedLighter"
+            app:layout_constraintBottom_toBottomOf="@+id/autoAddDescription"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/autoAddDescription"
+            android:checked="@={viewModel.isAutoAddEventOn}"
+            style="@style/switch_style" />
+
+        <TextView
+            android:id="@+id/showNewTitle"
+            style="@style/setting_title"
+            android:text="@string/show_new_event_page"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/autoAddDescription" />
+
+        <TextView
+            android:id="@+id/showNewDescription"
+            android:text="@string/show_desc"
+            app:layout_constraintEnd_toEndOf="@+id/mainTitle"
+            app:layout_constraintStart_toStartOf="@+id/showNewTitle"
+            app:layout_constraintTop_toBottomOf="@+id/showNewTitle"
+            style="@style/setting_subtitle" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/showNewSwitch"
+            app:trackTint="@color/darkRedLighter"
+            app:layout_constraintBottom_toBottomOf="@+id/showNewDescription"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/showNewDescription"
+            android:checked="@={viewModel.isNewEventPageOn}"
+            style="@style/switch_style" />
+
+        <TextView
+            android:id="@+id/calendarSyncTitle"
+            style="@style/setting_title"
+            android:text="@string/calendar_sync"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/showNewDescription" />
+
+        <TextView
+            android:id="@+id/calendarSyncDescription"
+            android:text="@string/cal_desc"
+            app:layout_constraintEnd_toEndOf="@+id/mainTitle"
+            app:layout_constraintStart_toStartOf="@+id/calendarSyncTitle"
+            app:layout_constraintTop_toBottomOf="@+id/calendarSyncTitle"
+            style="@style/setting_subtitle" />
+
+        <androidx.appcompat.widget.AppCompatSpinner
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            app:layout_constraintEnd_toEndOf="@+id/showNewSwitch"
+            app:layout_constraintStart_toStartOf="@+id/calendarSyncDescription"
+            app:layout_constraintTop_toBottomOf="@+id/calendarSyncDescription" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

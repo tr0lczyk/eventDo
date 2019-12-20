@@ -1,0 +1,178 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/colorPrimary</item>
+        <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="otpViewStyle">@style/OtpWidget.OtpView</item>
+        <item name="android:windowLightStatusBar">true</item>
+    </style>
+
+    <style name="subtitle_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">@font/myriad_semibold</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:paddingStart">32dp</item>
+        <item name="android:paddingEnd">32dp</item>
+        <item name="android:textSize">15sp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="item_text_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">@font/myriad_semibold</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+    <style name="item_small_text_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">@font/myriad_semibold</item>
+        <item name="android:textSize">14sp</item>
+    </style>
+
+    <style name="phone_instructions_style">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">@font/myriad_regular</item>
+        <item name="android:paddingStart">56dp</item>
+        <item name="android:paddingEnd">56dp</item>
+        <item name="android:textSize">16sp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="terms_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">@font/myriad_regular</item>
+        <item name="android:textSize">13sp</item>
+        <item name="android:textAlignment">center</item>
+    </style>
+
+    <style name="title_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:fontFamily">@font/myriad_bold</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">19sp</item>
+    </style>
+
+    <style name="number_style">
+        <item name="android:layout_width">45dp</item>
+        <item name="android:layout_height">45dp</item>
+    </style>
+
+    <style name="bottom_big_button_style">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">75dp</item>
+        <item name="android:background">@color/darkRed</item>
+        <item name="android:fontFamily">@font/roboto_bold</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/lightGray</item>
+        <item name="android:textSize">20sp</item>
+    </style>
+
+    <style name="main_title">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">50dp</item>
+        <item name="android:fontFamily">@font/myriad_bold</item>
+        <item name="android:gravity">center</item>
+        <item name="android:textColor">@color/darkRed</item>
+        <item name="android:textSize">30sp</item>
+    </style>
+
+    <style name="main_button" parent="Widget.AppCompat.Button.Borderless">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAllCaps">false</item>
+    </style>
+
+    <style name="SelectableItemTheme">
+        <item name="colorControlHighlight">@color/lightGray</item>
+    </style>
+
+    <style name="SelectableItemBackground">
+        <item name="android:theme">@style/SelectableItemTheme</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
+    </style>
+
+    <style name="setting_title">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">48dp</item>
+        <item name="android:layout_marginStart">@dimen/start_margin_setiings_subtitle</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:textSize">@dimen/settings_point_title</item>
+    </style>
+
+    <style name="setting_subtitle">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">@dimen/settings_point_description</item>
+    </style>
+
+    <style name="switch_style">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginEnd">24dp</item>
+    </style>
+
+    <style name="edit_Text_style">
+        <item name="android:fontFamily">@font/myriad_regular</item>
+        <item name="android:backgroundTint">@color/darkRed</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="newEventToolbarTextStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textAllCaps">true</item>
+        <item name="android:textSize">16sp</item>
+    </style>
+
+    <style name="addEventEditText">
+        <item name="android:padding">10dp</item>
+        <item name="android:textSize">@dimen/new_event_text_size</item>
+        <item name="android:paddingEnd">16dp</item>
+        <item name="android:paddingStart">16dp</item>
+        <item name="android:textColor">@android:color/black</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:background">@null</item>
+    </style>
+
+    <style name="separatorStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/new_event_separator_height</item>
+        <item name="android:layout_marginStart">16dp</item>
+        <item name="android:background">@color/semilightGray</item>
+    </style>
+
+    <style name="newEventBackgroundStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginTop">16dp</item>
+        <item name="android:background">@color/saturated_purple_white</item>
+        <item name="android:orientation">vertical</item>
+    </style>
+
+    <style name="arrowStyle">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginEnd">@dimen/arrow_right_margin</item>
+    </style>
+
+    <style name="simpleSeparatorStyle">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">@dimen/new_event_separator_height</item>
+        <item name="android:background">@color/semilightGray</item>
+    </style>
+
+</resources>

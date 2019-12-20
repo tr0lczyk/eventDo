@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+        <variable
+            name="viewModel"
+            type="com.rad4m.eventdo.ui.signupfragment.SignUpViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/titleSignUp"
+            android:text="@string/sign_up"
+            style="@style/main_title"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <View
+            android:id="@+id/rainbowWiew"
+            android:layout_width="0dp"
+            android:layout_height="3dp"
+            android:layout_marginStart="@dimen/rainbow_line_margin_sides"
+            android:layout_marginTop="30dp"
+            android:layout_marginEnd="@dimen/rainbow_line_margin_sides"
+            android:background="@drawable/rainbow_line"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/titleSignUp" />
+
+        <TextView
+            android:id="@+id/phone_instructions"
+            style="@style/phone_instructions_style"
+            android:layout_marginTop="30dp"
+            android:text="@string/sending_code_instructions"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/rainbowWiew" />
+
+        <com.hbb20.CountryCodePicker
+            android:id="@+id/ccp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            app:ccp_rememberLastSelection="true"
+            app:ccp_defaultNameCode="SE"
+            app:ccp_autoDetectCountry="true"
+            app:ccp_textSize="16sp"
+            app:layout_constraintStart_toStartOf="@+id/lineViewCcp"
+            app:layout_constraintTop_toBottomOf="@+id/phone_instructions" />
+
+        <View
+            android:id="@+id/lineViewCcp"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="@dimen/ccp_sides_margin"
+            android:layout_marginEnd="@dimen/ccp_sides_margin"
+            android:background="@color/darkRed"
+            app:layout_constraintEnd_toEndOf="@id/rainbowWiew"
+            app:layout_constraintStart_toStartOf="@id/rainbowWiew"
+            app:layout_constraintTop_toBottomOf="@id/ccp" />
+
+        <EditText
+            android:id="@+id/editText"
+            style="@style/Base.Widget.MaterialComponents.TextInputEditText"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:hint="@string/mobile_phone"
+            android:inputType="phone"
+            android:text="@={viewModel.phoneNumber}"
+            android:padding="8dp"
+            app:layout_constraintEnd_toEndOf="@id/lineViewCcp"
+            app:layout_constraintStart_toStartOf="@id/ccp"
+            app:layout_constraintTop_toBottomOf="@id/lineViewCcp" />
+
+        <View
+            android:id="@+id/lineViewNumber"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="@dimen/ccp_sides_margin"
+            android:layout_marginEnd="@dimen/ccp_sides_margin"
+            android:background="@color/darkRed"
+            app:layout_constraintEnd_toEndOf="@id/rainbowWiew"
+            app:layout_constraintStart_toStartOf="@id/rainbowWiew"
+            app:layout_constraintTop_toBottomOf="@+id/editText" />
+
+        <TextView
+            android:id="@+id/blockContinuing"
+            style="@style/terms_style"
+            android:layout_marginTop="50dp"
+            android:text="@string/continuing"
+            app:layout_constraintEnd_toEndOf="@+id/lineViewCcp"
+            app:layout_constraintStart_toStartOf="@+id/lineViewCcp"
+            app:layout_constraintTop_toBottomOf="@+id/lineViewNumber" />
+
+        <TextView
+            android:id="@+id/termsOfuse"
+            android:onClick="@{() -> viewModel.openTerms()}"
+            android:textColor="@color/blue"
+            style="@style/terms_style"
+            android:text="@string/terms_of_use"/>
+
+        <TextView
+            android:id="@+id/privacyPolicy"
+            android:onClick="@{() -> viewModel.openPolicy()}"
+            android:textColor="@color/blue"
+            style="@style/terms_style"
+            android:text="@string/privacy_policy" />
+
+        <TextView
+            android:id="@+id/and"
+            style="@style/terms_style"
+            android:text="@string/and" />
+
+        <androidx.constraintlayout.helper.widget.Flow
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="termsOfuse,and,privacyPolicy"
+            app:flow_horizontalGap="4dp"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="@+id/lineViewCcp"
+            app:layout_constraintStart_toStartOf="@+id/lineViewCcp"
+            app:layout_constraintTop_toBottomOf="@+id/blockContinuing"/>
+
+        <TextView
+            android:id="@+id/signUpButton"
+            android:text="@string/send_a_one_time_code"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            android:onClick="@{() -> viewModel.sendNumber()}"
+            style="@style/bottom_big_button_style"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

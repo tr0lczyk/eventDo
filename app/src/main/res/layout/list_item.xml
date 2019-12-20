@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.rad4m.eventdo.models.EventModel" />
+
+        <variable
+            name="clickListener"
+            type="com.rad4m.eventdo.ui.mainfragment.EventsAdapter.EventListener" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="100dp"
+        android:orientation="vertical"
+        android:onClick="@{() -> clickListener.onClick(viewModel)}">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/itemGrayBackground"
+            app:layout_constraintBottom_toBottomOf="parent" />
+
+        <View
+            android:id="@+id/vertLine"
+            android:layout_width="1dp"
+            android:layout_height="match_parent"
+            android:layout_marginStart="64dp"
+            android:background="@color/itemGrayBackground"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent" />
+
+        <View
+            android:id="@+id/circleLine"
+            android:layout_width="84dp"
+            android:layout_height="0dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginBottom="8dp"
+            android:background="@drawable/circle_drawable"
+            app:layout_constraintBottom_toBottomOf="@+id/vertLine"
+            app:layout_constraintEnd_toEndOf="@+id/vertLine"
+            app:layout_constraintStart_toStartOf="@+id/vertLine"
+            app:layout_constraintTop_toTopOf="@+id/vertLine" />
+
+        <ImageView
+            android:id="@+id/imageView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:cropToPadding="true"
+            android:src="@drawable/icon_logo"
+            app:layout_constraintBottom_toBottomOf="@id/circleLine"
+            app:layout_constraintEnd_toEndOf="@id/circleLine"
+            app:layout_constraintStart_toStartOf="@id/circleLine"
+            app:layout_constraintTop_toTopOf="@+id/circleLine" />
+
+        <TextView
+            android:id="@+id/eventTitle"
+            style="@style/item_text_style"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:paddingStart="1dp"
+            android:text="@{viewModel.title}"
+            app:layout_constraintBottom_toTopOf="@+id/navIcon"
+            app:layout_constraintEnd_toStartOf="@+id/flowEventTimeline"
+            app:layout_constraintStart_toEndOf="@+id/imageView2"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="EventTitle" />
+
+        <ImageView
+            android:id="@+id/navIcon"
+            android:layout_width="16dp"
+            android:layout_height="16dp"
+            android:layout_marginBottom="24dp"
+            android:adjustViewBounds="true"
+            android:src="@drawable/nav_arrow"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/imageView2"
+            app:layout_constraintTop_toBottomOf="@id/eventTitle" />
+
+        <TextView
+            android:id="@+id/eventLocName"
+            style="@style/item_small_text_style"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            app:layout_constraintBottom_toBottomOf="@+id/navIcon"
+            app:layout_constraintEnd_toStartOf="@+id/flowEventTimeline"
+            app:layout_constraintStart_toEndOf="@+id/navIcon"
+            app:layout_constraintTop_toTopOf="@+id/navIcon"
+            tools:text="dfgre" />
+
+        <TextView
+            android:id="@+id/eventStart"
+            style="@style/item_text_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/myriad_regular"
+            tools:text="09:08" />
+
+        <TextView
+            android:id="@+id/eventEnd"
+            style="@style/item_small_text_style"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/myriad_regular"
+            tools:text="18:00" />
+
+        <androidx.constraintlayout.helper.widget.Flow
+            android:id="@+id/flowEventTimeline"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="32dp"
+            android:orientation="vertical"
+            app:constraint_referenced_ids="eventStart,eventEnd"
+            app:flow_verticalGap="4dp"
+            app:layout_constraintBottom_toBottomOf="@+id/eventLocName"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/eventTitle" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>

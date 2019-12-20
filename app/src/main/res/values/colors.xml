@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#ffffff</color>
+    <color name="colorPrimaryDark">#e4e4e4</color>
+    <color name="colorAccent">#9c3435</color>
+    <color name="titlesColor">#000000</color>
+    <color name="darkGray">#6a6868</color>
+    <color name="itemGrayBackground">#dfdfdf</color>
+    <color name="lightGray">#ececec</color>
+    <color name="lightPurple">#F2F2F9</color>
+    <color name="semilightGray">#b9b9b9</color>
+    <color name="darkRed">#9c3435</color>
+    <color name="darkRedLighter">#4C9c3435</color>
+    <color name="input1">#e0d0d2</color>
+    <color name="blue">#4dbded</color>
+    <color name="transparent">#00ffffff</color>
+    <color name="saturated_light">#f9f9f9</color>
+    <color name="saturated_purple">#F5F6F8</color>
+    <color name="saturated_purple_white">#FEFFFF</color>
+</resources>

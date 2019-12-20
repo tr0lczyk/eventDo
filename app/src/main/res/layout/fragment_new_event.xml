@@ -1,0 +1,514 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.rad4m.eventdo.ui.neweventpage.NewEventViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/lightPurple">
+
+        <View
+            android:id="@+id/titleContainer"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_marginTop="15dp"
+            android:background="@color/saturated_purple"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/newEventTitle"
+            style="@style/newEventToolbarTextStyle"
+            android:text="@string/new_event"
+            android:textAllCaps="false"
+            android:textColor="@android:color/black"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            app:layout_constraintBottom_toBottomOf="@id/titleContainer"
+            app:layout_constraintEnd_toEndOf="@id/titleContainer"
+            app:layout_constraintStart_toStartOf="@id/titleContainer"
+            app:layout_constraintTop_toTopOf="@id/titleContainer" />
+
+        <TextView
+            android:id="@+id/newEventCancel"
+            style="@style/newEventToolbarTextStyle"
+            android:layout_marginStart="16dp"
+            android:onClick="@{()->viewModel.startCancelling()}"
+            android:text="@string/cancel"
+            android:textAllCaps="false"
+            android:textColor="@color/blue"
+            app:layout_constraintBottom_toBottomOf="@id/titleContainer"
+            app:layout_constraintStart_toStartOf="@id/titleContainer"
+            app:layout_constraintTop_toTopOf="@id/titleContainer" />
+
+        <TextView
+            android:id="@+id/newEventAdd"
+            style="@style/newEventToolbarTextStyle"
+            android:layout_marginEnd="16dp"
+            android:onClick="@{() -> viewModel.addNewEventToCalendar()}"
+            android:text="@string/add"
+            android:textAllCaps="false"
+            android:textColor="#D3D3D3"
+            app:layout_constraintBottom_toBottomOf="@id/titleContainer"
+            app:layout_constraintEnd_toEndOf="@id/titleContainer"
+            app:layout_constraintTop_toTopOf="@id/titleContainer" />
+
+        <View
+            android:id="@+id/mainSeparator"
+            style="@style/simpleSeparatorStyle"
+            app:layout_constraintBottom_toBottomOf="@+id/titleContainer"
+            app:layout_constraintTop_toBottomOf="@+id/titleContainer" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/mainSeparator">
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <LinearLayout
+                    android:id="@+id/titleLocationSection"
+                    style="@style/newEventBackgroundStyle"
+                    app:layout_constraintTop_toTopOf="parent">
+
+                    <View
+                        android:id="@+id/firstSeparator"
+                        style="@style/simpleSeparatorStyle" />
+
+                    <EditText
+                        android:id="@+id/titleEdit"
+                        style="@style/addEventEditText"
+                        android:hint="Title" />
+
+                    <View
+                        android:id="@+id/secondSeparator"
+                        style="@style/separatorStyle" />
+
+                    <EditText
+                        android:id="@+id/locationEdit"
+                        style="@style/addEventEditText"
+                        android:hint="Location" />
+
+                    <View
+                        android:id="@+id/thirdSeparator"
+                        style="@style/simpleSeparatorStyle" />
+
+                </LinearLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/secondSettingsSection"
+                    style="@style/newEventBackgroundStyle"
+                    android:layout_marginTop="32dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/titleLocationSection">
+
+                    <View
+                        android:id="@+id/fourthSeparator"
+                        style="@style/simpleSeparatorStyle"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/allDayEdit"
+                        style="@style/addEventEditText"
+                        android:text="@string/all_day"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/fourthSeparator" />
+
+                    <androidx.appcompat.widget.SwitchCompat
+                        android:id="@+id/autoAddSwitch"
+                        android:layout_width="wrap_content"
+                        android:layout_height="0dp"
+                        android:layout_marginEnd="8dp"
+                        app:layout_constraintBottom_toBottomOf="@+id/allDayEdit"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@+id/allDayEdit"
+                        app:trackTint="@color/darkRedLighter" />
+
+                    <View
+                        android:id="@+id/fithSeparator"
+                        style="@style/separatorStyle"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/allDayEdit" />
+
+                    <TextView
+                        android:id="@+id/startDateEdit"
+                        style="@style/addEventEditText"
+                        android:text="@string/starts"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/fithSeparator" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:text="30.01.2019  20:30"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/new_event_text_size"
+                        app:layout_constraintBottom_toBottomOf="@id/startDateEdit"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/startDateEdit" />
+
+                    <View
+                        android:id="@+id/sixthSeparator"
+                        style="@style/separatorStyle"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/startDateEdit" />
+
+                    <TextView
+                        android:id="@+id/endDateEdit"
+                        style="@style/addEventEditText"
+                        android:text="@string/ends"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/sixthSeparator" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginEnd="8dp"
+                        android:text="30.01.2019  20:30"
+                        android:textColor="@android:color/black"
+                        android:textSize="@dimen/new_event_text_size"
+                        app:layout_constraintBottom_toBottomOf="@id/endDateEdit"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintTop_toTopOf="@id/endDateEdit" />
+
+                    <View
+                        android:id="@+id/seventhSeparator"
+                        style="@style/separatorStyle"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/endDateEdit" />
+
+                    <TextView
+                        android:id="@+id/repeatEdit"
+                        style="@style/addEventEditText"
+                        android:text="@string/repeat"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/seventhSeparator" />
+
+                    <ImageView
+                        android:id="@+id/repeatArrow"
+                        style="@style/arrowStyle"
+                        android:src="@drawable/end_arrow"
+                        app:layout_constraintBottom_toBottomOf="@id/repeatEdit"
+                        app:layout_constraintEnd_toEndOf="@id/repeatEdit"
+                        app:layout_constraintTop_toTopOf="@id/repeatEdit" />
+
+                    <TextView
+                        android:id="@+id/repeatContent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Never"
+                        android:textSize="@dimen/new_event_text_size"
+                        app:layout_constraintBottom_toBottomOf="@id/repeatEdit"
+                        app:layout_constraintEnd_toStartOf="@id/repeatArrow"
+                        app:layout_constraintTop_toTopOf="@id/repeatEdit" />
+
+                    <View
+                        android:id="@+id/eighthSeparator"
+                        style="@style/separatorStyle"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/repeatEdit" />
+
+                    <TextView
+                        android:id="@+id/travelTimeEdit"
+                        style="@style/addEventEditText"
+                        android:text="@string/travel_time"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/eighthSeparator" />
+
+                    <ImageView
+                        android:id="@+id/travelTimeArrow"
+                        style="@style/arrowStyle"
+                        android:src="@drawable/end_arrow"
+                        app:layout_constraintBottom_toBottomOf="@id/travelTimeEdit"
+                        app:layout_constraintEnd_toEndOf="@id/travelTimeEdit"
+                        app:layout_constraintTop_toTopOf="@id/travelTimeEdit" />
+
+                    <TextView
+                        android:id="@+id/travelTimeContent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="None"
+                        android:textSize="@dimen/new_event_text_size"
+                        app:layout_constraintBottom_toBottomOf="@id/travelTimeEdit"
+                        app:layout_constraintEnd_toStartOf="@id/travelTimeArrow"
+                        app:layout_constraintTop_toTopOf="@id/travelTimeEdit" />
+
+                    <View
+                        android:id="@+id/ninthSeparator"
+                        style="@style/simpleSeparatorStyle"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/thirdSettingsSection"
+                    style="@style/newEventBackgroundStyle"
+                    android:layout_marginTop="32dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/secondSettingsSection">
+
+                    <View
+                        android:id="@+id/tenthSeparator"
+                        style="@style/simpleSeparatorStyle"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/calendarEdit"
+                        style="@style/addEventEditText"
+                        android:text="@string/calendar"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/tenthSeparator" />
+
+                    <ImageView
+                        android:id="@+id/calendarArrow"
+                        style="@style/arrowStyle"
+                        android:src="@drawable/end_arrow"
+                        app:layout_constraintBottom_toBottomOf="@id/calendarEdit"
+                        app:layout_constraintEnd_toEndOf="@id/calendarEdit"
+                        app:layout_constraintTop_toTopOf="@id/calendarEdit" />
+
+                    <TextView
+                        android:id="@+id/calendarContent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Never"
+                        android:textSize="@dimen/new_event_text_size"
+                        app:layout_constraintBottom_toBottomOf="@id/calendarEdit"
+                        app:layout_constraintEnd_toStartOf="@id/calendarArrow"
+                        app:layout_constraintTop_toTopOf="@id/calendarEdit" />
+
+                    <View
+                        android:id="@+id/eleventhSeparator"
+                        style="@style/separatorStyle"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/calendarEdit" />
+
+                    <TextView
+                        android:id="@+id/inviteesEdit"
+                        style="@style/addEventEditText"
+                        android:text="Invitees"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/eleventhSeparator" />
+
+                    <ImageView
+                        android:id="@+id/inviteesArrow"
+                        style="@style/arrowStyle"
+                        android:src="@drawable/end_arrow"
+                        app:layout_constraintBottom_toBottomOf="@id/inviteesEdit"
+                        app:layout_constraintEnd_toEndOf="@id/inviteesEdit"
+                        app:layout_constraintTop_toTopOf="@id/inviteesEdit" />
+
+                    <TextView
+                        android:id="@+id/inviteesContent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="None"
+                        android:textSize="@dimen/new_event_text_size"
+                        app:layout_constraintBottom_toBottomOf="@id/inviteesEdit"
+                        app:layout_constraintEnd_toStartOf="@id/inviteesArrow"
+                        app:layout_constraintTop_toTopOf="@id/inviteesEdit" />
+
+                    <View
+                        android:id="@+id/twelveSeparator"
+                        style="@style/simpleSeparatorStyle"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/fourthSettingsSection"
+                    style="@style/newEventBackgroundStyle"
+                    android:layout_marginTop="32dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/thirdSettingsSection">
+
+                    <View
+                        android:id="@+id/thirteenthSeparator"
+                        style="@style/simpleSeparatorStyle"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/alertEdit"
+                        style="@style/addEventEditText"
+                        android:text="Alert"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/thirteenthSeparator" />
+
+                    <ImageView
+                        android:id="@+id/alertArrow"
+                        style="@style/arrowStyle"
+                        android:src="@drawable/end_arrow"
+                        app:layout_constraintBottom_toBottomOf="@id/alertEdit"
+                        app:layout_constraintEnd_toEndOf="@id/alertEdit"
+                        app:layout_constraintTop_toTopOf="@id/alertEdit" />
+
+                    <TextView
+                        android:id="@+id/alertContent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Never"
+                        android:textSize="@dimen/new_event_text_size"
+                        app:layout_constraintBottom_toBottomOf="@id/alertEdit"
+                        app:layout_constraintEnd_toStartOf="@id/alertArrow"
+                        app:layout_constraintTop_toTopOf="@id/alertEdit" />
+
+                    <View
+                        android:id="@+id/fourteenthSeparator"
+                        style="@style/separatorStyle"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/alertEdit" />
+
+                    <TextView
+                        android:id="@+id/showAsEdit"
+                        style="@style/addEventEditText"
+                        android:text="@string/show_as"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/fourteenthSeparator" />
+
+                    <ImageView
+                        android:id="@+id/showAsArrow"
+                        style="@style/arrowStyle"
+                        android:src="@drawable/end_arrow"
+                        app:layout_constraintBottom_toBottomOf="@id/showAsEdit"
+                        app:layout_constraintEnd_toEndOf="@id/showAsEdit"
+                        app:layout_constraintTop_toTopOf="@id/showAsEdit" />
+
+                    <TextView
+                        android:id="@+id/showAsContent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="None"
+                        android:textSize="@dimen/new_event_text_size"
+                        app:layout_constraintBottom_toBottomOf="@id/showAsEdit"
+                        app:layout_constraintEnd_toStartOf="@id/showAsArrow"
+                        app:layout_constraintTop_toTopOf="@id/showAsEdit" />
+
+                    <View
+                        android:id="@+id/fifteenthSeparator"
+                        style="@style/simpleSeparatorStyle"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <View
+                    android:id="@+id/sixteenhSeparator"
+                    style="@style/simpleSeparatorStyle"
+                    android:layout_marginTop="32dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/fourthSettingsSection" />
+
+                <TextView
+                    android:id="@+id/addAttachmentEdit"
+                    style="@style/addEventEditText"
+                    android:background="@color/saturated_purple_white"
+                    android:text="@string/add_attachment"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/sixteenhSeparator" />
+
+                <View
+                    android:id="@+id/seventeenthSeparator"
+                    style="@style/simpleSeparatorStyle"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/addAttachmentEdit" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/fifthSettingsSection"
+                    style="@style/newEventBackgroundStyle"
+                    android:layout_marginTop="32dp"
+                    android:layout_marginBottom="24dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/seventeenthSeparator">
+
+                    <View
+                        android:id="@+id/eighteenthSeparator"
+                        style="@style/simpleSeparatorStyle"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/urlEdit"
+                        style="@style/addEventEditText"
+                        android:hint="@string/url"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/eighteenthSeparator" />
+
+                    <View
+                        android:id="@+id/nineteenthSeparator"
+                        style="@style/separatorStyle"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/urlEdit" />
+
+                    <TextView
+                        android:id="@+id/notesEdit"
+                        style="@style/addEventEditText"
+                        android:layout_height="200dp"
+                        android:hint="@string/notes"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/nineteenthSeparator" />
+
+                    <View
+                        android:id="@+id/twentiethSeparator"
+                        style="@style/simpleSeparatorStyle"
+                        app:layout_constraintBottom_toBottomOf="parent"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+            </androidx.constraintlayout.widget.ConstraintLayout>
+
+        </ScrollView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</layout>

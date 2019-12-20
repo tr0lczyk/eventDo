@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+
+    <data>
+
+        <variable
+            name="viewModel"
+            type="com.rad4m.eventdo.ui.myaccountfragment.MyAccountViewModel" />
+
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:id="@+id/mainTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="32dp"
+            android:fontFamily="@font/roboto_bold"
+            android:text="@string/my_account"
+            android:textAllCaps="true"
+            android:textColor="@android:color/black"
+            android:textSize="16sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <ImageView
+            android:id="@+id/backArrow"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:onClick="@{() -> viewModel.startBackNavigation()}"
+            android:src="@drawable/back_arrow"
+            android:tint="@{viewModel.backIconTintColor}"
+            app:layout_constraintBottom_toBottomOf="@+id/mainTitle"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/mainTitle" />
+
+        <View
+            android:id="@+id/view"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginTop="16dp"
+            android:background="@color/lightGray"
+            app:layout_constraintTop_toBottomOf="@+id/mainTitle" />
+
+        <View
+            android:id="@+id/backgroundView"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/saturated_light"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view" />
+
+        <View
+            android:id="@+id/mobileBackground"
+            android:layout_width="0dp"
+            android:layout_height="58dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:background="@android:color/white"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/backgroundView" />
+
+        <TextView
+            android:id="@+id/mobileNumberDesc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:fontFamily="@font/myriad_regular"
+            android:text="@string/mobile_number"
+            android:textSize="15sp"
+            app:layout_constraintBottom_toBottomOf="@+id/mobileBackground"
+            app:layout_constraintStart_toStartOf="@+id/mobileBackground"
+            app:layout_constraintTop_toTopOf="@+id/mobileBackground" />
+
+        <TextView
+            android:id="@+id/mobilePhoneNumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:fontFamily="@font/myriad_regular"
+            android:text="+00 000000000"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toBottomOf="@+id/mobileNumberDesc"
+            app:layout_constraintStart_toEndOf="@+id/mobileNumberDesc"
+            app:layout_constraintTop_toTopOf="@+id/mobileNumberDesc" />
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayout"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@android:color/white"
+            android:paddingStart="16dp"
+            android:paddingEnd="16dp"
+            android:paddingTop="16dp"
+            android:paddingBottom="24dp"
+            app:layout_constraintEnd_toEndOf="@id/mobileBackground"
+            app:layout_constraintStart_toStartOf="@id/mobileBackground"
+            app:layout_constraintTop_toBottomOf="@id/mobileBackground">
+
+            <EditText
+                android:id="@+id/firstNameEdit"
+                style="@style/edit_Text_style"
+                android:hint="@string/first_name" />
+
+            <EditText
+                android:id="@+id/surnameEdit"
+                style="@style/edit_Text_style"
+                android:hint="@string/surname" />
+
+            <EditText
+                android:id="@+id/emailEdit"
+                style="@style/edit_Text_style"
+                android:hint="@string/email" />
+
+            <androidx.constraintlayout.helper.widget.Flow
+                android:id="@+id/groupedEditTexts"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                app:constraint_referenced_ids="firstNameEdit,surnameEdit,emailEdit"
+                app:flow_verticalGap="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <com.google.android.material.button.MaterialButton
+                style="@style/Widget.MaterialComponents.Button"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginEnd="8dp"
+                android:backgroundTint="@color/darkGray"
+                android:text="@string/save"
+                android:textAllCaps="false"
+                android:textSize="18sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/groupedEditTexts" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <ImageView
+            android:id="@+id/deleteImage"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:layout_margin="8dp"
+            android:src="@drawable/delete_user"
+            app:layout_constraintEnd_toEndOf="@+id/mainTitle"
+            app:layout_constraintStart_toStartOf="@+id/mainTitle"
+            app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
+
+        <TextView
+            android:id="@+id/deleteText"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/delete_your_account"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="@+id/deleteImage"
+            app:layout_constraintStart_toStartOf="@+id/deleteImage"
+            app:layout_constraintTop_toBottomOf="@+id/deleteImage" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+</layout>
