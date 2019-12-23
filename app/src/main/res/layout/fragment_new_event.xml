@@ -200,6 +200,8 @@
                     <TextView
                         android:id="@+id/repeatEdit"
                         style="@style/addEventEditText"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        android:clickable="true"
                         android:text="@string/repeat"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -232,6 +234,8 @@
 
                     <TextView
                         android:id="@+id/travelTimeEdit"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        android:clickable="true"
                         style="@style/addEventEditText"
                         android:text="@string/travel_time"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -282,6 +286,8 @@
 
                     <TextView
                         android:id="@+id/calendarEdit"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        android:clickable="true"
                         style="@style/addEventEditText"
                         android:text="@string/calendar"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -315,8 +321,10 @@
 
                     <TextView
                         android:id="@+id/inviteesEdit"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        android:clickable="true"
                         style="@style/addEventEditText"
-                        android:text="Invitees"
+                        android:text="@string/invitees"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/eleventhSeparator" />
@@ -365,8 +373,10 @@
 
                     <TextView
                         android:id="@+id/alertEdit"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        android:clickable="true"
                         style="@style/addEventEditText"
-                        android:text="Alert"
+                        android:text="@string/alert"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/thirteenthSeparator" />
@@ -398,6 +408,8 @@
 
                     <TextView
                         android:id="@+id/showAsEdit"
+                        android:foreground="?android:attr/selectableItemBackground"
+                        android:clickable="true"
                         style="@style/addEventEditText"
                         android:text="@string/show_as"
                         app:layout_constraintEnd_toEndOf="parent"
@@ -441,6 +453,8 @@
 
                 <TextView
                     android:id="@+id/addAttachmentEdit"
+                    android:foreground="?android:attr/selectableItemBackground"
+                    android:clickable="true"
                     style="@style/addEventEditText"
                     android:background="@color/saturated_purple_white"
                     android:text="@string/add_attachment"
@@ -472,7 +486,7 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
 
-                    <TextView
+                    <EditText
                         android:id="@+id/urlEdit"
                         style="@style/addEventEditText"
                         android:hint="@string/url"
@@ -487,11 +501,12 @@
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/urlEdit" />
 
-                    <TextView
+                    <EditText
                         android:id="@+id/notesEdit"
                         style="@style/addEventEditText"
                         android:layout_height="200dp"
                         android:hint="@string/notes"
+                        android:gravity="top"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/nineteenthSeparator" />

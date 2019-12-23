@@ -62,5 +62,7 @@
     <string name="add_attachment">Add attachment...</string>
     <string name="url">URL</string>
     <string name="notes">Notes</string>
+    <string name="alert">Alert</string>
+    <string name="invitees">Invitees</string>
 
 </resources>
