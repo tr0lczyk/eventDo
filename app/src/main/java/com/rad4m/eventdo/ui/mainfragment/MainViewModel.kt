@@ -39,6 +39,7 @@ class MainViewModel @Inject constructor(
     val upcomingTextColor = MutableLiveData<Int>()
     val pastTextColor = MutableLiveData<Int>()
     val emptyListText = MutableLiveData<String>()
+    val swipeRefreshing = MutableLiveData<Boolean>()
     private val showUpcomingEvents = MutableLiveData<Boolean>()
     val eventList: LiveData<List<EventModel>> = Transformations.switchMap(showUpcomingEvents) {
         when (it) {
@@ -51,11 +52,12 @@ class MainViewModel @Inject constructor(
     val selectedEvent = MutableLiveData<EventModel>()
 
     init {
+        swipeRefreshing.value = false
         upcomingButton()
         downloadEvents()
     }
 
-    fun navigateToSelectedEvent(event: EventModel){
+    fun navigateToSelectedEvent(event: EventModel) {
         selectedEvent.value = event
     }
 
@@ -85,11 +87,11 @@ class MainViewModel @Inject constructor(
         emptyListText.value = getApplication<Application>().getString(text)
     }
 
-    fun finishSelectedEvent(){
+    fun finishSelectedEvent() {
         selectedEvent.value = null
     }
 
-    private fun downloadEvents() {
+    fun downloadEvents() {
         viewModelScope.launch {
             when (val response = repository.getEventsList()) {
                 is Result.Success -> saveEvents(response.data!!.result)
@@ -98,6 +100,7 @@ class MainViewModel @Inject constructor(
             }
         }
         sharedPrefs.save(USER_LAST_DATE, convertDateToString(Date()))
+        swipeRefreshing.value = false
     }
 
     private suspend fun saveEvents(data: List<EventModel>) {

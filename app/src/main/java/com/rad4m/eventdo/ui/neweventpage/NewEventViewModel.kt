@@ -11,7 +11,7 @@ class NewEventViewModel @Inject constructor(application: Application) :
 
     var startAddingNewEvent = MutableLiveData<Boolean>(false)
     var cancelAddingNewEvent = MutableLiveData<Boolean>(false)
-    val selectedEvent = MutableLiveData<EventModel>()
+    private val selectedEvent = MutableLiveData<EventModel>()
 
     fun setSelectedEvent(eventModel: EventModel){
         selectedEvent.value = eventModel

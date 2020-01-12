@@ -111,12 +111,25 @@
             app:layout_constraintTop_toBottomOf="@+id/calendarSyncTitle"
             style="@style/setting_subtitle" />
 
-        <androidx.appcompat.widget.AppCompatSpinner
+        <LinearLayout
             android:layout_width="0dp"
+            android:background="@drawable/spinner_background"
+            android:paddingTop="8dp"
+            android:paddingBottom="8dp"
+            android:paddingStart="8dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             app:layout_constraintEnd_toEndOf="@+id/showNewSwitch"
             app:layout_constraintStart_toStartOf="@+id/calendarSyncDescription"
-            app:layout_constraintTop_toBottomOf="@+id/calendarSyncDescription" />
+            app:layout_constraintTop_toBottomOf="@+id/calendarSyncDescription">
+
+            <Spinner
+                android:id="@+id/calendarSpinner"
+                android:textColor="@android:color/white"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:spinnerMode="dropdown" />
+
+        </LinearLayout>
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

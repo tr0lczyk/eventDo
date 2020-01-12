@@ -1,34 +1,48 @@
 package com.rad4m.eventdo.ui.mainfragment
 
+import android.Manifest
 import android.content.Intent
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import android.provider.CalendarContract
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.navigation.NavigationView
+import com.rad4m.eventdo.R
+import com.rad4m.eventdo.R.id.accountItem
+import com.rad4m.eventdo.R.id.infoItem
+import com.rad4m.eventdo.R.id.rateItem
+import com.rad4m.eventdo.R.id.settingsItem
+import com.rad4m.eventdo.R.id.shareItem
 import com.rad4m.eventdo.databinding.FragmentMainBinding
 import com.rad4m.eventdo.di.appComponent
 import com.rad4m.eventdo.models.EventModel
 import com.rad4m.eventdo.utils.HeaderItemDecoration
 import com.rad4m.eventdo.utils.Utilities.Companion.ITEM_VIEW_TYPE_HEADER
 import com.rad4m.eventdo.utils.Utilities.Companion.NEW_EVENT_PAGE
-import com.rad4m.eventdo.utils.Utilities.Companion.convertStringToDate
+import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_ID
+import com.rad4m.eventdo.utils.Utilities.Companion.saveCalEventContentResolver
+import com.rad4m.eventdo.utils.Utilities.Companion.saveEventToCalendar
 import com.rad4m.eventdo.utils.ViewModelFactory
 import net.yslibrary.android.keyboardvisibilityevent.util.UIUtil
+import permissions.dispatcher.NeedsPermission
+import permissions.dispatcher.OnPermissionDenied
+import permissions.dispatcher.RuntimePermissions
 import javax.inject.Inject
 
+@RuntimePermissions
 class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener {
 
     @Inject
@@ -62,8 +76,8 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
             activity,
             binding.menuDrawer,
             binding.toolbar,
-            com.rad4m.eventdo.R.string.drawer_open,
-            com.rad4m.eventdo.R.string.drawer_close
+            R.string.drawer_open,
+            R.string.drawer_close
         ) {
 
         }
@@ -77,7 +91,13 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
             if (viewModel.sharedPrefs.getValueBoolean(NEW_EVENT_PAGE) == true) {
                 viewModel.navigateToSelectedEvent(it)
             } else {
-                saveEventToCalendar(it)
+                saveEventLocallyWithPermissionCheck(
+                    it,
+                    activity!!,
+                    viewModel.sharedPrefs.getValueString(
+                        USER_MAIN_CALENDAR_ID
+                    )
+                )
             }
         })
 
@@ -116,13 +136,15 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
-            com.rad4m.eventdo.R.id.infoItem -> goToEventDoPage()
-            com.rad4m.eventdo.R.id.settingsItem -> this.findNavController().navigate(
+            infoItem -> goToEventDoPage()
+            settingsItem -> this.findNavController().navigate(
                 MainFragmentDirections.actionMainFragmentToSettingsFragment()
             )
-            com.rad4m.eventdo.R.id.accountItem -> this.findNavController().navigate(
+            accountItem -> this.findNavController().navigate(
                 MainFragmentDirections.actionMainFragmentToMyAccountFragment()
             )
+            rateItem -> goToEventDoPage()
+            shareItem -> shareAppContent()
         }
         drawer.closeDrawer(GravityCompat.START)
         return true
@@ -130,25 +152,76 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
 
     private fun goToEventDoPage() {
         val intent = Intent(Intent.ACTION_VIEW)
-        intent.data = Uri.parse(getString(com.rad4m.eventdo.R.string.about_us_link))
+        intent.data = Uri.parse(getString(R.string.about_us_link))
         startActivity(intent)
     }
 
-    private fun saveEventToCalendar(event: EventModel) {
-        val insertCalendarIntent = Intent(Intent.ACTION_INSERT)
-            .setData(CalendarContract.Events.CONTENT_URI)
-            .putExtra(CalendarContract.Events.TITLE, event.title)
-            .putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, false)
-            .putExtra(
-                CalendarContract.EXTRA_EVENT_BEGIN_TIME,
-                convertStringToDate(event.dtStart!!).time
-            )
-            .putExtra(
-                CalendarContract.EXTRA_EVENT_END_TIME,
-                convertStringToDate(event.dtEnd!!).time
-            )
-            .putExtra(CalendarContract.Events.EVENT_LOCATION, event.location)
-            .putExtra(CalendarContract.Events.DESCRIPTION, event.description)
-        startActivity(insertCalendarIntent)
+    private fun shareAppContent() {
+        val chooseIntent = Intent(Intent.ACTION_SEND)
+        chooseIntent.type = "text/plain"
+        chooseIntent.putExtra(Intent.EXTRA_TEXT, getString(R.string.chooser_link))
+        startActivity(Intent.createChooser(chooseIntent, getString(R.string.send_with)))
     }
+
+    @NeedsPermission(Manifest.permission.WRITE_CALENDAR)
+    fun saveEventLocally(
+        event: EventModel,
+        activity: FragmentActivity,
+        calendarId: String?
+    ) {
+        saveCalEventContentResolver(
+            event,
+            activity,
+            calendarId
+        )
+    }
+
+    @OnPermissionDenied(
+        Manifest.permission.WRITE_CALENDAR
+    )
+    fun onDenied() {
+        Toast.makeText(
+            activity,
+            getString(R.string.denied_calendar_access_text),
+            Toast.LENGTH_LONG
+        )
+            .show()
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+        onRequestPermissionsResult(requestCode, grantResults)
+    }
+
+//    private fun addCalendarId(calendarIntent: Intent) {
+//        calendarIntent.putExtra(
+//            CalendarContract.Events.CALENDAR_ID,
+//            viewModel.sharedPrefs.getValueString(USER_MAIN_CALENDAR_ID)
+//        )
+//    }
+//
+//    private fun saveEventToCalendar(event: EventModel) {
+//        val insertCalendarIntent = Intent(Intent.ACTION_INSERT)
+//            .setData(CalendarContract.Events.CONTENT_URI)
+//            .putExtra(CalendarContract.Events.TITLE, event.title)
+//            .putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, false)
+//            .putExtra(
+//                CalendarContract.EXTRA_EVENT_BEGIN_TIME,
+//                convertStringToDate(event.dtStart!!).time
+//            )
+//            .putExtra(
+//                CalendarContract.EXTRA_EVENT_END_TIME,
+//                convertStringToDate(event.dtEnd!!).time
+//            )
+//            .putExtra(CalendarContract.Events.EVENT_LOCATION, event.location)
+//            .putExtra(CalendarContract.Events.DESCRIPTION, event.description)
+//        if (!viewModel.sharedPrefs.getValueString(USER_MAIN_CALENDAR_ID).isNullOrEmpty()) {
+//            addCalendarId(insertCalendarIntent)
+//        }
+//        startActivity(insertCalendarIntent)
+//    }
 }

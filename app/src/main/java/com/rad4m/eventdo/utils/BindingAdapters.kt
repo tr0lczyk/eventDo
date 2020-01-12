@@ -1,5 +1,7 @@
 package com.rad4m.eventdo.utils
 
+import android.widget.AdapterView
+import android.widget.Spinner
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -22,4 +24,23 @@ fun TextView.convertDate(date: String) {
         val formattedDate = targetFormat.format(newDate)
         this.text = formattedDate
     }
+}
+
+interface ItemSelectedListener {
+    fun onItemSelected(item: Any)
+}
+
+@BindingAdapter("setEnries")
+fun Spinner.setEntries(entries: List<String>){
+    setEntries(entries)
+}
+
+@BindingAdapter("onSpinnerItemSelected")
+fun Spinner.onSpinnerItemSelected(itemSelected: ItemSelectedListener?){
+    onItemClickListener
+}
+
+@BindingAdapter("setSpinnerValue")
+fun Spinner.setSpinnerValue(value: String){
+    setSpinnerValue(value)
 }

@@ -3,6 +3,7 @@ package com.rad4m.eventdo.networking
 import com.rad4m.eventdo.models.AuthoriseCodeResponse
 import com.rad4m.eventdo.models.AuthoriseNumberResponse
 import com.rad4m.eventdo.models.EventsResponse
+import com.rad4m.eventdo.models.UserModel
 import retrofit2.Response
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
@@ -14,6 +15,8 @@ import retrofit2.http.Path
 private const val AUTHORISE_MOBILE_NUMBER = "AuthoriseNumber"
 private const val AUTHORISE_USER_CODE = "Authorise"
 private const val GET_USER_EVENTS = "GetsEventsForUsers/{phoneNumber}/{lastDate}"
+private const val GET_USER_PROFILE = "Getuserprofile/{phoneNumber}"
+private const val UPDATE_USER_PROFILE = "UpdateUserProfile"
 
 interface ApiService {
 
@@ -36,4 +39,13 @@ interface ApiService {
         @Path("phoneNumber") phoneNumber: String,
         @Path("lastDate") date: String
     ): Response<EventsResponse>
+
+    @GET(GET_USER_PROFILE)
+    suspend fun getUserProfile(
+        @Header("Authorization") token: String,
+        @Path("phoneNumber") phoneNumber: String
+    ): Response<UserModel>
+
+    @FormUrlEncoded
+    @PUT
 }

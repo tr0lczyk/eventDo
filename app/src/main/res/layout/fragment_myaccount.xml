@@ -88,7 +88,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="16dp"
             android:fontFamily="@font/myriad_regular"
-            android:text="+00 000000000"
+            android:text="@{viewModel.phoneNumber}"
             android:textSize="18sp"
             app:layout_constraintBottom_toBottomOf="@+id/mobileNumberDesc"
             app:layout_constraintStart_toEndOf="@+id/mobileNumberDesc"
@@ -111,16 +111,19 @@
             <EditText
                 android:id="@+id/firstNameEdit"
                 style="@style/edit_Text_style"
+                android:text="@{viewModel.userName}"
                 android:hint="@string/first_name" />
 
             <EditText
                 android:id="@+id/surnameEdit"
                 style="@style/edit_Text_style"
+                android:text="@{viewModel.userSurname}"
                 android:hint="@string/surname" />
 
             <EditText
                 android:id="@+id/emailEdit"
                 style="@style/edit_Text_style"
+                android:text="@{viewModel.userMail}"
                 android:hint="@string/email" />
 
             <androidx.constraintlayout.helper.widget.Flow

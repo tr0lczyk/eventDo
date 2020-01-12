@@ -4,6 +4,7 @@ import com.rad4m.eventdo.models.AuthoriseCodeResponse
 import com.rad4m.eventdo.models.AuthoriseNumberResponse
 import com.rad4m.eventdo.models.EventsResponse
 import com.rad4m.eventdo.models.Result
+import com.rad4m.eventdo.models.UserModel
 import com.rad4m.eventdo.utils.SharedPreferences
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_NUMBER
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_TOKEN
@@ -18,7 +19,7 @@ class EventDoRepository @Inject constructor(
 
     private val token = sharedPrefs.getValueString(USER_TOKEN)
     private val userToken = "bearer $token"
-    private val userNumber = sharedPrefs.getValueString(USER_NUMBER)?.replace("+", "")
+    private val userNumber = sharedPrefs.getValueString(USER_NUMBER)!!.replace("+", "")
     private val lastDate =
         /*sharedPrefs.getValueString(USER_LAST_DATE) ?:*/ convertDateToString(Date(0))
 
@@ -55,6 +56,18 @@ class EventDoRepository @Inject constructor(
                     userToken,
                     userNumber!!,
                     lastDate
+                )
+            }
+        )
+    }
+
+    suspend fun getUserProfile(
+    ): Result<UserModel?> {
+        return baseApiCall(
+            block = {
+                apiService.getUserProfile(
+                    userToken,
+                    userNumber
                 )
             }
         )
