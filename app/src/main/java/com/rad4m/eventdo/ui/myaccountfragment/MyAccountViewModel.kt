@@ -5,12 +5,17 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.rad4m.eventdo.R
+import com.rad4m.eventdo.models.Result
+import com.rad4m.eventdo.models.UserResult
+import com.rad4m.eventdo.models.UserUpdateModel
 import com.rad4m.eventdo.networking.EventDoRepository
 import com.rad4m.eventdo.utils.SharedPreferences
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_NUMBER
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
+import timber.log.Timber
 import javax.inject.Inject
 
 class MyAccountViewModel @Inject constructor(
@@ -29,9 +34,14 @@ class MyAccountViewModel @Inject constructor(
     val userSurname = MutableLiveData<String>()
     val userMail = MutableLiveData<String>()
 
+    val userBaseName = MutableLiveData<String>("First name")
+    val userBaseSurname = MutableLiveData<String>("Surname")
+    val userBaseMail = MutableLiveData<String>("Email")
+
     init {
         changeBackButtonColor(R.color.darkGray)
         phoneNumber.value = sharedPrefs.getValueString(USER_NUMBER)
+        getUserProfile()
     }
 
     fun startBackNavigation() {
@@ -46,5 +56,46 @@ class MyAccountViewModel @Inject constructor(
 
     private fun changeBackButtonColor(colorInt: Int) {
         backIconTintColor.value = ContextCompat.getColor(getApplication(), colorInt)
+    }
+
+    private fun getUserProfile() {
+        viewModelScope.launch {
+            when (val response = repository.getUserProfile()) {
+                is Result.Success -> setUserData(response.data!!.result!!)
+                is Result.Failure -> Timber.i(response.failure)
+                is Result.Error -> Timber.i(response.error)
+            }
+        }
+    }
+
+    private fun setUserData(userData: UserResult) {
+        if (!userData.name.isNullOrEmpty()) {
+            userBaseName.value = userData.name
+        }
+        if (!userData.surname.isNullOrEmpty()) {
+            userBaseSurname.value = userData.surname
+        }
+        if (!userData.email.isNullOrEmpty()) {
+            userBaseMail.value = userData.email
+        }
+    }
+
+    fun updateUserProfile() {
+        viewModelScope.launch {
+            val credentials = UserUpdateModel(
+                phoneNumber.value,
+                userMail.value,
+                userSurname.value,
+                userName.value
+            )
+            when (val response = repository.updateUserProfile(
+                credentials
+            )) {
+                is Result.Success -> Timber.i("success")
+                is Result.Failure -> Timber.i(response.failure)
+                is Result.Error -> Timber.i(response.error)
+            }
+        }
+        getUserProfile()
     }
 }

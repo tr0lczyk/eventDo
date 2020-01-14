@@ -4,7 +4,10 @@ import com.rad4m.eventdo.models.AuthoriseCodeResponse
 import com.rad4m.eventdo.models.AuthoriseNumberResponse
 import com.rad4m.eventdo.models.EventsResponse
 import com.rad4m.eventdo.models.UserModel
+import com.rad4m.eventdo.models.UserUpdateModel
+import com.rad4m.eventdo.models.UserUpdateResponse
 import retrofit2.Response
+import retrofit2.http.Body
 import retrofit2.http.Field
 import retrofit2.http.FormUrlEncoded
 import retrofit2.http.GET
@@ -46,6 +49,9 @@ interface ApiService {
         @Path("phoneNumber") phoneNumber: String
     ): Response<UserModel>
 
-    @FormUrlEncoded
-    @PUT
+    @PUT(UPDATE_USER_PROFILE)
+    suspend fun updateUserProfile(
+        @Header("Authorization") token: String,
+        @Body userUpdateModel: UserUpdateModel
+    ): Response<UserUpdateResponse>
 }

@@ -1,6 +1,6 @@
 package com.rad4m.eventdo.utils
 
-import android.widget.AdapterView
+import android.widget.EditText
 import android.widget.Spinner
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
@@ -31,16 +31,21 @@ interface ItemSelectedListener {
 }
 
 @BindingAdapter("setEnries")
-fun Spinner.setEntries(entries: List<String>){
+fun Spinner.setEntries(entries: List<String>) {
     setEntries(entries)
 }
 
 @BindingAdapter("onSpinnerItemSelected")
-fun Spinner.onSpinnerItemSelected(itemSelected: ItemSelectedListener?){
+fun Spinner.onSpinnerItemSelected(itemSelected: ItemSelectedListener?) {
     onItemClickListener
 }
 
 @BindingAdapter("setSpinnerValue")
-fun Spinner.setSpinnerValue(value: String){
+fun Spinner.setSpinnerValue(value: String) {
     setSpinnerValue(value)
+}
+
+@BindingAdapter("setHintAs")
+fun EditText.setHintAs(value: String) {
+    hint = value
 }
