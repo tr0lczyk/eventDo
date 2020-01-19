@@ -34,7 +34,6 @@ import com.rad4m.eventdo.utils.Utilities.Companion.ITEM_VIEW_TYPE_HEADER
 import com.rad4m.eventdo.utils.Utilities.Companion.NEW_EVENT_PAGE
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_ID
 import com.rad4m.eventdo.utils.Utilities.Companion.saveCalEventContentResolver
-import com.rad4m.eventdo.utils.Utilities.Companion.saveEventToCalendar
 import com.rad4m.eventdo.utils.ViewModelFactory
 import net.yslibrary.android.keyboardvisibilityevent.util.UIUtil
 import permissions.dispatcher.NeedsPermission

@@ -2,6 +2,7 @@ package com.rad4m.eventdo.di
 
 import android.app.Application
 import com.rad4m.eventdo.MainActivity
+import com.rad4m.eventdo.ui.introfragment.IntroFragment
 import com.rad4m.eventdo.ui.mainfragment.MainFragment
 import com.rad4m.eventdo.ui.myaccountfragment.MyAccountFragment
 import com.rad4m.eventdo.ui.neweventpage.NewEventFragment
@@ -21,6 +22,8 @@ interface AppComponent {
     fun inject(activity: MainActivity)
 
     fun inject(activity: MainFragment)
+
+    fun inject(activity: IntroFragment)
 
     fun inject(activity: VerificationFragment)
 

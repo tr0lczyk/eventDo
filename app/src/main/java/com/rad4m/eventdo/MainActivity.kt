@@ -7,6 +7,7 @@ import androidx.navigation.fragment.NavHostFragment
 import com.rad4m.eventdo.di.appComponent
 import com.rad4m.eventdo.utils.SharedPreferences
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_TOKEN
+import com.rad4m.eventdo.utils.Utilities.Companion.makeStatusBarTransparent
 import kotlinx.android.synthetic.main.activity_main.myNavHostFragment
 import javax.inject.Inject
 
@@ -18,6 +19,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         appComponent.inject(this)
+        makeStatusBarTransparent()
         setContentView(R.layout.activity_main)
         val navOptions = NavOptions.Builder()
             .setPopUpTo(R.id.introFragment, true)

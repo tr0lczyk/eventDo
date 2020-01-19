@@ -15,6 +15,7 @@ import com.rad4m.eventdo.models.Result
 import com.rad4m.eventdo.networking.EventDoRepository
 import com.rad4m.eventdo.utils.SharedPreferences
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_LAST_DATE
+import com.rad4m.eventdo.utils.Utilities.Companion.USER_LOGOUT
 import com.rad4m.eventdo.utils.Utilities.Companion.convertDateToString
 import com.rad4m.eventdo.utils.Utilities.Companion.convertDateToStringWithZ
 import com.rad4m.eventdo.utils.Utilities.Companion.convertStringToDate

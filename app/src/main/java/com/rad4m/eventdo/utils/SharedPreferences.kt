@@ -11,8 +11,8 @@ import javax.inject.Inject
 
 class SharedPreferences @Inject constructor(application: Application, val moshi: Moshi) {
 
-    private val SHARED_PREFS = "prefs"
-    private val sharedPref: SharedPreferences = application.getSharedPreferences(
+    val SHARED_PREFS = "prefs"
+    val sharedPref: SharedPreferences = application.getSharedPreferences(
         SHARED_PREFS,
         Context.MODE_PRIVATE
     )

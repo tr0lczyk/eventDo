@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
     <data>
 
@@ -88,6 +89,7 @@
                     <EditText
                         android:id="@+id/titleEdit"
                         style="@style/addEventEditText"
+                        android:text="@={viewModel.eventTitle}"
                         android:hint="Title" />
 
                     <View
@@ -97,6 +99,7 @@
                     <EditText
                         android:id="@+id/locationEdit"
                         style="@style/addEventEditText"
+                        android:text="@={viewModel.eventLocation}"
                         android:hint="Location" />
 
                     <View
@@ -133,6 +136,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
                         android:layout_marginEnd="8dp"
+                        android:checked="@{viewModel.eventAllDay}"
                         app:layout_constraintBottom_toBottomOf="@+id/allDayEdit"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintTop_toTopOf="@+id/allDayEdit"
@@ -157,7 +161,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
-                        android:text="30.01.2019  20:30"
+                        tools:text="30.01.2019  20:30"
+                        app:convertDateTime="@{viewModel.selectedEvent.dtStart}"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/new_event_text_size"
                         app:layout_constraintBottom_toBottomOf="@id/startDateEdit"
@@ -183,7 +188,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
-                        android:text="30.01.2019  20:30"
+                        tools:text="30.01.2019  20:30"
+                        app:convertDateTime="@{viewModel.selectedEvent.dtEnd}"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/new_event_text_size"
                         app:layout_constraintBottom_toBottomOf="@id/endDateEdit"
@@ -302,12 +308,12 @@
                         app:layout_constraintEnd_toEndOf="@id/calendarEdit"
                         app:layout_constraintTop_toTopOf="@id/calendarEdit" />
 
-                    <TextView
-                        android:id="@+id/calendarContent"
+                    <Spinner
+                        android:id="@+id/calendarNewEventSpinner"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="Never"
-                        android:textSize="@dimen/new_event_text_size"
+                        android:layout_height="0dp"
+                        android:spinnerMode="dropdown"
+                        android:background="@null"
                         app:layout_constraintBottom_toBottomOf="@id/calendarEdit"
                         app:layout_constraintEnd_toStartOf="@id/calendarArrow"
                         app:layout_constraintTop_toTopOf="@id/calendarEdit" />
@@ -424,15 +430,15 @@
                         app:layout_constraintEnd_toEndOf="@id/showAsEdit"
                         app:layout_constraintTop_toTopOf="@id/showAsEdit" />
 
-                    <TextView
-                        android:id="@+id/showAsContent"
+                    <Spinner
+                        android:id="@+id/showAsContentSpinner"
                         android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="None"
-                        android:textSize="@dimen/new_event_text_size"
+                        android:layout_height="0dp"
+                        android:spinnerMode="dropdown"
+                        android:background="@null"
                         app:layout_constraintBottom_toBottomOf="@id/showAsEdit"
                         app:layout_constraintEnd_toStartOf="@id/showAsArrow"
-                        app:layout_constraintTop_toTopOf="@id/showAsEdit" />
+                        app:layout_constraintTop_toTopOf="@id/showAsEdit"  />
 
                     <View
                         android:id="@+id/fifteenthSeparator"

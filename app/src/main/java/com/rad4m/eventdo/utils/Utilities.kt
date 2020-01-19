@@ -34,6 +34,7 @@ class Utilities {
         const val USER_CALENDAR_LIST = "userCalendarList"
         const val USER_MAIN_CALENDAR_ID = "userMainCalendarId"
         const val USER_MAIN_CALENDAR_NAME = "userMainCalendarName"
+        const val USER_LOGOUT = "userLogout"
 
         fun convertDateToString(date: Date): String {
             val originalFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")

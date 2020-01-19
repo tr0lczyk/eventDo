@@ -5,6 +5,7 @@ import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.rad4m.eventdo.R
+import com.rad4m.eventdo.database.EventsDatabase
 import com.rad4m.eventdo.models.Result
 import com.rad4m.eventdo.models.UserResult
 import com.rad4m.eventdo.models.UserUpdateModel
@@ -15,6 +16,7 @@ import com.rad4m.eventdo.utils.Utilities.Companion.NEW_EVENT_PAGE
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_CALENDAR_LIST
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_ID
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_LAST_DATE
+import com.rad4m.eventdo.utils.Utilities.Companion.USER_LOGOUT
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_ID
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_NAME
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_NUMBER
@@ -29,6 +31,7 @@ import javax.inject.Inject
 class MyAccountViewModel @Inject constructor(
     private val repository: EventDoRepository,
     val sharedPrefs: SharedPreferences,
+    private val database: EventsDatabase,
     application: Application
 ) : AndroidViewModel(application) {
 
@@ -123,7 +126,13 @@ class MyAccountViewModel @Inject constructor(
         }
     }
 
-    fun deleteUserAccountSuccess() {
+    private fun deleteAllEvents() {
+        viewModelScope.launch {
+            database.eventsDao().deleteEvents()
+        }
+    }
+
+    private fun deleteUserAccountSuccess() {
         Timber.i("Success")
         sharedPrefs.removeValue(USER_ID)
         sharedPrefs.removeValue(USER_NUMBER)
@@ -134,6 +143,8 @@ class MyAccountViewModel @Inject constructor(
         sharedPrefs.removeValue(USER_MAIN_CALENDAR_NAME)
         sharedPrefs.removeValue(USER_MAIN_CALENDAR_ID)
         sharedPrefs.removeValue(USER_CALENDAR_LIST)
+        sharedPrefs.save(USER_LOGOUT,true)
+        deleteAllEvents()
         navigateToLogin.value = true
     }
 }

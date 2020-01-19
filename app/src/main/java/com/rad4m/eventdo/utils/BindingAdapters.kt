@@ -26,6 +26,17 @@ fun TextView.convertDate(date: String) {
     }
 }
 
+@BindingAdapter("convertDateTime")
+fun TextView.convertDateTime(date: String) {
+    date.let {
+        val originalFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+        val newDate = originalFormat.parse(date)
+        val targetFormat = SimpleDateFormat("dd MMM yyyy HH:mm")
+        val formattedDate = targetFormat.format(newDate)
+        this.text = formattedDate
+    }
+}
+
 interface ItemSelectedListener {
     fun onItemSelected(item: Any)
 }
