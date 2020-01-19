@@ -2,6 +2,7 @@ package com.rad4m.eventdo.networking
 
 import com.rad4m.eventdo.models.AuthoriseCodeResponse
 import com.rad4m.eventdo.models.AuthoriseNumberResponse
+import com.rad4m.eventdo.models.DeleteUserResponse
 import com.rad4m.eventdo.models.EventsResponse
 import com.rad4m.eventdo.models.Result
 import com.rad4m.eventdo.models.UserModel
@@ -21,7 +22,7 @@ class EventDoRepository @Inject constructor(
 
     private val token = sharedPrefs.getValueString(USER_TOKEN)
     private val userToken = "bearer $token"
-    private val userNumber = sharedPrefs.getValueString(USER_NUMBER)!!.replace("+", "")
+    private val userNumber = sharedPrefs.getValueString(USER_NUMBER)?.replace("+", "") ?: ""
     private val lastDate =
         /*sharedPrefs.getValueString(USER_LAST_DATE) ?:*/ convertDateToString(Date(0))
 
@@ -83,6 +84,17 @@ class EventDoRepository @Inject constructor(
                 apiService.updateUserProfile(
                     userToken,
                     userUpdateModel
+                )
+            }
+        )
+    }
+
+    suspend fun deleteUserAccount(): Result<DeleteUserResponse?> {
+        return baseApiCall(
+            block = {
+                apiService.deleteUserAccount(
+                    userToken,
+                    userNumber
                 )
             }
         )

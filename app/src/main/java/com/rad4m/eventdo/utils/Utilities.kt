@@ -1,9 +1,15 @@
 package com.rad4m.eventdo.utils
 
+import android.app.Activity
+import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
+import android.graphics.Color
+import android.os.Build
 import android.provider.CalendarContract
+import android.view.View
+import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.fragment.app.FragmentActivity
@@ -127,6 +133,48 @@ class Utilities {
             activity.contentResolver.insert(CalendarContract.Events.CONTENT_URI, values)!!
             Toast.makeText(activity, activity.getString(R.string.event_saved), Toast.LENGTH_LONG)
                 .show()
+        }
+
+        fun showDialog(
+            activity: FragmentActivity,
+            message: String,
+            title: String,
+            yesButtonTitle: String,
+            yesButton: () -> Unit,
+            noButtonTitle: String
+        ) {
+            val dialog =
+                AlertDialog.Builder(activity).setTitle(title)
+                    .setMessage(message)
+                    .setPositiveButton(yesButtonTitle) { dialog, _ ->
+                        yesButton()
+                        dialog.dismiss()
+                    }
+                    .setNegativeButton(noButtonTitle) { dialog, _ ->
+                        dialog.cancel()
+                    }
+                    .setCancelable(true)
+                    .create()
+            dialog.show()
+            dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                .setTextColor(activity.getColor(R.color.darkRed))
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                .setTextColor(activity.getColor(R.color.darkRed))
+        }
+
+        fun Activity.makeStatusBarTransparent() {
+            window.apply {
+                clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
+                addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    decorView.systemUiVisibility =
+                        View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN or
+                                View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+                } else {
+                    decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                }
+                statusBarColor = Color.TRANSPARENT
+            }
         }
     }
 }

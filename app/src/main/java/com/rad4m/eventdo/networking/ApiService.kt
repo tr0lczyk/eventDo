@@ -2,6 +2,7 @@ package com.rad4m.eventdo.networking
 
 import com.rad4m.eventdo.models.AuthoriseCodeResponse
 import com.rad4m.eventdo.models.AuthoriseNumberResponse
+import com.rad4m.eventdo.models.DeleteUserResponse
 import com.rad4m.eventdo.models.EventsResponse
 import com.rad4m.eventdo.models.UserModel
 import com.rad4m.eventdo.models.UserUpdateModel
@@ -20,6 +21,7 @@ private const val AUTHORISE_USER_CODE = "Authorise"
 private const val GET_USER_EVENTS = "GetsEventsForUsers/{phoneNumber}/{lastDate}"
 private const val GET_USER_PROFILE = "Getuserprofile/{phoneNumber}"
 private const val UPDATE_USER_PROFILE = "UpdateUserProfile"
+private const val DELETE_USER_ACCOUNT = "DisableUser"
 
 interface ApiService {
 
@@ -54,4 +56,11 @@ interface ApiService {
         @Header("Authorization") token: String,
         @Body userUpdateModel: UserUpdateModel
     ): Response<UserUpdateResponse>
+
+    @FormUrlEncoded
+    @PUT(DELETE_USER_ACCOUNT)
+    suspend fun deleteUserAccount(
+        @Header("Authorization") token: String,
+        @Field("phonenumber") phoneNumber: String
+    ): Response<DeleteUserResponse>
 }

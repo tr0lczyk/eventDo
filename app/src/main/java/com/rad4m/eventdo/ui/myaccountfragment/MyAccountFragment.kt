@@ -10,8 +10,8 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.rad4m.eventdo.databinding.FragmentMyaccountBinding
 import com.rad4m.eventdo.di.appComponent
+import com.rad4m.eventdo.utils.Utilities.Companion.showDialog
 import com.rad4m.eventdo.utils.ViewModelFactory
-import kotlinx.android.synthetic.main.fragment_myaccount.firstNameEdit
 import javax.inject.Inject
 
 class MyAccountFragment : Fragment() {
@@ -39,6 +39,28 @@ class MyAccountFragment : Fragment() {
             if (it) {
                 this.findNavController().navigateUp()
                 viewModel.stopBackNavigation()
+            }
+        })
+
+        viewModel.navigateToLogin.observe(this, Observer {
+            if (it) {
+                findNavController().navigate(MyAccountFragmentDirections.actionMyAccountFragmentToIntroFragment())
+                viewModel.navigateToLogin.value = false
+            }
+        })
+
+        viewModel.showDeleteUserDialog.observe(this, Observer {
+            if (it) {
+                val deleteUser = { viewModel.deleteUserAccount() }
+                showDialog(
+                    activity!!,
+                    "By clicking yes you will delete your account from the system. Do you want to proceed?",
+                    "Delete your account",
+                    "Yes",
+                    deleteUser,
+                    "No"
+                )
+                viewModel.showDeleteUserDialog.value = false
             }
         })
 

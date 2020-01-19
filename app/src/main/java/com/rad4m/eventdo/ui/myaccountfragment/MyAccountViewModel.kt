@@ -10,7 +10,15 @@ import com.rad4m.eventdo.models.UserResult
 import com.rad4m.eventdo.models.UserUpdateModel
 import com.rad4m.eventdo.networking.EventDoRepository
 import com.rad4m.eventdo.utils.SharedPreferences
+import com.rad4m.eventdo.utils.Utilities.Companion.AUTO_ADD_EVENT
+import com.rad4m.eventdo.utils.Utilities.Companion.NEW_EVENT_PAGE
+import com.rad4m.eventdo.utils.Utilities.Companion.USER_CALENDAR_LIST
+import com.rad4m.eventdo.utils.Utilities.Companion.USER_ID
+import com.rad4m.eventdo.utils.Utilities.Companion.USER_LAST_DATE
+import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_ID
+import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_NAME
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_NUMBER
+import com.rad4m.eventdo.utils.Utilities.Companion.USER_TOKEN
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -33,6 +41,8 @@ class MyAccountViewModel @Inject constructor(
     val userName = MutableLiveData<String>()
     val userSurname = MutableLiveData<String>()
     val userMail = MutableLiveData<String>()
+    val navigateToLogin = MutableLiveData<Boolean>()
+    val showDeleteUserDialog = MutableLiveData<Boolean>()
 
     val userBaseName = MutableLiveData<String>("First name")
     val userBaseSurname = MutableLiveData<String>("Surname")
@@ -97,5 +107,33 @@ class MyAccountViewModel @Inject constructor(
             }
         }
         getUserProfile()
+    }
+
+    fun askUserIfDelete() {
+        showDeleteUserDialog.value = true
+    }
+
+    fun deleteUserAccount() {
+        viewModelScope.launch {
+            when (val response = repository.deleteUserAccount()) {
+                is Result.Success -> deleteUserAccountSuccess()
+                is Result.Failure -> Timber.i(response.failure)
+                is Result.Error -> Timber.i(response.error)
+            }
+        }
+    }
+
+    fun deleteUserAccountSuccess() {
+        Timber.i("Success")
+        sharedPrefs.removeValue(USER_ID)
+        sharedPrefs.removeValue(USER_NUMBER)
+        sharedPrefs.removeValue(USER_TOKEN)
+        sharedPrefs.removeValue(USER_LAST_DATE)
+        sharedPrefs.removeValue(NEW_EVENT_PAGE)
+        sharedPrefs.removeValue(AUTO_ADD_EVENT)
+        sharedPrefs.removeValue(USER_MAIN_CALENDAR_NAME)
+        sharedPrefs.removeValue(USER_MAIN_CALENDAR_ID)
+        sharedPrefs.removeValue(USER_CALENDAR_LIST)
+        navigateToLogin.value = true
     }
 }

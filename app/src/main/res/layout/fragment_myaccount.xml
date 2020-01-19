@@ -162,6 +162,8 @@
             android:adjustViewBounds="true"
             android:layout_margin="8dp"
             android:src="@drawable/delete_user"
+            android:paddingBottom="15dp"
+            android:onClick="@{() -> viewModel.askUserIfDelete()}"
             app:layout_constraintEnd_toEndOf="@+id/mainTitle"
             app:layout_constraintStart_toStartOf="@+id/mainTitle"
             app:layout_constraintTop_toBottomOf="@+id/constraintLayout" />
@@ -174,7 +176,7 @@
             android:textSize="15sp"
             app:layout_constraintEnd_toEndOf="@+id/deleteImage"
             app:layout_constraintStart_toStartOf="@+id/deleteImage"
-            app:layout_constraintTop_toBottomOf="@+id/deleteImage" />
+            app:layout_constraintBottom_toBottomOf="@+id/deleteImage" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

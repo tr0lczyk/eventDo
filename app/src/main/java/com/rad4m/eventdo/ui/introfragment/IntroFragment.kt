@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.tabs.TabLayoutMediator
 import com.rad4m.eventdo.databinding.FragmentIntroBinding
+import com.rad4m.eventdo.utils.Utilities.Companion.makeStatusBarTransparent
 
 class IntroFragment : Fragment() {
 
@@ -26,6 +27,7 @@ class IntroFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
         binding.viewPager.adapter = IntroAdapter()
+        activity!!.makeStatusBarTransparent()
         TabLayoutMediator(
             binding.tabLayout,
             binding.viewPager,
