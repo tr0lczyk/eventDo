@@ -52,11 +52,12 @@
         <TextView
             android:id="@+id/newEventAdd"
             style="@style/newEventToolbarTextStyle"
+            android:textStyle="bold"
             android:layout_marginEnd="16dp"
             android:onClick="@{() -> viewModel.addNewEventToCalendar()}"
             android:text="@string/add"
             android:textAllCaps="false"
-            android:textColor="#D3D3D3"
+            android:textColor="@color/blue"
             app:layout_constraintBottom_toBottomOf="@id/titleContainer"
             app:layout_constraintEnd_toEndOf="@id/titleContainer"
             app:layout_constraintTop_toTopOf="@id/titleContainer" />
@@ -295,27 +296,19 @@
                         android:foreground="?android:attr/selectableItemBackground"
                         android:clickable="true"
                         style="@style/addEventEditText"
-                        android:text="@string/calendar"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tenthSeparator" />
 
-                    <ImageView
-                        android:id="@+id/calendarArrow"
-                        style="@style/arrowStyle"
-                        android:src="@drawable/end_arrow"
-                        app:layout_constraintBottom_toBottomOf="@id/calendarEdit"
-                        app:layout_constraintEnd_toEndOf="@id/calendarEdit"
-                        app:layout_constraintTop_toTopOf="@id/calendarEdit" />
-
                     <Spinner
                         android:id="@+id/calendarNewEventSpinner"
-                        android:layout_width="wrap_content"
+                        android:layout_width="0dp"
                         android:layout_height="0dp"
+                        android:layout_marginStart="8dp"
                         android:spinnerMode="dropdown"
-                        android:background="@null"
                         app:layout_constraintBottom_toBottomOf="@id/calendarEdit"
-                        app:layout_constraintEnd_toStartOf="@id/calendarArrow"
+                        app:layout_constraintEnd_toEndOf="@id/calendarEdit"
+                        app:layout_constraintStart_toStartOf="@id/calendarEdit"
                         app:layout_constraintTop_toTopOf="@id/calendarEdit" />
 
                     <View
@@ -428,6 +421,16 @@
                         android:src="@drawable/end_arrow"
                         app:layout_constraintBottom_toBottomOf="@id/showAsEdit"
                         app:layout_constraintEnd_toEndOf="@id/showAsEdit"
+                        app:layout_constraintTop_toTopOf="@id/showAsEdit" />
+
+                    <TextView
+                        android:id="@+id/showAsContent"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="Never"
+                        android:textSize="@dimen/new_event_text_size"
+                        app:layout_constraintBottom_toBottomOf="@id/showAsEdit"
+                        app:layout_constraintEnd_toStartOf="@id/showAsArrow"
                         app:layout_constraintTop_toTopOf="@id/showAsEdit" />
 
                     <Spinner

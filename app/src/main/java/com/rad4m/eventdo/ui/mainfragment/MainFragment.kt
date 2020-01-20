@@ -195,32 +195,4 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         onRequestPermissionsResult(requestCode, grantResults)
     }
-
-//    private fun addCalendarId(calendarIntent: Intent) {
-//        calendarIntent.putExtra(
-//            CalendarContract.Events.CALENDAR_ID,
-//            viewModel.sharedPrefs.getValueString(USER_MAIN_CALENDAR_ID)
-//        )
-//    }
-//
-//    private fun saveEventToCalendar(event: EventModel) {
-//        val insertCalendarIntent = Intent(Intent.ACTION_INSERT)
-//            .setData(CalendarContract.Events.CONTENT_URI)
-//            .putExtra(CalendarContract.Events.TITLE, event.title)
-//            .putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, false)
-//            .putExtra(
-//                CalendarContract.EXTRA_EVENT_BEGIN_TIME,
-//                convertStringToDate(event.dtStart!!).time
-//            )
-//            .putExtra(
-//                CalendarContract.EXTRA_EVENT_END_TIME,
-//                convertStringToDate(event.dtEnd!!).time
-//            )
-//            .putExtra(CalendarContract.Events.EVENT_LOCATION, event.location)
-//            .putExtra(CalendarContract.Events.DESCRIPTION, event.description)
-//        if (!viewModel.sharedPrefs.getValueString(USER_MAIN_CALENDAR_ID).isNullOrEmpty()) {
-//            addCalendarId(insertCalendarIntent)
-//        }
-//        startActivity(insertCalendarIntent)
-//    }
 }

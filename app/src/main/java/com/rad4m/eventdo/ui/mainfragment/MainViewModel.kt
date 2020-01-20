@@ -1,6 +1,7 @@
 package com.rad4m.eventdo.ui.mainfragment
 
 import android.app.Application
+import android.os.Handler
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
@@ -15,7 +16,6 @@ import com.rad4m.eventdo.models.Result
 import com.rad4m.eventdo.networking.EventDoRepository
 import com.rad4m.eventdo.utils.SharedPreferences
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_LAST_DATE
-import com.rad4m.eventdo.utils.Utilities.Companion.USER_LOGOUT
 import com.rad4m.eventdo.utils.Utilities.Companion.convertDateToString
 import com.rad4m.eventdo.utils.Utilities.Companion.convertDateToStringWithZ
 import com.rad4m.eventdo.utils.Utilities.Companion.convertStringToDate
@@ -65,15 +65,21 @@ class MainViewModel @Inject constructor(
     fun upcomingButton() {
         showUpcomingEvents.value = true
         changeUpcomingColor(R.color.blue)
-        changeEmptyListContent(R.string.you_have_no_events_upcoming)
         changePastColor(R.color.darkGray)
     }
 
     fun pastButton() {
         showUpcomingEvents.value = false
         changePastColor(R.color.blue)
-        changeEmptyListContent(R.string.you_have_no_events_past)
         changeUpcomingColor(R.color.darkGray)
+    }
+
+    fun verifyWhichList(){
+        if(showUpcomingEvents.value!!){
+            changeEmptyListContent(R.string.you_have_no_events_upcoming)
+        } else {
+            changeEmptyListContent(R.string.you_have_no_events_past)
+        }
     }
 
     private fun changeUpcomingColor(colorInt: Int) {
@@ -146,6 +152,9 @@ class MainViewModel @Inject constructor(
             }
         }
         dataItemList.value = temporaryList
-        checkEmptyInfoVisibility()
+        Handler().postDelayed({
+            verifyWhichList()
+            checkEmptyInfoVisibility()
+        }, 100)
     }
 }

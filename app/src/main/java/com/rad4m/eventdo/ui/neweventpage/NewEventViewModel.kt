@@ -19,13 +19,14 @@ class NewEventViewModel @Inject constructor(
 ) :
     AndroidViewModel(application) {
 
-    var startAddingNewEvent = MutableLiveData<Boolean>(false)
-    var cancelAddingNewEvent = MutableLiveData<Boolean>(false)
+    val startAddingNewEvent = MutableLiveData<Boolean>(false)
+    val cancelAddingNewEvent = MutableLiveData<Boolean>(false)
     val selectedEvent = MutableLiveData<EventModel>()
     val eventTitle = MutableLiveData<String>()
     val eventLocation = MutableLiveData<String>()
     val eventShowAs = MutableLiveData<String>()
     val eventAllDay = MutableLiveData<Boolean>()
+    val eventCalendar = MutableLiveData<String>()
 
     fun setSelectedEvent(eventModel: EventModel) {
         selectedEvent.value = eventModel
@@ -51,6 +52,12 @@ class NewEventViewModel @Inject constructor(
 
     private fun saveCalendarList(list: List<MyCalendar>) {
         sharedPrefs.save(Utilities.USER_CALENDAR_LIST, list)
+    }
+
+    fun searchForCal(currentCalName: String) {
+        eventCalendar.value = sharedPrefs.getCalendarList(Utilities.USER_CALENDAR_LIST)!!.filter {
+            it.calName == currentCalName
+        }[0].calID
     }
 
     private fun returnListOfCalNames(myCalendarsList: MutableList<MyCalendar>): MutableList<String> {

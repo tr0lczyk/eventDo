@@ -10,15 +10,20 @@ import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.rad4m.eventdo.R
 import com.rad4m.eventdo.databinding.FragmentNewEventBinding
 import com.rad4m.eventdo.di.appComponent
+import com.rad4m.eventdo.models.EventModel
+import com.rad4m.eventdo.utils.Utilities
+import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_ID
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_NAME
 import com.rad4m.eventdo.utils.ViewModelFactory
 import permissions.dispatcher.NeedsPermission
+import permissions.dispatcher.OnPermissionDenied
 import permissions.dispatcher.RuntimePermissions
 import javax.inject.Inject
 
@@ -46,7 +51,6 @@ class NewEventFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
         downloadCalWithPermissionCheck()
-        showAsSpinner()
         viewModel.setSelectedEvent(NewEventFragmentArgs.fromBundle(arguments!!).selectedEvent)
         activity!!.window.apply {
             statusBarColor = ContextCompat.getColor(activity!!, R.color.saturated_purple)
@@ -54,7 +58,11 @@ class NewEventFragment : Fragment() {
 
         viewModel.startAddingNewEvent.observe(this, Observer {
             if (it) {
-                Toast.makeText(activity, "Changes saved!", Toast.LENGTH_SHORT).show()
+                saveEventLocallyWithPermissionCheck(
+                    viewModel.selectedEvent.value!!,
+                    activity!!,
+                    viewModel.eventCalendar.value
+                )
                 viewModel.stopAddingNewEvent()
                 findNavController().navigateUp()
             }
@@ -66,7 +74,6 @@ class NewEventFragment : Fragment() {
                 viewModel.stopCancelling()
             }
         })
-
         return binding.root
     }
 
@@ -91,7 +98,7 @@ class NewEventFragment : Fragment() {
                     position: Int,
                     id: Long
                 ) {
-                    val calName = adapter.getItem(position)
+                    viewModel.searchForCal(adapter.getItem(position)!!)
                 }
             }
         if (viewModel.sharedPrefs.getValueString(USER_MAIN_CALENDAR_NAME) != null) {
@@ -101,31 +108,34 @@ class NewEventFragment : Fragment() {
                 position
             )
         }
+        if (viewModel.sharedPrefs.getValueString(USER_MAIN_CALENDAR_ID) != null) {
+            viewModel
+        }
     }
 
-    fun showAsSpinner() {
-        val adapter =
-            ArrayAdapter(
-                activity!!,
-                android.R.layout.simple_spinner_item,
-                listOf("Busy", "Free")
-            )
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
-        binding.showAsContentSpinner.adapter = adapter
-        binding.showAsContentSpinner.onItemSelectedListener =
-            object : AdapterView.OnItemSelectedListener {
-                override fun onNothingSelected(parent: AdapterView<*>?) {
-                }
+    @NeedsPermission(Manifest.permission.WRITE_CALENDAR)
+    fun saveEventLocally(
+        event: EventModel,
+        activity: FragmentActivity,
+        calendarId: String?
+    ) {
+        Utilities.saveCalEventContentResolver(
+            event,
+            activity,
+            calendarId
+        )
+    }
 
-                override fun onItemSelected(
-                    parent: AdapterView<*>?,
-                    view: View?,
-                    position: Int,
-                    id: Long
-                ) {
-                    viewModel.eventShowAs.value = adapter.getItem(position)
-                }
-            }
+    @OnPermissionDenied(
+        Manifest.permission.WRITE_CALENDAR
+    )
+    fun onDenied() {
+        Toast.makeText(
+            activity,
+            getString(R.string.denied_calendar_access_text),
+            Toast.LENGTH_LONG
+        )
+            .show()
     }
 
     override fun onRequestPermissionsResult(
