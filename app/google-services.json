@@ -1,0 +1,99 @@
+{
+  "project_info": {
+    "project_number": "563039330048",
+    "firebase_url": "https://eventdo-68fc1.firebaseio.com",
+    "project_id": "eventdo-68fc1",
+    "storage_bucket": "eventdo-68fc1.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:563039330048:android:24bc71f498ccb956",
+        "android_client_info": {
+          "package_name": "com.omarain.eventdo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "563039330048-hui9lull6ueq9lcalf3e5udljq1fsmqo.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.omarain.eventdo",
+            "certificate_hash": "68fd1871bbcc6af6f03908625bfc7ad790c11942"
+          }
+        },
+        {
+          "client_id": "563039330048-1lardgr0tts9tgenb2bbcv51jvti5fdk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMQPLm0xhPsNpEGtlknQE25VkBM8Xp5uM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "563039330048-1lardgr0tts9tgenb2bbcv51jvti5fdk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "563039330048-fcs3g9s5g0kf9qqgf1kas71749ubl34v.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.omarain.eventdo"
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:563039330048:android:29d122d6ec19c4a89c5de5",
+        "android_client_info": {
+          "package_name": "com.rad4m.eventdo"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "563039330048-t8k8vp0pj790l3rotc01fqcoe0u33n37.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.rad4m.eventdo",
+            "certificate_hash": "af81ba018a917c1a170aee7d1a173405c1efa9a0"
+          }
+        },
+        {
+          "client_id": "563039330048-1lardgr0tts9tgenb2bbcv51jvti5fdk.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDMQPLm0xhPsNpEGtlknQE25VkBM8Xp5uM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "563039330048-1lardgr0tts9tgenb2bbcv51jvti5fdk.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "563039330048-fcs3g9s5g0kf9qqgf1kas71749ubl34v.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.omarain.eventdo"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

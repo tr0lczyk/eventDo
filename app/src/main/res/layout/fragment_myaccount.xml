@@ -111,18 +111,21 @@
             <EditText
                 android:id="@+id/firstNameEdit"
                 style="@style/edit_Text_style"
+                android:singleLine="true"
                 android:text="@={viewModel.userName}"
                 app:setHintAs="@{viewModel.userBaseName}"/>
 
             <EditText
                 android:id="@+id/surnameEdit"
                 style="@style/edit_Text_style"
+                android:singleLine="true"
                 android:text="@={viewModel.userSurname}"
                 app:setHintAs="@{viewModel.userBaseSurname}"/>
 
             <EditText
                 android:id="@+id/emailEdit"
                 style="@style/edit_Text_style"
+                android:singleLine="true"
                 android:text="@={viewModel.userMail}"
                 app:setHintAs="@{viewModel.userBaseMail}"/>
 
@@ -139,7 +142,7 @@
 
             <com.google.android.material.button.MaterialButton
                 style="@style/Widget.MaterialComponents.Button"
-                android:onClick="@{() -> viewModel.updateUserProfile()}"
+                android:onClick="@{() -> viewModel.checkIfChangePossible()}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"

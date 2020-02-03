@@ -4,20 +4,23 @@ import com.rad4m.eventdo.models.AuthoriseCodeResponse
 import com.rad4m.eventdo.models.AuthoriseNumberResponse
 import com.rad4m.eventdo.models.DeleteUserResponse
 import com.rad4m.eventdo.models.EventsResponse
+import com.rad4m.eventdo.models.FirebaseTokenUpdateResponseModel
 import com.rad4m.eventdo.models.Result
 import com.rad4m.eventdo.models.UserModel
 import com.rad4m.eventdo.models.UserUpdateModel
 import com.rad4m.eventdo.models.UserUpdateResponse
 import com.rad4m.eventdo.utils.SharedPreferences
+import com.rad4m.eventdo.utils.Utilities.Companion.FIREBASE_TOKEN
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_NUMBER
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_TOKEN
 import com.rad4m.eventdo.utils.Utilities.Companion.convertDateToString
+import com.rad4m.eventdo.utils.Utilities.Companion.getUuidId
 import java.util.Date
 import javax.inject.Inject
 
 class EventDoRepository @Inject constructor(
     private val apiService: ApiService,
-    sharedPrefs: SharedPreferences
+    val sharedPrefs: SharedPreferences
 ) : BaseRepository() {
 
     private val token = sharedPrefs.getValueString(USER_TOKEN)
@@ -95,6 +98,18 @@ class EventDoRepository @Inject constructor(
                 apiService.deleteUserAccount(
                     userToken,
                     userNumber
+                )
+            }
+        )
+    }
+
+    suspend fun updateFirebaseToken(): Result<FirebaseTokenUpdateResponseModel?> {
+        return baseApiCall(
+            block = {
+                apiService.updateFirebaseToken(
+                    userToken,
+                    sharedPrefs.getValueString(FIREBASE_TOKEN)!!,
+                    getUuidId()
                 )
             }
         )

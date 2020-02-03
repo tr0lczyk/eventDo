@@ -11,14 +11,18 @@ import androidx.lifecycle.Transformations
 import com.rad4m.eventdo.R
 import com.rad4m.eventdo.database.EventsDatabase
 import com.rad4m.eventdo.models.DataItem
+import com.rad4m.eventdo.models.EventIdTitle
 import com.rad4m.eventdo.models.EventModel
 import com.rad4m.eventdo.models.Result
 import com.rad4m.eventdo.networking.EventDoRepository
 import com.rad4m.eventdo.utils.SharedPreferences
+import com.rad4m.eventdo.utils.Utilities.Companion.DEVICE_ID
+import com.rad4m.eventdo.utils.Utilities.Companion.EVENT_ID_TITLE
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_LAST_DATE
 import com.rad4m.eventdo.utils.Utilities.Companion.convertDateToString
 import com.rad4m.eventdo.utils.Utilities.Companion.convertDateToStringWithZ
 import com.rad4m.eventdo.utils.Utilities.Companion.convertStringToDate
+import com.rad4m.eventdo.utils.Utilities.Companion.toastMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -53,6 +57,7 @@ class MainViewModel @Inject constructor(
     val selectedEvent = MutableLiveData<EventModel>()
 
     init {
+        updateFirebaseToken()
         swipeRefreshing.value = false
         upcomingButton()
         downloadEvents()
@@ -74,8 +79,8 @@ class MainViewModel @Inject constructor(
         changeUpcomingColor(R.color.darkGray)
     }
 
-    fun verifyWhichList(){
-        if(showUpcomingEvents.value!!){
+    fun verifyWhichList() {
+        if (showUpcomingEvents.value!!) {
             changeEmptyListContent(R.string.you_have_no_events_upcoming)
         } else {
             changeEmptyListContent(R.string.you_have_no_events_past)
@@ -103,11 +108,24 @@ class MainViewModel @Inject constructor(
             when (val response = repository.getEventsList()) {
                 is Result.Success -> saveEvents(response.data!!.result)
                 is Result.Failure -> Timber.i("failure")
-                else -> Timber.i("else")
+                is Result.Error -> toastMessage(
+                    getApplication(),
+                    R.string.download_events_internet_fail
+                )
             }
         }
         sharedPrefs.save(USER_LAST_DATE, convertDateToString(Date()))
         swipeRefreshing.value = false
+    }
+
+    private fun updateFirebaseToken() {
+        viewModelScope.launch {
+            when (val response = repository.updateFirebaseToken()) {
+                is Result.Success -> sharedPrefs.save(DEVICE_ID, response.data!!.message!!)
+                is Result.Failure -> Timber.i(response.failure)
+                is Result.Error -> Timber.i(response.error)
+            }
+        }
     }
 
     private suspend fun saveEvents(data: List<EventModel>) {
@@ -125,6 +143,22 @@ class MainViewModel @Inject constructor(
         } else {
             emptyListInfoVisibility.value = View.GONE
         }
+    }
+
+    fun saveNewEventIdTitleList(eventIdTitleList: List<EventIdTitle>) {
+        sharedPrefs.saveEventItTitleList(EVENT_ID_TITLE, eventIdTitleList)
+    }
+
+    fun doesEventExists(title: String): Boolean {
+        return !sharedPrefs.getEventItTitleList(EVENT_ID_TITLE)!!.filter { it.title == title }.isNullOrEmpty()
+    }
+
+    fun returnEventId(title: String): Long {
+        return sharedPrefs.getEventItTitleList(EVENT_ID_TITLE)!!.filter { it.title == title }[0].id
+    }
+
+    fun deleteEventIdTitlelist() {
+        sharedPrefs.removeValue(EVENT_ID_TITLE)
     }
 
     fun convertEventsToDataItems(list: List<EventModel>) {

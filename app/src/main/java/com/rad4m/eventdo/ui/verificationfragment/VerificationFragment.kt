@@ -50,6 +50,13 @@ class VerificationFragment : Fragment() {
             }
         })
 
+        viewModel.codeIncorrect.observe(this, Observer {
+            if (it) {
+                binding.codeView.setText("")
+                viewModel.codeIncorrect.value = false
+            }
+        })
+
         Handler().postDelayed({
             Utilities.showKeyboard(activity!!)
         }, 500)

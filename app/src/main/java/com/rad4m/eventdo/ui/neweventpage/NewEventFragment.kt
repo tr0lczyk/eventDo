@@ -21,6 +21,7 @@ import com.rad4m.eventdo.models.EventModel
 import com.rad4m.eventdo.utils.Utilities
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_ID
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_NAME
+import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.saveCalEventContentResolver
 import com.rad4m.eventdo.utils.ViewModelFactory
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.OnPermissionDenied
@@ -119,7 +120,7 @@ class NewEventFragment : Fragment() {
         activity: FragmentActivity,
         calendarId: String?
     ) {
-        Utilities.saveCalEventContentResolver(
+        saveCalEventContentResolver(
             event,
             activity,
             calendarId

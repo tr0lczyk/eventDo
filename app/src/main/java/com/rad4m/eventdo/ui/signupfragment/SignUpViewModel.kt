@@ -45,6 +45,14 @@ class SignUpViewModel @Inject constructor(
         navigateToVerification.value = true
     }
 
+    private fun connectionFailure() {
+        Toast.makeText(
+            getApplication(),
+            getApplication<Application>().getString(R.string.sign_up_internet_fail),
+            Toast.LENGTH_LONG
+        ).show()
+    }
+
     fun sendNumber() {
         val number = "${prefix.value}${phoneNumber.value}"
         sharedPrefs.save(USER_NUMBER, "${prefix.value}${phoneNumber.value}")
@@ -53,7 +61,7 @@ class SignUpViewModel @Inject constructor(
                 when (val response = repository.putAuthoriseNumber(number)) {
                     is Result.Success -> openVerification(response.data!!.result)
                     is Result.Failure -> Timber.i("failure")
-                    else -> Timber.i("else")
+                    is Result.Error -> connectionFailure()
                 }
             } else {
                 Toast.makeText(

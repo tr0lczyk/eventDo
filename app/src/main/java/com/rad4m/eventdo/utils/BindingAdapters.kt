@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.rad4m.eventdo.models.DataItem
 import com.rad4m.eventdo.ui.mainfragment.EventsAdapter
 import java.text.SimpleDateFormat
+import java.util.Locale
 
 @BindingAdapter("eventList")
 fun RecyclerView.eventList(list: List<DataItem>?) {
@@ -20,7 +21,7 @@ fun TextView.convertDate(date: String) {
     date.let {
         val originalFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
         val newDate = originalFormat.parse(date)
-        val targetFormat = SimpleDateFormat("EEEE dd MMMM")
+        val targetFormat = SimpleDateFormat("EEEE dd MMMM", Locale.ENGLISH)
         val formattedDate = targetFormat.format(newDate)
         this.text = formattedDate
     }
@@ -32,6 +33,17 @@ fun TextView.convertDateTime(date: String) {
         val originalFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
         val newDate = originalFormat.parse(date)
         val targetFormat = SimpleDateFormat("dd MMM yyyy HH:mm")
+        val formattedDate = targetFormat.format(newDate)
+        this.text = formattedDate
+    }
+}
+
+@BindingAdapter("convertHoursMinutes")
+fun TextView.convertHoursMinutes(date: String) {
+    date.let {
+        val originalFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+        val newDate = originalFormat.parse(date)
+        val targetFormat = SimpleDateFormat("HH:mm")
         val formattedDate = targetFormat.format(newDate)
         this.text = formattedDate
     }

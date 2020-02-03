@@ -8,9 +8,11 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.rad4m.eventdo.R
 import com.rad4m.eventdo.databinding.FragmentMyaccountBinding
 import com.rad4m.eventdo.di.appComponent
 import com.rad4m.eventdo.utils.Utilities.Companion.showDialog
+import com.rad4m.eventdo.utils.Utilities.Companion.showInformingDialog
 import com.rad4m.eventdo.utils.ViewModelFactory
 import javax.inject.Inject
 
@@ -44,6 +46,11 @@ class MyAccountFragment : Fragment() {
 
         viewModel.navigateToLogin.observe(this, Observer {
             if (it) {
+                showInformingDialog(
+                    activity!!,
+                    getString(R.string.account_deleted_message),
+                    getString(R.string.account_deleted_title)
+                )
                 findNavController().navigate(MyAccountFragmentDirections.actionMyAccountFragmentToIntroFragment())
                 viewModel.navigateToLogin.value = false
             }

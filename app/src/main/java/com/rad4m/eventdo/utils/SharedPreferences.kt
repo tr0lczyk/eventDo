@@ -3,6 +3,7 @@ package com.rad4m.eventdo.utils
 import android.app.Application
 import android.content.Context
 import android.content.SharedPreferences
+import com.rad4m.eventdo.models.EventIdTitle
 import com.rad4m.eventdo.models.MyCalendar
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
@@ -60,16 +61,37 @@ class SharedPreferences @Inject constructor(application: Application, val moshi:
         editor.apply()
     }
 
-    fun saveCalendarId(KEY_NAME: String, calendarId: String){
+    fun saveCalendarId(KEY_NAME: String, calendarId: String) {
         val editor = sharedPref.edit()
         editor.putString(KEY_NAME, calendarId)
         editor.apply()
     }
 
-    fun saveCalendarName(KEY_NAME: String, calendarName: String){
+    fun saveCalendarName(KEY_NAME: String, calendarName: String) {
         val editor = sharedPref.edit()
         editor.putString(KEY_NAME, calendarName)
         editor.apply()
+    }
+
+    fun saveEventItTitleList(KEY_NAME: String, eventIdTitleList: List<EventIdTitle>) {
+        val editor: SharedPreferences.Editor = sharedPref.edit()
+        val type = Types.newParameterizedType(
+            List::class.java,
+            EventIdTitle::class.javaObjectType
+        )
+        val adapter: JsonAdapter<List<EventIdTitle>> = moshi.adapter(type)
+        editor.putString(KEY_NAME, adapter.toJson(eventIdTitleList))
+        editor.apply()
+    }
+
+    fun getEventItTitleList(KEY_NAME: String): List<EventIdTitle>? {
+        val returnItem = sharedPref.getString(KEY_NAME, null)
+        val type = Types.newParameterizedType(
+            List::class.java,
+            EventIdTitle::class.javaObjectType
+        )
+        val adapter: JsonAdapter<List<EventIdTitle>> = moshi.adapter(type)
+        return adapter.fromJson(returnItem!!)
     }
 
     fun getCalendarList(KEY_NAME: String): List<MyCalendar>? {

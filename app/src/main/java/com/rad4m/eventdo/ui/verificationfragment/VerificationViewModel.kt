@@ -4,6 +4,7 @@ import android.app.Application
 import android.widget.Toast
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import com.rad4m.eventdo.R
 import com.rad4m.eventdo.models.Result
 import com.rad4m.eventdo.networking.EventDoRepository
 import com.rad4m.eventdo.utils.SharedPreferences
@@ -14,7 +15,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import org.json.JSONObject
-import timber.log.Timber
 import javax.inject.Inject
 
 class VerificationViewModel @Inject constructor(
@@ -27,16 +27,42 @@ class VerificationViewModel @Inject constructor(
     private val viewModelScope = CoroutineScope(Dispatchers.Main + viewModelJob)
     val code = MutableLiveData<String>()
     val navigateToMain = MutableLiveData<Boolean>()
+    val codeIncorrect = MutableLiveData<Boolean>()
 
     fun sendUserCode() {
         val userId = sharedPrefs.getValueLong(USER_ID)
         viewModelScope.launch {
             when (val response = repository.putAuthoriseUserCode(userId!!, code.value!!)) {
                 is Result.Success -> codeVerifiedCorrectly(response.data!!.result!!.result!!.value!!)
-                is Result.Failure -> Timber.i("failure")
-                else -> Timber.i("else")
+                is Result.Failure -> wrongCode()
+                is Result.Error -> verifyErrorType(response.error)
             }
         }
+    }
+
+    private fun verifyErrorType(error: String) {
+        if (error == "Expected BEGIN_OBJECT but was STRING at path \$.result") {
+            wrongCode()
+        } else {
+            connectionFailure()
+        }
+    }
+
+    private fun connectionFailure() {
+        Toast.makeText(
+            getApplication(),
+            getApplication<Application>().getString(R.string.verification_internet_fail),
+            Toast.LENGTH_LONG
+        ).show()
+    }
+
+    private fun wrongCode() {
+        Toast.makeText(
+            getApplication(),
+            getApplication<Application>().getString(R.string.code_not_correct),
+            Toast.LENGTH_SHORT
+        ).show()
+        codeIncorrect.value = true
     }
 
     private fun codeVerifiedCorrectly(response: String) {

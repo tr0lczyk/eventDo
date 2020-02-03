@@ -1,23 +1,28 @@
 package com.rad4m.eventdo.utils
 
 import android.app.Activity
+import android.app.ActivityManager
 import android.app.AlertDialog
-import android.content.ContentValues
+import android.app.PendingIntent
+import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.provider.CalendarContract
+import android.text.TextUtils
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.fragment.app.FragmentActivity
+import com.rad4m.eventdo.MainActivity
 import com.rad4m.eventdo.R
-import com.rad4m.eventdo.models.EventModel
 import java.text.SimpleDateFormat
 import java.util.Date
-import java.util.TimeZone
+import java.util.UUID
 
 class Utilities {
 
@@ -35,6 +40,12 @@ class Utilities {
         const val USER_MAIN_CALENDAR_ID = "userMainCalendarId"
         const val USER_MAIN_CALENDAR_NAME = "userMainCalendarName"
         const val USER_LOGOUT = "userLogout"
+        const val CHANNEL_ID = "eventDoChannelId"
+        const val CHANNEL_NAME = "eventDoChannelName"
+        const val CHANNEL_DESC = "Notification channel"
+        const val FIREBASE_TOKEN = "tokenFirebase"
+        const val DEVICE_ID = "deviceId"
+        const val EVENT_ID_TITLE = "eventIdTitle"
 
         fun convertDateToString(date: Date): String {
             val originalFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
@@ -57,83 +68,6 @@ class Utilities {
 
         fun convertStringToDate(text: String): Date {
             return SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(text)
-        }
-
-        private fun addCalendarId(
-            calendarIntent: Intent,
-            calendarId: String
-        ) {
-            calendarIntent.putExtra(
-                CalendarContract.Events.CALENDAR_ID,
-                calendarId
-            )
-        }
-
-        fun saveEventToCalendar(
-            event: EventModel,
-            activity: FragmentActivity,
-            calendarId: String?
-        ) {
-            val insertCalendarIntent = Intent(Intent.ACTION_INSERT)
-                .setData(CalendarContract.Events.CONTENT_URI)
-                .putExtra(CalendarContract.Events.TITLE, event.title)
-                .putExtra(CalendarContract.EXTRA_EVENT_ALL_DAY, false)
-                .putExtra(
-                    CalendarContract.EXTRA_EVENT_BEGIN_TIME,
-                    convertStringToDate(event.dtStart!!).time
-                )
-                .putExtra(
-                    CalendarContract.EXTRA_EVENT_END_TIME,
-                    convertStringToDate(event.dtEnd!!).time
-                )
-                .putExtra(CalendarContract.Events.EVENT_LOCATION, event.location)
-                .putExtra(CalendarContract.Events.DESCRIPTION, event.description)
-            if (!calendarId.isNullOrEmpty()) {
-                addCalendarId(insertCalendarIntent, calendarId)
-            }
-            activity.startActivity(insertCalendarIntent)
-        }
-
-        private fun calendarIdKnown(values: ContentValues, event: EventModel, calendarId: String) {
-            values.apply {
-                put(CalendarContract.Events.CALENDAR_ID, calendarId)
-                put(CalendarContract.Events.DTSTART, convertStringToDate(event.dtStart!!).time)
-                put(CalendarContract.Events.DTEND, convertStringToDate(event.dtEnd!!).time)
-                put(CalendarContract.Events.TITLE, event.title)
-                put(CalendarContract.Events.DESCRIPTION, event.description)
-                put(CalendarContract.Events.EVENT_LOCATION, event.location)
-                put(CalendarContract.Events.EVENT_TIMEZONE, "${TimeZone.getDefault()}")
-                put(CalendarContract.EXTRA_EVENT_ALL_DAY, false)
-            }
-        }
-
-        private fun calendarIdDontKnown(values: ContentValues, event: EventModel) {
-            values.apply {
-                put(CalendarContract.Events.CALENDAR_ID, 1)
-                put(CalendarContract.Events.DTSTART, convertStringToDate(event.dtStart!!).time)
-                put(CalendarContract.Events.DTEND, convertStringToDate(event.dtEnd!!).time)
-                put(CalendarContract.Events.TITLE, event.title)
-                put(CalendarContract.Events.DESCRIPTION, event.description)
-                put(CalendarContract.Events.EVENT_LOCATION, event.location)
-                put(CalendarContract.Events.EVENT_TIMEZONE, "${TimeZone.getDefault()}")
-                put(CalendarContract.EXTRA_EVENT_ALL_DAY, false)
-            }
-        }
-
-        fun saveCalEventContentResolver(
-            event: EventModel,
-            activity: FragmentActivity,
-            calendarId: String?
-        ) {
-            val values = ContentValues()
-            if (calendarId.isNullOrEmpty()) {
-                calendarIdDontKnown(values, event)
-            } else {
-                calendarIdKnown(values, event, calendarId)
-            }
-            activity.contentResolver.insert(CalendarContract.Events.CONTENT_URI, values)!!
-            Toast.makeText(activity, activity.getString(R.string.event_saved), Toast.LENGTH_LONG)
-                .show()
         }
 
         fun showDialog(
@@ -163,6 +97,24 @@ class Utilities {
                 .setTextColor(activity.getColor(R.color.darkRed))
         }
 
+        fun showInformingDialog(
+            activity: FragmentActivity,
+            message: String,
+            title: String
+        ) {
+            val dialog =
+                AlertDialog.Builder(activity).setTitle(title)
+                    .setMessage(message)
+                    .setPositiveButton(activity.getString(R.string.ok)) { dialog, _ ->
+                        dialog.dismiss()
+                    }
+                    .setCancelable(true)
+                    .create()
+            dialog.show()
+            dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                .setTextColor(activity.getColor(R.color.darkRed))
+        }
+
         fun Activity.makeStatusBarTransparent() {
             window.apply {
                 clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS)
@@ -176,6 +128,60 @@ class Utilities {
                 }
                 statusBarColor = Color.TRANSPARENT
             }
+        }
+
+        fun getUuidId(): String {
+            return UUID.randomUUID().toString()
+        }
+
+        fun appInForeground(context: Context): Boolean {
+            val activityManager =
+                context.getSystemService(Context.ACTIVITY_SERVICE) as ActivityManager
+            val runningAppProcesses =
+                activityManager.runningAppProcesses ?: return false
+            return runningAppProcesses.any {
+                it.processName == context.packageName &&
+                        it.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND
+            }
+        }
+
+        fun isValidEmail(target: CharSequence): Boolean {
+            return !TextUtils.isEmpty(target) &&
+                    android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches()
+        }
+
+        fun toastMessage(context: Context, toastText: Int) {
+            Toast.makeText(
+                context,
+                context.getString(toastText),
+                Toast.LENGTH_LONG
+            ).show()
+        }
+    }
+
+    object NotificationHelper {
+
+        fun displayNotification(context: Context, title: String, body: String) {
+
+            val intent = Intent(context, MainActivity::class.java)
+
+            val pendingIntent = PendingIntent.getActivity(
+                context,
+                100,
+                intent,
+                PendingIntent.FLAG_CANCEL_CURRENT
+            )
+
+            val mBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
+                .setSmallIcon(R.drawable.notifications_icon)
+                .setContentTitle(title)
+                .setContentText(body)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+
+            val mNotificationMgr = NotificationManagerCompat.from(context)
+            mNotificationMgr.notify(1, mBuilder.build())
         }
     }
 }

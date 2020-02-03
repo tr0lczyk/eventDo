@@ -88,6 +88,7 @@
         <TextView
             android:id="@+id/eventLocName"
             style="@style/item_small_text_style"
+            android:text="@{viewModel.location}"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
@@ -100,6 +101,7 @@
         <TextView
             android:id="@+id/eventStart"
             style="@style/item_text_style"
+            app:convertHoursMinutes="@{viewModel.dtStart}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/myriad_regular"
@@ -108,6 +110,7 @@
         <TextView
             android:id="@+id/eventEnd"
             style="@style/item_small_text_style"
+            app:convertHoursMinutes="@{viewModel.dtEnd}"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:fontFamily="@font/myriad_regular"

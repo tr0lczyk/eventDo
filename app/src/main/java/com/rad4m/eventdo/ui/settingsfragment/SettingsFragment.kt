@@ -18,6 +18,9 @@ import com.rad4m.eventdo.di.appComponent
 import com.rad4m.eventdo.utils.Utilities.Companion.AUTO_ADD_EVENT
 import com.rad4m.eventdo.utils.Utilities.Companion.NEW_EVENT_PAGE
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_NAME
+import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.getCalendarsIds
+import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.saveMainCalendar
+import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.searchForCal
 import com.rad4m.eventdo.utils.ViewModelFactory
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.OnPermissionDenied
@@ -57,10 +60,16 @@ class SettingsFragment : Fragment() {
 
         viewModel.isNewEventPageOn.observe(this, Observer {
             viewModel.sharedPrefs.save(NEW_EVENT_PAGE, it)
+            if (it) {
+                viewModel.isAutoAddEventOn.value = false
+            }
         })
 
         viewModel.isAutoAddEventOn.observe(this, Observer {
             viewModel.sharedPrefs.save(AUTO_ADD_EVENT, it)
+            if (it) {
+                viewModel.isNewEventPageOn.value = false
+            }
         })
 
         return binding.root
@@ -72,7 +81,7 @@ class SettingsFragment : Fragment() {
             ArrayAdapter(
                 activity!!,
                 android.R.layout.simple_spinner_item,
-                viewModel.getCalendarsIds(activity!!)
+                getCalendarsIds(activity!!)
             )
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.calendarSpinner.adapter = adapter
@@ -88,7 +97,7 @@ class SettingsFragment : Fragment() {
                     id: Long
                 ) {
                     val calName = adapter.getItem(position)
-                    viewModel.saveMainCalendar(viewModel.searchForCal(calName!!))
+                    saveMainCalendar(searchForCal(calName!!))
                 }
             }
         if (viewModel.sharedPrefs.getValueString(USER_MAIN_CALENDAR_NAME) != null) {

@@ -21,6 +21,8 @@ import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_ID
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_NAME
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_NUMBER
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_TOKEN
+import com.rad4m.eventdo.utils.Utilities.Companion.isValidEmail
+import com.rad4m.eventdo.utils.Utilities.Companion.toastMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -76,7 +78,10 @@ class MyAccountViewModel @Inject constructor(
             when (val response = repository.getUserProfile()) {
                 is Result.Success -> setUserData(response.data!!.result!!)
                 is Result.Failure -> Timber.i(response.failure)
-                is Result.Error -> Timber.i(response.error)
+                is Result.Error -> toastMessage(
+                    getApplication(),
+                    R.string.my_account_internet_fail
+                )
             }
         }
     }
@@ -104,12 +109,29 @@ class MyAccountViewModel @Inject constructor(
             when (val response = repository.updateUserProfile(
                 credentials
             )) {
-                is Result.Success -> Timber.i("success")
+                is Result.Success -> toastMessage(
+                    getApplication(),
+                    R.string.account_detail_updated
+                )
                 is Result.Failure -> Timber.i(response.failure)
-                is Result.Error -> Timber.i(response.error)
+                is Result.Error -> toastMessage(
+                    getApplication(),
+                    R.string.update_account_internet_fail
+                )
             }
         }
         getUserProfile()
+    }
+
+    fun checkIfChangePossible() {
+        if (isValidEmail(userMail.value.toString())) {
+            updateUserProfile()
+        } else {
+            toastMessage(
+                getApplication(),
+                R.string.email_invalid
+            )
+        }
     }
 
     fun askUserIfDelete() {
@@ -121,7 +143,10 @@ class MyAccountViewModel @Inject constructor(
             when (val response = repository.deleteUserAccount()) {
                 is Result.Success -> deleteUserAccountSuccess()
                 is Result.Failure -> Timber.i(response.failure)
-                is Result.Error -> Timber.i(response.error)
+                is Result.Error -> toastMessage(
+                    getApplication(),
+                    R.string.delete_account_internet_fail
+                )
             }
         }
     }
@@ -134,6 +159,7 @@ class MyAccountViewModel @Inject constructor(
 
     private fun deleteUserAccountSuccess() {
         Timber.i("Success")
+        navigateToLogin.value = true
         sharedPrefs.removeValue(USER_ID)
         sharedPrefs.removeValue(USER_NUMBER)
         sharedPrefs.removeValue(USER_TOKEN)
@@ -143,8 +169,7 @@ class MyAccountViewModel @Inject constructor(
         sharedPrefs.removeValue(USER_MAIN_CALENDAR_NAME)
         sharedPrefs.removeValue(USER_MAIN_CALENDAR_ID)
         sharedPrefs.removeValue(USER_CALENDAR_LIST)
-        sharedPrefs.save(USER_LOGOUT,true)
+        sharedPrefs.save(USER_LOGOUT, true)
         deleteAllEvents()
-        navigateToLogin.value = true
     }
 }

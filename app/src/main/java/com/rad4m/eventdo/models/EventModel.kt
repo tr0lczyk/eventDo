@@ -27,7 +27,7 @@ data class EventModel(
     val geographicLocation: String?,
     @PrimaryKey
     @Json(name = "id")
-    val id: Int,
+    val id: Long,
     @Json(name = "isActive")
     val isActive: Boolean?,
     @Json(name = "isAllDay")

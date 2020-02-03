@@ -20,6 +20,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.navigation.NavigationView
+import com.google.android.material.snackbar.Snackbar
 import com.rad4m.eventdo.R
 import com.rad4m.eventdo.R.id.accountItem
 import com.rad4m.eventdo.R.id.infoItem
@@ -33,7 +34,11 @@ import com.rad4m.eventdo.utils.HeaderItemDecoration
 import com.rad4m.eventdo.utils.Utilities.Companion.ITEM_VIEW_TYPE_HEADER
 import com.rad4m.eventdo.utils.Utilities.Companion.NEW_EVENT_PAGE
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_ID
-import com.rad4m.eventdo.utils.Utilities.Companion.saveCalEventContentResolver
+import com.rad4m.eventdo.utils.Utilities.Companion.showDialog
+import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.deleteCalendarEntry
+import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.getEventIdList
+import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.openCalendar
+import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.saveCalEventContentResolver
 import com.rad4m.eventdo.utils.ViewModelFactory
 import net.yslibrary.android.keyboardvisibilityevent.util.UIUtil
 import permissions.dispatcher.NeedsPermission
@@ -51,6 +56,8 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
 
     private lateinit var drawer: DrawerLayout
 
+    lateinit var binding: FragmentMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         appComponent.inject(this)
@@ -61,7 +68,7 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val binding = FragmentMainBinding.inflate(inflater)
+        binding = FragmentMainBinding.inflate(inflater)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
         activity!!.window.apply {
@@ -80,6 +87,7 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
         ) {
 
         }
+        downloadALlEventsWithPermissionCheck()
         drawerToggle.isDrawerIndicatorEnabled = true
         binding.menuDrawer.addDrawerListener(drawerToggle)
         drawerToggle.syncState()
@@ -87,17 +95,7 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
         UIUtil.hideKeyboard(activity)
 
         val adapter = EventsAdapter(EventsAdapter.EventListener {
-            if (viewModel.sharedPrefs.getValueBoolean(NEW_EVENT_PAGE) == true) {
-                viewModel.navigateToSelectedEvent(it)
-            } else {
-                saveEventLocallyWithPermissionCheck(
-                    it,
-                    activity!!,
-                    viewModel.sharedPrefs.getValueString(
-                        USER_MAIN_CALENDAR_ID
-                    )
-                )
-            }
+            onEventClickWithPermissionCheck(it)
         })
 
         binding.recyclerEvents.adapter = adapter
@@ -162,8 +160,54 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
         startActivity(Intent.createChooser(chooseIntent, getString(R.string.send_with)))
     }
 
-    @NeedsPermission(Manifest.permission.WRITE_CALENDAR)
+    @NeedsPermission(
+        Manifest.permission.READ_CALENDAR
+    )
+    fun downloadALlEvents() {
+        viewModel.saveNewEventIdTitleList(getEventIdList(activity!!))
+    }
+
+    @NeedsPermission(
+        Manifest.permission.WRITE_CALENDAR
+    )
     fun saveEventLocally(
+        event: EventModel,
+        activity: FragmentActivity,
+        calendarId: String?
+    ) {
+        showDialog(
+            activity,
+            "Add ${event.title} to the calendar?",
+            "Save event",
+            "Add",
+            {
+                saveAndshowSnackBar(
+                    event,
+                    activity, calendarId
+                )
+            },
+            "Cancel"
+        )
+    }
+
+    @NeedsPermission(
+        Manifest.permission.WRITE_CALENDAR
+    )
+    fun ifEventExist(
+        event: EventModel,
+        activity: FragmentActivity
+    ) {
+        val eventId = viewModel.returnEventId(event.title!!)
+        showDialog(
+            activity,
+            "Event is already in calendar",
+            "eventDo", "DELETE",
+            { deleteCalendarEntry(activity, eventId) },
+            "Cancel"
+        )
+    }
+
+    private fun saveAndshowSnackBar(
         event: EventModel,
         activity: FragmentActivity,
         calendarId: String?
@@ -173,12 +217,29 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
             activity,
             calendarId
         )
+        Snackbar.make(binding.menuDrawer, R.string.event_saved, Snackbar.LENGTH_LONG).setAction(
+            R.string.show_calendar
+        ) {
+            openCalendar(activity, event)
+        }.show()
     }
 
     @OnPermissionDenied(
         Manifest.permission.WRITE_CALENDAR
     )
     fun onDenied() {
+        Toast.makeText(
+            activity,
+            getString(R.string.denied_calendar_access_text),
+            Toast.LENGTH_LONG
+        )
+            .show()
+    }
+
+    @OnPermissionDenied(
+        Manifest.permission.READ_CALENDAR
+    )
+    fun onDenied2() {
         Toast.makeText(
             activity,
             getString(R.string.denied_calendar_access_text),
@@ -194,5 +255,26 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
     ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
         onRequestPermissionsResult(requestCode, grantResults)
+    }
+
+    @NeedsPermission(
+        Manifest.permission.READ_CALENDAR
+    )
+    fun onEventClick(event: EventModel) {
+        if (viewModel.sharedPrefs.getValueBoolean(NEW_EVENT_PAGE) == true) {
+            viewModel.navigateToSelectedEvent(event)
+        } else {
+            if (viewModel.doesEventExists(event.title!!)) {
+                ifEventExistWithPermissionCheck(event, activity!!)
+            } else {
+                saveEventLocallyWithPermissionCheck(
+                    event,
+                    activity!!,
+                    viewModel.sharedPrefs.getValueString(
+                        USER_MAIN_CALENDAR_ID
+                    )
+                )
+            }
+        }
     }
 }
