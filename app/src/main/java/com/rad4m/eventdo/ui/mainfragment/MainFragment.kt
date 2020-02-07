@@ -39,6 +39,7 @@ import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.deleteCalendarEntry
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.getEventIdList
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.openCalendar
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.saveCalEventContentResolver
+import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.saveEventToCalendar
 import com.rad4m.eventdo.utils.ViewModelFactory
 import net.yslibrary.android.keyboardvisibilityevent.util.UIUtil
 import permissions.dispatcher.NeedsPermission
@@ -101,17 +102,6 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
         binding.recyclerEvents.adapter = adapter
         binding.recyclerEvents.addItemDecoration(HeaderItemDecoration(binding.recyclerEvents) {
             adapter.getItemViewType(it) == ITEM_VIEW_TYPE_HEADER
-        })
-
-        viewModel.selectedEvent.observe(this, Observer {
-            if (it != null) {
-                findNavController().navigate(
-                    MainFragmentDirections.actionMainFragmentToNewEventFragment(
-                        it
-                    )
-                )
-                viewModel.finishSelectedEvent()
-            }
         })
 
         viewModel.eventList.observe(viewLifecycleOwner, Observer {
@@ -198,11 +188,12 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
         activity: FragmentActivity
     ) {
         val eventId = viewModel.returnEventId(event.title!!)
+        val deleteEntry = { deleteCalendarEntry(activity, eventId) }
         showDialog(
             activity,
             "Event is already in calendar",
             "eventDo", "DELETE",
-            { deleteCalendarEntry(activity, eventId) },
+            deleteEntry,
             "Cancel"
         )
     }
@@ -258,14 +249,34 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
     }
 
     @NeedsPermission(
+        Manifest.permission.WRITE_CALENDAR
+    )
+    fun saveEventToCalendarExternal(
+        event: EventModel,
+        activity: FragmentActivity
+    ) {
+        saveEventToCalendar(
+            event, activity,
+            viewModel.sharedPrefs.getValueString(
+                USER_MAIN_CALENDAR_ID
+            )
+        )
+    }
+
+    @NeedsPermission(
         Manifest.permission.READ_CALENDAR
     )
     fun onEventClick(event: EventModel) {
+        viewModel.deleteEventIdTitlelist()
+        downloadALlEventsWithPermissionCheck()
         if (viewModel.doesEventExists(event.title!!)) {
             ifEventExistWithPermissionCheck(event, activity!!)
         } else {
             if (viewModel.sharedPrefs.getValueBoolean(NEW_EVENT_PAGE) == true) {
-                viewModel.navigateToSelectedEvent(event)
+                saveEventToCalendarExternalWithPermissionCheck(
+                    event,
+                    activity!!
+                )
             } else {
                 saveEventLocallyWithPermissionCheck(
                     event,

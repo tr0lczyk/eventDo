@@ -5,7 +5,6 @@ import com.rad4m.eventdo.MainActivity
 import com.rad4m.eventdo.ui.introfragment.IntroFragment
 import com.rad4m.eventdo.ui.mainfragment.MainFragment
 import com.rad4m.eventdo.ui.myaccountfragment.MyAccountFragment
-import com.rad4m.eventdo.ui.neweventpage.NewEventFragment
 import com.rad4m.eventdo.ui.settingsfragment.SettingsFragment
 import com.rad4m.eventdo.ui.signupfragment.SignUpFragment
 import com.rad4m.eventdo.ui.verificationfragment.VerificationFragment
@@ -32,8 +31,6 @@ interface AppComponent {
     fun inject(activity: MyAccountFragment)
 
     fun inject(activity: SettingsFragment)
-
-    fun inject(activity: NewEventFragment)
 
     @Component.Builder
     interface Builder {

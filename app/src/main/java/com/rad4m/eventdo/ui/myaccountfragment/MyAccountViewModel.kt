@@ -12,6 +12,7 @@ import com.rad4m.eventdo.models.UserUpdateModel
 import com.rad4m.eventdo.networking.EventDoRepository
 import com.rad4m.eventdo.utils.SharedPreferences
 import com.rad4m.eventdo.utils.Utilities.Companion.AUTO_ADD_EVENT
+import com.rad4m.eventdo.utils.Utilities.Companion.EVENT_ID_TITLE
 import com.rad4m.eventdo.utils.Utilities.Companion.NEW_EVENT_PAGE
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_CALENDAR_LIST
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_ID
@@ -169,6 +170,8 @@ class MyAccountViewModel @Inject constructor(
         sharedPrefs.removeValue(USER_MAIN_CALENDAR_NAME)
         sharedPrefs.removeValue(USER_MAIN_CALENDAR_ID)
         sharedPrefs.removeValue(USER_CALENDAR_LIST)
+        sharedPrefs.removeValue(EVENT_ID_TITLE)
+        sharedPrefs.clearSharedPreference()
         sharedPrefs.save(USER_LOGOUT, true)
         deleteAllEvents()
     }

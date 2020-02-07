@@ -72,12 +72,6 @@
             app:enterAnim="@anim/entr_from_right"
             app:exitAnim="@anim/exit_to_left"
             app:popExitAnim="@anim/exit_to_right" />
-        <action
-            android:id="@+id/action_mainFragment_to_newEventFragment"
-            app:destination="@id/newEventFragment"
-            app:enterAnim="@anim/enter_from_bottom"
-            app:exitAnim="@anim/exit_to_top"
-            app:popExitAnim="@anim/vertical_pop_exit" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -98,14 +92,5 @@
             app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:popUpTo="@+id/mainFragment"
             app:popUpToInclusive="true" />
-    </fragment>
-    <fragment
-        android:id="@+id/newEventFragment"
-        tools:layout="@layout/fragment_new_event"
-        android:name="com.rad4m.eventdo.ui.neweventpage.NewEventFragment"
-        android:label="NewEventFragment">
-        <argument
-            android:name="selectedEvent"
-            app:argType="com.rad4m.eventdo.models.EventModel"/>
     </fragment>
 </navigation>

@@ -91,7 +91,7 @@ class SharedPreferences @Inject constructor(application: Application, val moshi:
             EventIdTitle::class.javaObjectType
         )
         val adapter: JsonAdapter<List<EventIdTitle>> = moshi.adapter(type)
-        return adapter.fromJson(returnItem!!)
+        return adapter.fromJson(returnItem)
     }
 
     fun getCalendarList(KEY_NAME: String): List<MyCalendar>? {

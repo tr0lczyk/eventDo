@@ -54,17 +54,12 @@ class MainViewModel @Inject constructor(
     }
     val emptyListInfoVisibility = MutableLiveData<Int>(View.GONE)
     val dataItemList = MutableLiveData<List<DataItem>>()
-    val selectedEvent = MutableLiveData<EventModel>()
 
     init {
         updateFirebaseToken()
         swipeRefreshing.value = false
         upcomingButton()
         downloadEvents()
-    }
-
-    fun navigateToSelectedEvent(event: EventModel) {
-        selectedEvent.value = event
     }
 
     fun upcomingButton() {
@@ -97,10 +92,6 @@ class MainViewModel @Inject constructor(
 
     private fun changeEmptyListContent(text: Int) {
         emptyListText.value = getApplication<Application>().getString(text)
-    }
-
-    fun finishSelectedEvent() {
-        selectedEvent.value = null
     }
 
     fun downloadEvents() {
@@ -150,7 +141,13 @@ class MainViewModel @Inject constructor(
     }
 
     fun doesEventExists(title: String): Boolean {
-        return !sharedPrefs.getEventItTitleList(EVENT_ID_TITLE)!!.filter { it.title == title }.isNullOrEmpty()
+        if (sharedPrefs.getEventItTitleList(EVENT_ID_TITLE) != null) {
+            return !sharedPrefs.getEventItTitleList(EVENT_ID_TITLE)?.filter {
+                it.title == title
+            }.isNullOrEmpty()
+        } else {
+            return false
+        }
     }
 
     fun returnEventId(title: String): Long {

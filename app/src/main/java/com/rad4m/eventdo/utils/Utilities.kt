@@ -16,6 +16,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import com.rad4m.eventdo.MainActivity
 import com.rad4m.eventdo.R
@@ -91,9 +92,9 @@ class Utilities {
                     .create()
             dialog.show()
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-                .setTextColor(activity.getColor(R.color.darkRed))
+                .setTextColor(ContextCompat.getColor(activity, R.color.darkRed))
             dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                .setTextColor(activity.getColor(R.color.darkRed))
+                .setTextColor(ContextCompat.getColor(activity, R.color.darkRed))
         }
 
         fun showInformingDialog(
@@ -111,7 +112,7 @@ class Utilities {
                     .create()
             dialog.show()
             dialog.getButton(AlertDialog.BUTTON_POSITIVE)
-                .setTextColor(activity.getColor(R.color.darkRed))
+                .setTextColor(ContextCompat.getColor(activity, R.color.darkRed))
         }
 
         fun Activity.makeStatusBarTransparent() {

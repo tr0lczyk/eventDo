@@ -74,6 +74,6 @@ class OfferDiffCallback : DiffUtil.ItemCallback<DataItem>() {
     }
 
     override fun areContentsTheSame(oldItem: DataItem, newItem: DataItem): Boolean {
-        return oldItem == newItem
+        return oldItem.equals(newItem)
     }
 }
