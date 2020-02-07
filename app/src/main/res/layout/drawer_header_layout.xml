@@ -2,14 +2,13 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="120dp">
+    android:layout_height="105dp">
 
     <ImageView
         android:id="@+id/imageView"
         android:layout_width="158dp"
         android:layout_height="50dp"
         android:layout_gravity="center"
-        android:layout_marginTop="@dimen/header_margin"
         android:layout_marginStart="@dimen/header_margin"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

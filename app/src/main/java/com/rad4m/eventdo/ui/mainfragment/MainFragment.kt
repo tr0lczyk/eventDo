@@ -40,6 +40,8 @@ import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.getEventIdList
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.openCalendar
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.saveCalEventContentResolver
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.saveEventToCalendar
+import com.rad4m.eventdo.utils.Utilities.Companion.makeStatusBarNotTransparent
+
 import com.rad4m.eventdo.utils.ViewModelFactory
 import net.yslibrary.android.keyboardvisibilityevent.util.UIUtil
 import permissions.dispatcher.NeedsPermission
@@ -72,11 +74,8 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
         binding = FragmentMainBinding.inflate(inflater)
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
-        activity!!.window.apply {
-            statusBarColor = Color.WHITE
-        }
+        activity!!.makeStatusBarNotTransparent()
         drawer = binding.menuDrawer
-
 
         UIUtil.hideKeyboard(activity)
         val drawerToggle = object : ActionBarDrawerToggle(

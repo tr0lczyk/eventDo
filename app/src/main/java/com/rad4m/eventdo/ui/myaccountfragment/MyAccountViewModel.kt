@@ -161,15 +161,6 @@ class MyAccountViewModel @Inject constructor(
     private fun deleteUserAccountSuccess() {
         Timber.i("Success")
         navigateToLogin.value = true
-        sharedPrefs.removeValue(USER_ID)
-        sharedPrefs.removeValue(USER_NUMBER)
-        sharedPrefs.removeValue(USER_TOKEN)
-        sharedPrefs.removeValue(USER_LAST_DATE)
-        sharedPrefs.removeValue(NEW_EVENT_PAGE)
-        sharedPrefs.removeValue(AUTO_ADD_EVENT)
-        sharedPrefs.removeValue(USER_MAIN_CALENDAR_NAME)
-        sharedPrefs.removeValue(USER_MAIN_CALENDAR_ID)
-        sharedPrefs.removeValue(USER_CALENDAR_LIST)
         sharedPrefs.removeValue(EVENT_ID_TITLE)
         sharedPrefs.clearSharedPreference()
         sharedPrefs.save(USER_LOGOUT, true)
