@@ -1,6 +1,10 @@
 package com.rad4m.eventdo.utils
 
+import android.annotation.SuppressLint
+import android.app.AlertDialog
 import android.app.Application
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.content.ComponentName
 import android.content.ContentResolver
 import android.content.ContentUris
@@ -8,17 +12,22 @@ import android.content.ContentValues
 import android.content.Intent
 import android.net.Uri
 import android.provider.CalendarContract
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+import androidx.lifecycle.MutableLiveData
 import com.rad4m.eventdo.EventDoApplication
 import com.rad4m.eventdo.R
 import com.rad4m.eventdo.models.EventIdTitle
 import com.rad4m.eventdo.models.EventModel
 import com.rad4m.eventdo.models.MyCalendar
 import com.rad4m.eventdo.utils.Utilities.Companion.EVENT_ID_TITLE
+import com.rad4m.eventdo.utils.Utilities.Companion.convertStringToDate
 import com.rad4m.eventdo.utils.Utilities.Companion.toastMessage
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import timber.log.Timber
+import java.text.SimpleDateFormat
+import java.util.Calendar
 import java.util.TimeZone
 
 class UtilitiesCalendar {
@@ -35,7 +44,7 @@ class UtilitiesCalendar {
             event: EventModel
         ) {
             val builder = CalendarContract.CONTENT_URI.buildUpon().appendPath("time")
-            ContentUris.appendId(builder, Utilities.convertStringToDate(event.dtStart!!).time)
+            ContentUris.appendId(builder, convertStringToDate(event.dtStart!!).time)
             val cn =
                 ComponentName("com.google.android.calendar", "com.android.calendar.LaunchActivity")
             val insertCalendarIntent = Intent()
@@ -49,11 +58,11 @@ class UtilitiesCalendar {
                 put(CalendarContract.Events.CALENDAR_ID, calendarId)
                 put(
                     CalendarContract.Events.DTSTART,
-                    Utilities.convertStringToDate(event.dtStart!!).time
+                    convertStringToDate(event.dtStart!!).time
                 )
                 put(
                     CalendarContract.Events.DTEND,
-                    Utilities.convertStringToDate(event.dtEnd!!).time
+                    convertStringToDate(event.dtEnd!!).time
                 )
                 put(CalendarContract.Events.TITLE, event.title)
                 put(CalendarContract.Events.DESCRIPTION, event.description)
@@ -63,25 +72,26 @@ class UtilitiesCalendar {
             }
         }
 
-        private fun calendarIdDontKnown(values: ContentValues, event: EventModel) {
-            values.apply {
-                put(CalendarContract.Events.CALENDAR_ID, getCalendarId(application))
-                put(
-                    CalendarContract.Events.DTSTART,
-                    Utilities.convertStringToDate(event.dtStart!!).time
-                )
-                put(
-                    CalendarContract.Events.DTEND,
-                    Utilities.convertStringToDate(event.dtEnd!!).time
-                )
-                put(CalendarContract.Events.TITLE, event.title)
-                put(CalendarContract.Events.DESCRIPTION, event.description)
-                put(CalendarContract.Events.EVENT_LOCATION, event.location)
-                put(CalendarContract.Events.EVENT_TIMEZONE, "${TimeZone.getDefault()}")
-                put(CalendarContract.EXTRA_EVENT_ALL_DAY, false)
-            }
-        }
+//        private fun calendarIdDontKnown(values: ContentValues, event: EventModel) {
+//            values.apply {
+//                put(CalendarContract.Events.CALENDAR_ID, getCalendarId(application))
+//                put(
+//                    CalendarContract.Events.DTSTART,
+//                    convertStringToDate(event.dtStart!!).time
+//                )
+//                put(
+//                    CalendarContract.Events.DTEND,
+//                    convertStringToDate(event.dtEnd!!).time
+//                )
+//                put(CalendarContract.Events.TITLE, event.title)
+//                put(CalendarContract.Events.DESCRIPTION, event.description)
+//                put(CalendarContract.Events.EVENT_LOCATION, event.location)
+//                put(CalendarContract.Events.EVENT_TIMEZONE, "${TimeZone.getDefault()}")
+//                put(CalendarContract.EXTRA_EVENT_ALL_DAY, false)
+//            }
+//        }
 
+        @SuppressLint("MissingPermission")
         fun saveCalEventContentResolver(
             event: EventModel,
             activity: FragmentActivity,
@@ -89,7 +99,7 @@ class UtilitiesCalendar {
         ) {
             val values = ContentValues()
             if (calendarId.isNullOrEmpty()) {
-                calendarIdDontKnown(values, event)
+//                calendarIdDontKnown(values, event)
             } else {
                 calendarIdKnown(values, event, calendarId)
             }
@@ -98,6 +108,24 @@ class UtilitiesCalendar {
             sharedPrefs.saveEventItTitleList(EVENT_ID_TITLE, getEventIdList(activity))
         }
 
+        @SuppressLint("MissingPermission")
+        fun saveEventFromNewEventPage(
+            event: EventModel,
+            activity: FragmentActivity,
+            calendarId: String?
+        ) {
+            val values = ContentValues()
+            if (calendarId.isNullOrEmpty()) {
+//                calendarIdDontKnown(values, event)
+            } else {
+                calendarIdKnown(values, event, calendarId)
+            }
+            activity.contentResolver.insert(CalendarContract.Events.CONTENT_URI, values)!!
+            sharedPrefs.removeValue(EVENT_ID_TITLE)
+            sharedPrefs.saveEventItTitleList(EVENT_ID_TITLE, getEventIdList(activity))
+        }
+
+        @SuppressLint("MissingPermission")
         fun getEventIdList(activity: FragmentActivity): ArrayList<EventIdTitle> {
             val eventIdTitleList = ArrayList<EventIdTitle>()
             val EVENT_PROJECTION: Array<String> = arrayOf(
@@ -163,7 +191,7 @@ class UtilitiesCalendar {
             return returnListOfCalNames(mCalendars)
         }
 
-        fun getCalendarId(application: Application): String {
+        private fun getCalendarId(application: Application): String {
             val projection = arrayOf("_id", "calendar_displayName")
             val calendars: Uri = Uri.parse("content://com.android.calendar/calendars")
 
@@ -213,6 +241,68 @@ class UtilitiesCalendar {
             return sharedPrefs.getCalendarList(Utilities.USER_CALENDAR_LIST)!!.filter {
                 it.calName == currentCalName
             }[0]
+        }
+
+        private fun getDateString(
+            list: MutableList<Int>
+        ): String? {
+            val calendar = Calendar.getInstance()
+            calendar.set(list[0], list[1], list[2], list[3], list[4])
+            val dateFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+            return dateFormat.format(calendar.time)
+        }
+
+        fun dataPicker(
+            activity: FragmentActivity,
+            customDate: MutableLiveData<String>
+        ) {
+            val calendar = Calendar.getInstance()
+            calendar.time = convertStringToDate(customDate.value!!)
+            val year = calendar[Calendar.YEAR]
+            val month = calendar[Calendar.MONTH]
+            val day = calendar[Calendar.DAY_OF_MONTH]
+            val dateDataList: MutableList<Int> = mutableListOf()
+            val datePickerDialog = DatePickerDialog(
+                activity,
+                DatePickerDialog.OnDateSetListener { _, year, monthOfYear, dayOfMonth ->
+                    dateDataList.add(year)
+                    dateDataList.add(monthOfYear + 1)
+                    dateDataList.add(dayOfMonth)
+                    timePicker(activity, dateDataList, customDate)
+                },
+                year, month, day
+            )
+            datePickerDialog.show()
+            datePickerDialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+                .setTextColor(ContextCompat.getColor(activity, R.color.darkRed))
+            datePickerDialog.getButton(AlertDialog.BUTTON_POSITIVE)
+                .setTextColor(ContextCompat.getColor(activity, R.color.darkRed))
+        }
+
+        private fun timePicker(
+            activity: FragmentActivity,
+            dateDataList: MutableList<Int>,
+            customDate: MutableLiveData<String>
+        ) {
+            val calendar = Calendar.getInstance()
+            calendar.time = convertStringToDate(customDate.value!!)
+            val hour = calendar.get(Calendar.HOUR_OF_DAY)
+            val minutem = calendar.get(Calendar.MINUTE)
+            val tpd = TimePickerDialog(
+                activity,
+                TimePickerDialog.OnTimeSetListener { view, hourOfDay, minute ->
+                    dateDataList.add(hourOfDay)
+                    dateDataList.add(minute)
+                    customDate.value = getDateString(dateDataList)
+                },
+                hour,
+                minutem, true
+            )
+            tpd.show()
+            tpd.getButton(AlertDialog.BUTTON_NEGATIVE)
+                .setTextColor(ContextCompat.getColor(activity, R.color.darkRed))
+            tpd.getButton(AlertDialog.BUTTON_POSITIVE)
+                .setTextColor(ContextCompat.getColor(activity, R.color.darkRed))
         }
     }
 }

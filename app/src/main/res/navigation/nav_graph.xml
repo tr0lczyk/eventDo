@@ -65,22 +65,19 @@
             app:destination="@id/settingsFragment"
             app:enterAnim="@anim/entr_from_right"
             app:exitAnim="@anim/exit_to_left"
-            app:popEnterAnim="@anim/enter_from_left"
             app:popExitAnim="@anim/exit_to_right" />
         <action
             android:id="@+id/action_mainFragment_to_myAccountFragment"
             app:destination="@id/myAccountFragment"
             app:enterAnim="@anim/entr_from_right"
             app:exitAnim="@anim/exit_to_left"
-            app:popEnterAnim="@anim/enter_from_left"
             app:popExitAnim="@anim/exit_to_right" />
         <action
             android:id="@+id/action_mainFragment_to_newEventFragment"
             app:destination="@id/newEventFragment"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
-            app:popExitAnim="@anim/nav_default_pop_exit_anim" />
+            app:enterAnim="@anim/enter_from_bottom"
+            app:exitAnim="@anim/exit_to_top"
+            app:popExitAnim="@anim/vertical_pop_exit" />
     </fragment>
     <fragment
         android:id="@+id/settingsFragment"
@@ -97,7 +94,7 @@
             app:destination="@id/introFragment"
             app:enterAnim="@anim/nav_default_enter_anim"
             app:exitAnim="@anim/nav_default_exit_anim"
-            app:popEnterAnim="@anim/nav_default_pop_enter_anim"
+            app:popEnterAnim="@anim/nav_default_enter_anim"
             app:popExitAnim="@anim/nav_default_pop_exit_anim"
             app:popUpTo="@+id/mainFragment"
             app:popUpToInclusive="true" />

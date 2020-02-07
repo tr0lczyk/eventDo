@@ -261,11 +261,11 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
         Manifest.permission.READ_CALENDAR
     )
     fun onEventClick(event: EventModel) {
-        if (viewModel.sharedPrefs.getValueBoolean(NEW_EVENT_PAGE) == true) {
-            viewModel.navigateToSelectedEvent(event)
+        if (viewModel.doesEventExists(event.title!!)) {
+            ifEventExistWithPermissionCheck(event, activity!!)
         } else {
-            if (viewModel.doesEventExists(event.title!!)) {
-                ifEventExistWithPermissionCheck(event, activity!!)
+            if (viewModel.sharedPrefs.getValueBoolean(NEW_EVENT_PAGE) == true) {
+                viewModel.navigateToSelectedEvent(event)
             } else {
                 saveEventLocallyWithPermissionCheck(
                     event,

@@ -18,9 +18,10 @@ import com.rad4m.eventdo.R
 import com.rad4m.eventdo.databinding.FragmentNewEventBinding
 import com.rad4m.eventdo.di.appComponent
 import com.rad4m.eventdo.models.EventModel
-import com.rad4m.eventdo.utils.Utilities
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_ID
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_NAME
+import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.dataPicker
+import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.getCalendarsIds
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.saveCalEventContentResolver
 import com.rad4m.eventdo.utils.ViewModelFactory
 import permissions.dispatcher.NeedsPermission
@@ -75,6 +76,20 @@ class NewEventFragment : Fragment() {
                 viewModel.stopCancelling()
             }
         })
+
+        viewModel.openTimeDialogs.observe(this, Observer {
+            if (it) {
+                dataPicker(activity!!, viewModel.eventStartDate)
+                viewModel.stopStartTimeDialogs()
+            }
+        })
+
+        viewModel.endTimeDialogs.observe(this, Observer {
+            if (it) {
+                dataPicker(activity!!, viewModel.eventEndDate)
+                viewModel.stopEndTimeDialogs()
+            }
+        })
         return binding.root
     }
 
@@ -84,7 +99,7 @@ class NewEventFragment : Fragment() {
             ArrayAdapter(
                 activity!!,
                 android.R.layout.simple_spinner_item,
-                viewModel.getCalendarsIds(activity!!)
+                getCalendarsIds(activity!!)
             )
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.calendarNewEventSpinner.adapter = adapter

@@ -7,12 +7,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
 import android.widget.ArrayAdapter
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
-import com.rad4m.eventdo.R
 import com.rad4m.eventdo.databinding.FragmentSettingsBinding
 import com.rad4m.eventdo.di.appComponent
 import com.rad4m.eventdo.utils.Utilities.Companion.AUTO_ADD_EVENT
@@ -113,12 +111,14 @@ class SettingsFragment : Fragment() {
         Manifest.permission.READ_CALENDAR
     )
     fun onDenied() {
-        Toast.makeText(
-            activity,
-            getString(R.string.denied_calendar_access_text),
-            Toast.LENGTH_LONG
-        )
-            .show()
+        val adapter =
+            ArrayAdapter(
+                activity!!,
+                android.R.layout.simple_spinner_item,
+                listOf("Access to calendar denied")
+            )
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        binding.calendarSpinner.adapter = adapter
     }
 
     override fun onRequestPermissionsResult(

@@ -1,16 +1,11 @@
 package com.rad4m.eventdo.ui.neweventpage
 
 import android.app.Application
-import android.content.ContentResolver
-import android.net.Uri
-import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.rad4m.eventdo.models.EventModel
-import com.rad4m.eventdo.models.MyCalendar
 import com.rad4m.eventdo.utils.SharedPreferences
 import com.rad4m.eventdo.utils.Utilities
-import timber.log.Timber
 import javax.inject.Inject
 
 class NewEventViewModel @Inject constructor(
@@ -27,11 +22,19 @@ class NewEventViewModel @Inject constructor(
     val eventShowAs = MutableLiveData<String>()
     val eventAllDay = MutableLiveData<Boolean>()
     val eventCalendar = MutableLiveData<String>()
+    val eventStartDate = MutableLiveData<String>()
+    val eventEndDate = MutableLiveData<String>()
+    val eventUrl = MutableLiveData<String>()
+    val eventNotes = MutableLiveData<String>()
+    val openTimeDialogs = MutableLiveData<Boolean>()
+    val endTimeDialogs = MutableLiveData<Boolean>()
 
     fun setSelectedEvent(eventModel: EventModel) {
         selectedEvent.value = eventModel
         eventTitle.value = eventModel.title
         eventLocation.value = eventModel.location
+        eventStartDate.value = eventModel.dtStart
+        eventEndDate.value = eventModel.dtEnd
     }
 
     fun addNewEventToCalendar() {
@@ -50,50 +53,25 @@ class NewEventViewModel @Inject constructor(
         cancelAddingNewEvent.value = false
     }
 
-    private fun saveCalendarList(list: List<MyCalendar>) {
-        sharedPrefs.save(Utilities.USER_CALENDAR_LIST, list)
+    fun startTimeDialogs() {
+        openTimeDialogs.value = true
+    }
+
+    fun stopStartTimeDialogs() {
+        openTimeDialogs.value = false
+    }
+
+    fun endTimeDialogs() {
+        endTimeDialogs.value = true
+    }
+
+    fun stopEndTimeDialogs() {
+        endTimeDialogs.value = false
     }
 
     fun searchForCal(currentCalName: String) {
         eventCalendar.value = sharedPrefs.getCalendarList(Utilities.USER_CALENDAR_LIST)!!.filter {
             it.calName == currentCalName
         }[0].calID
-    }
-
-    private fun returnListOfCalNames(myCalendarsList: MutableList<MyCalendar>): MutableList<String> {
-        val listOfCalendars = mutableListOf<String>()
-        for (i in myCalendarsList) {
-            listOfCalendars.add(i.calName)
-        }
-        return listOfCalendars
-    }
-
-    fun getCalendarsIds(activity: FragmentActivity): MutableList<String> {
-        val projection = arrayOf("_id", "calendar_displayName")
-        val calendars: Uri = Uri.parse("content://com.android.calendar/calendars")
-
-        val contentResolver: ContentResolver = activity.contentResolver
-        val managedCursor =
-            contentResolver.query(calendars, projection, null, null, null)
-        val mCalendars = mutableListOf<MyCalendar>()
-
-        if (managedCursor!!.moveToFirst()) {
-            var calName: String?
-            var calID: String?
-            var cont = 0
-            val nameCol = managedCursor.getColumnIndex(projection[1])
-            val idCol = managedCursor.getColumnIndex(projection[0])
-            do {
-                calName = managedCursor.getString(nameCol)
-                Timber.i(calName)
-                calID = managedCursor.getString(idCol)
-                Timber.i(calID)
-                mCalendars.add(MyCalendar(calName, calID))
-                cont++
-            } while (managedCursor.moveToNext())
-            saveCalendarList(mCalendars)
-            managedCursor.close()
-        }
-        return returnListOfCalNames(mCalendars)
     }
 }

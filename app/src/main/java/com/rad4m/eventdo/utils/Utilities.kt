@@ -9,7 +9,6 @@ import android.content.Context.INPUT_METHOD_SERVICE
 import android.content.Intent
 import android.graphics.Color
 import android.os.Build
-import android.provider.CalendarContract
 import android.text.TextUtils
 import android.view.View
 import android.view.WindowManager

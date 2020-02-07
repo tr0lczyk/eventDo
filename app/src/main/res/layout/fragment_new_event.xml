@@ -52,12 +52,12 @@
         <TextView
             android:id="@+id/newEventAdd"
             style="@style/newEventToolbarTextStyle"
-            android:textStyle="bold"
             android:layout_marginEnd="16dp"
             android:onClick="@{() -> viewModel.addNewEventToCalendar()}"
             android:text="@string/add"
             android:textAllCaps="false"
             android:textColor="@color/blue"
+            android:textStyle="bold"
             app:layout_constraintBottom_toBottomOf="@id/titleContainer"
             app:layout_constraintEnd_toEndOf="@id/titleContainer"
             app:layout_constraintTop_toTopOf="@id/titleContainer" />
@@ -90,8 +90,8 @@
                     <EditText
                         android:id="@+id/titleEdit"
                         style="@style/addEventEditText"
-                        android:text="@={viewModel.eventTitle}"
-                        android:hint="Title" />
+                        android:hint="Title"
+                        android:text="@={viewModel.eventTitle}" />
 
                     <View
                         android:id="@+id/secondSeparator"
@@ -100,8 +100,8 @@
                     <EditText
                         android:id="@+id/locationEdit"
                         style="@style/addEventEditText"
-                        android:text="@={viewModel.eventLocation}"
-                        android:hint="Location" />
+                        android:hint="Location"
+                        android:text="@={viewModel.eventLocation}" />
 
                     <View
                         android:id="@+id/thirdSeparator"
@@ -153,6 +153,7 @@
                     <TextView
                         android:id="@+id/startDateEdit"
                         style="@style/addEventEditText"
+                        android:onClick="@{() -> viewModel.startTimeDialogs()}"
                         android:text="@string/starts"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -162,13 +163,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
-                        tools:text="30.01.2019  20:30"
-                        app:convertDateTime="@{viewModel.selectedEvent.dtStart}"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/new_event_text_size"
+                        app:convertDateTime="@{viewModel.eventStartDate}"
                         app:layout_constraintBottom_toBottomOf="@id/startDateEdit"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/startDateEdit" />
+                        app:layout_constraintTop_toTopOf="@id/startDateEdit"
+                        tools:text="30.01.2019  20:30" />
 
                     <View
                         android:id="@+id/sixthSeparator"
@@ -180,6 +181,7 @@
                     <TextView
                         android:id="@+id/endDateEdit"
                         style="@style/addEventEditText"
+                        android:onClick="@{() -> viewModel.endTimeDialogs()}"
                         android:text="@string/ends"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -189,13 +191,13 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginEnd="8dp"
-                        tools:text="30.01.2019  20:30"
-                        app:convertDateTime="@{viewModel.selectedEvent.dtEnd}"
                         android:textColor="@android:color/black"
                         android:textSize="@dimen/new_event_text_size"
+                        app:convertDateTime="@{viewModel.eventEndDate}"
                         app:layout_constraintBottom_toBottomOf="@id/endDateEdit"
                         app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="@id/endDateEdit" />
+                        app:layout_constraintTop_toTopOf="@id/endDateEdit"
+                        tools:text="30.01.2019  20:30" />
 
                     <View
                         android:id="@+id/seventhSeparator"
@@ -207,8 +209,8 @@
                     <TextView
                         android:id="@+id/repeatEdit"
                         style="@style/addEventEditText"
-                        android:foreground="?android:attr/selectableItemBackground"
                         android:clickable="true"
+                        android:foreground="?android:attr/selectableItemBackground"
                         android:text="@string/repeat"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -241,9 +243,9 @@
 
                     <TextView
                         android:id="@+id/travelTimeEdit"
-                        android:foreground="?android:attr/selectableItemBackground"
-                        android:clickable="true"
                         style="@style/addEventEditText"
+                        android:clickable="true"
+                        android:foreground="?android:attr/selectableItemBackground"
                         android:text="@string/travel_time"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -293,9 +295,9 @@
 
                     <TextView
                         android:id="@+id/calendarEdit"
-                        android:foreground="?android:attr/selectableItemBackground"
-                        android:clickable="true"
                         style="@style/addEventEditText"
+                        android:clickable="true"
+                        android:foreground="?android:attr/selectableItemBackground"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/tenthSeparator" />
@@ -320,9 +322,9 @@
 
                     <TextView
                         android:id="@+id/inviteesEdit"
-                        android:foreground="?android:attr/selectableItemBackground"
-                        android:clickable="true"
                         style="@style/addEventEditText"
+                        android:clickable="true"
+                        android:foreground="?android:attr/selectableItemBackground"
                         android:text="@string/invitees"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -372,9 +374,9 @@
 
                     <TextView
                         android:id="@+id/alertEdit"
-                        android:foreground="?android:attr/selectableItemBackground"
-                        android:clickable="true"
                         style="@style/addEventEditText"
+                        android:clickable="true"
+                        android:foreground="?android:attr/selectableItemBackground"
                         android:text="@string/alert"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -407,9 +409,9 @@
 
                     <TextView
                         android:id="@+id/showAsEdit"
-                        android:foreground="?android:attr/selectableItemBackground"
-                        android:clickable="true"
                         style="@style/addEventEditText"
+                        android:clickable="true"
+                        android:foreground="?android:attr/selectableItemBackground"
                         android:text="@string/show_as"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
@@ -437,11 +439,11 @@
                         android:id="@+id/showAsContentSpinner"
                         android:layout_width="wrap_content"
                         android:layout_height="0dp"
-                        android:spinnerMode="dropdown"
                         android:background="@null"
+                        android:spinnerMode="dropdown"
                         app:layout_constraintBottom_toBottomOf="@id/showAsEdit"
                         app:layout_constraintEnd_toStartOf="@id/showAsArrow"
-                        app:layout_constraintTop_toTopOf="@id/showAsEdit"  />
+                        app:layout_constraintTop_toTopOf="@id/showAsEdit" />
 
                     <View
                         android:id="@+id/fifteenthSeparator"
@@ -462,10 +464,10 @@
 
                 <TextView
                     android:id="@+id/addAttachmentEdit"
-                    android:foreground="?android:attr/selectableItemBackground"
-                    android:clickable="true"
                     style="@style/addEventEditText"
                     android:background="@color/saturated_purple_white"
+                    android:clickable="true"
+                    android:foreground="?android:attr/selectableItemBackground"
                     android:text="@string/add_attachment"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
@@ -499,6 +501,7 @@
                         android:id="@+id/urlEdit"
                         style="@style/addEventEditText"
                         android:hint="@string/url"
+                        android:text="@={viewModel.eventUrl}"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/eighteenthSeparator" />
@@ -514,8 +517,9 @@
                         android:id="@+id/notesEdit"
                         style="@style/addEventEditText"
                         android:layout_height="200dp"
-                        android:hint="@string/notes"
                         android:gravity="top"
+                        android:hint="@string/notes"
+                        android:text="@={viewModel.eventNotes}"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@id/nineteenthSeparator" />
