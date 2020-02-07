@@ -72,24 +72,24 @@ class UtilitiesCalendar {
             }
         }
 
-//        private fun calendarIdDontKnown(values: ContentValues, event: EventModel) {
-//            values.apply {
-//                put(CalendarContract.Events.CALENDAR_ID, getCalendarId(application))
-//                put(
-//                    CalendarContract.Events.DTSTART,
-//                    convertStringToDate(event.dtStart!!).time
-//                )
-//                put(
-//                    CalendarContract.Events.DTEND,
-//                    convertStringToDate(event.dtEnd!!).time
-//                )
-//                put(CalendarContract.Events.TITLE, event.title)
-//                put(CalendarContract.Events.DESCRIPTION, event.description)
-//                put(CalendarContract.Events.EVENT_LOCATION, event.location)
-//                put(CalendarContract.Events.EVENT_TIMEZONE, "${TimeZone.getDefault()}")
-//                put(CalendarContract.EXTRA_EVENT_ALL_DAY, false)
-//            }
-//        }
+        private fun calendarIdDontKnown(values: ContentValues, event: EventModel) {
+            values.apply {
+                put(CalendarContract.Events.CALENDAR_ID, getCalendarId(application))
+                put(
+                    CalendarContract.Events.DTSTART,
+                    convertStringToDate(event.dtStart!!).time
+                )
+                put(
+                    CalendarContract.Events.DTEND,
+                    convertStringToDate(event.dtEnd!!).time
+                )
+                put(CalendarContract.Events.TITLE, event.title)
+                put(CalendarContract.Events.DESCRIPTION, event.description)
+                put(CalendarContract.Events.EVENT_LOCATION, event.location)
+                put(CalendarContract.Events.EVENT_TIMEZONE, "${TimeZone.getDefault()}")
+                put(CalendarContract.EXTRA_EVENT_ALL_DAY, false)
+            }
+        }
 
         @SuppressLint("MissingPermission")
         fun saveCalEventContentResolver(
@@ -99,24 +99,7 @@ class UtilitiesCalendar {
         ) {
             val values = ContentValues()
             if (calendarId.isNullOrEmpty()) {
-//                calendarIdDontKnown(values, event)
-            } else {
-                calendarIdKnown(values, event, calendarId)
-            }
-            activity.contentResolver.insert(CalendarContract.Events.CONTENT_URI, values)!!
-            sharedPrefs.removeValue(EVENT_ID_TITLE)
-            sharedPrefs.saveEventItTitleList(EVENT_ID_TITLE, getEventIdList(activity))
-        }
-
-        @SuppressLint("MissingPermission")
-        fun saveEventFromNewEventPage(
-            event: EventModel,
-            activity: FragmentActivity,
-            calendarId: String?
-        ) {
-            val values = ContentValues()
-            if (calendarId.isNullOrEmpty()) {
-//                calendarIdDontKnown(values, event)
+                calendarIdDontKnown(values, event)
             } else {
                 calendarIdKnown(values, event, calendarId)
             }
@@ -132,8 +115,8 @@ class UtilitiesCalendar {
                 CalendarContract.Events._ID, // 0
                 CalendarContract.Events.TITLE  // 1
             )
-            val PROJECTION_EVENT_ID_INDEX: Int = 0
-            val PROJECTION_TITLE_INDEX: Int = 1
+            val PROJECTION_EVENT_ID_INDEX = 0
+            val PROJECTION_TITLE_INDEX = 1
 
             val cursor = activity.contentResolver.query(
                 CalendarContract.Events.CONTENT_URI,
