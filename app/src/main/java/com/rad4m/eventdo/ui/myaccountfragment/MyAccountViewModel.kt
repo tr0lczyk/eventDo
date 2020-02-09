@@ -11,17 +11,9 @@ import com.rad4m.eventdo.models.UserResult
 import com.rad4m.eventdo.models.UserUpdateModel
 import com.rad4m.eventdo.networking.EventDoRepository
 import com.rad4m.eventdo.utils.SharedPreferences
-import com.rad4m.eventdo.utils.Utilities.Companion.AUTO_ADD_EVENT
 import com.rad4m.eventdo.utils.Utilities.Companion.EVENT_ID_TITLE
-import com.rad4m.eventdo.utils.Utilities.Companion.NEW_EVENT_PAGE
-import com.rad4m.eventdo.utils.Utilities.Companion.USER_CALENDAR_LIST
-import com.rad4m.eventdo.utils.Utilities.Companion.USER_ID
-import com.rad4m.eventdo.utils.Utilities.Companion.USER_LAST_DATE
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_LOGOUT
-import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_ID
-import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_NAME
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_NUMBER
-import com.rad4m.eventdo.utils.Utilities.Companion.USER_TOKEN
 import com.rad4m.eventdo.utils.Utilities.Companion.isValidEmail
 import com.rad4m.eventdo.utils.Utilities.Companion.toastMessage
 import kotlinx.coroutines.CoroutineScope

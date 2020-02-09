@@ -17,7 +17,7 @@ class SettingsViewModel @Inject constructor(
     val backIconTintColor = MutableLiveData<Int>()
     val backNavigation = MutableLiveData<Boolean>()
     val isNewEventPageOn = MutableLiveData<Boolean>()
-    val isAutoAddEventOn = MutableLiveData<Boolean>(true)
+    val isAutoAddEventOn = MutableLiveData<Boolean>()
 
     init {
         changeBackButtonColor(R.color.darkGray)

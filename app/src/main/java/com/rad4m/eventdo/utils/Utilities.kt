@@ -39,6 +39,7 @@ class Utilities {
         const val USER_CALENDAR_LIST = "userCalendarList"
         const val USER_MAIN_CALENDAR_ID = "userMainCalendarId"
         const val USER_MAIN_CALENDAR_NAME = "userMainCalendarName"
+        const val USER_MAIN_CALENDAR = "userMainCalendarName"
         const val USER_LOGOUT = "userLogout"
         const val CHANNEL_ID = "eventDoChannelId"
         const val CHANNEL_NAME = "eventDoChannelName"

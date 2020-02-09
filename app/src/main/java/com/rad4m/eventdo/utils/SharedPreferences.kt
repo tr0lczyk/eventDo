@@ -106,7 +106,8 @@ class SharedPreferences @Inject constructor(application: Application, val moshi:
 
     fun getCalendar(KEY_NAME: String): MyCalendar? {
         val returnItem = sharedPref.getString(KEY_NAME, null)
-        return moshi.adapter(MyCalendar::class.java).fromJson(returnItem)
+        val calObject = moshi.adapter(MyCalendar::class.java)?.fromJson(returnItem)
+        return calObject
     }
 
     fun getValueString(KEY_NAME: String): String? {
@@ -123,15 +124,11 @@ class SharedPreferences @Inject constructor(application: Application, val moshi:
 
     fun clearSharedPreference() {
         val editor: SharedPreferences.Editor = sharedPref.edit()
-        editor.clear()
-        editor.apply()
+        editor.clear().apply()
     }
 
     fun removeValue(KEY_NAME: String) {
-
         val editor: SharedPreferences.Editor = sharedPref.edit()
-
-        editor.remove(KEY_NAME)
-        editor.apply()
+        editor.remove(KEY_NAME).apply()
     }
 }

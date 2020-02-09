@@ -31,6 +31,7 @@ class SignUpViewModel @Inject constructor(
     val prefix = MutableLiveData<String>()
     val phoneNumber = MutableLiveData<String>()
     val navigateToVerification = MutableLiveData<Boolean>()
+    private var isNumberSend: Boolean = false
 
     fun openTerms() {
         termsStarted.value = true
@@ -54,21 +55,25 @@ class SignUpViewModel @Inject constructor(
     }
 
     fun sendNumber() {
-        val number = "${prefix.value}${phoneNumber.value}"
-        sharedPrefs.save(USER_NUMBER, "${prefix.value}${phoneNumber.value}")
-        viewModelScope.launch {
-            if (PhoneNumberUtils.isGlobalPhoneNumber(number)) {
-                when (val response = repository.putAuthoriseNumber(number)) {
-                    is Result.Success -> openVerification(response.data!!.result)
-                    is Result.Failure -> Timber.i("failure")
-                    is Result.Error -> connectionFailure()
+        if (!isNumberSend) {
+            isNumberSend = true
+            val number = "${prefix.value}${phoneNumber.value}"
+            sharedPrefs.save(USER_NUMBER, "${prefix.value}${phoneNumber.value}")
+            viewModelScope.launch {
+                if (PhoneNumberUtils.isGlobalPhoneNumber(number)) {
+                    when (val response = repository.putAuthoriseNumber(number)) {
+                        is Result.Success -> openVerification(response.data!!.result)
+                        is Result.Failure -> Timber.i("failure")
+                        is Result.Error -> connectionFailure()
+                    }
+                } else {
+                    Toast.makeText(
+                        getApplication(),
+                        getApplication<Application>().getString(R.string.proper_phone),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
-            } else {
-                Toast.makeText(
-                    getApplication(),
-                    getApplication<Application>().getString(R.string.proper_phone),
-                    Toast.LENGTH_SHORT
-                ).show()
+                isNumberSend = false
             }
         }
     }

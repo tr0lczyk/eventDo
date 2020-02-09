@@ -14,6 +14,8 @@ import com.rad4m.eventdo.R
 import com.rad4m.eventdo.models.EventIdTitle
 import com.rad4m.eventdo.models.EventModel
 import com.rad4m.eventdo.models.MyCalendar
+import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_ID
+import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_NAME
 import com.rad4m.eventdo.utils.Utilities.Companion.convertStringToDate
 import com.rad4m.eventdo.utils.Utilities.Companion.toastMessage
 import com.squareup.moshi.Moshi
@@ -60,11 +62,14 @@ class UtilitiesCalendar {
                 .putExtra(CalendarContract.Events.EVENT_LOCATION, event.location)
                 .putExtra(CalendarContract.Events.DESCRIPTION, event.description)
             if (!calendarId.isNullOrEmpty()) {
-                insertCalendarIntent.putExtra(CalendarContract.Events.CALENDAR_ID, calendarId)
+                insertCalendarIntent.putExtra(
+                    CalendarContract.Events.CALENDAR_ID,
+                    calendarId.toInt()
+                )
             } else {
                 insertCalendarIntent.putExtra(
                     CalendarContract.Events.CALENDAR_ID,
-                    getCalendarId(application)
+                    getCalendarId(application).toInt()
                 )
             }
             activity.startActivity(insertCalendarIntent)
@@ -72,7 +77,7 @@ class UtilitiesCalendar {
 
         private fun calendarIdKnown(values: ContentValues, event: EventModel, calendarId: String) {
             values.apply {
-                put(CalendarContract.Events.CALENDAR_ID, calendarId)
+                put(CalendarContract.Events.CALENDAR_ID, calendarId.toInt())
                 put(
                     CalendarContract.Events.DTSTART,
                     convertStringToDate(event.dtStart!!).time
@@ -111,17 +116,23 @@ class UtilitiesCalendar {
         @SuppressLint("MissingPermission")
         fun saveCalEventContentResolver(
             event: EventModel,
-            activity: FragmentActivity,
-            calendarId: String?
+            activity: FragmentActivity
         ) {
             val values = ContentValues()
-            if (calendarId.isNullOrEmpty()) {
+            if (sharedPrefs.getValueString(
+                    USER_MAIN_CALENDAR_ID
+                ).isNullOrEmpty()
+            ) {
                 calendarIdDontKnown(values, event)
             } else {
-                calendarIdKnown(values, event, calendarId)
+                calendarIdKnown(
+                    values, event, sharedPrefs.getValueString(
+                        USER_MAIN_CALENDAR_ID
+                    )!!
+                )
             }
             activity.contentResolver.insert(CalendarContract.Events.CONTENT_URI, values)!!
-            Timber.i("$calendarId eventr added")
+            Timber.i("eventr added")
         }
 
         @SuppressLint("MissingPermission")
@@ -220,8 +231,8 @@ class UtilitiesCalendar {
         }
 
         fun saveMainCalendar(calendar: MyCalendar) {
-            sharedPrefs.saveCalendarId(Utilities.USER_MAIN_CALENDAR_ID, calendar.calID)
-            sharedPrefs.saveCalendarName(Utilities.USER_MAIN_CALENDAR_NAME, calendar.calName)
+            sharedPrefs.save(USER_MAIN_CALENDAR_NAME, calendar.calName)
+            sharedPrefs.save(USER_MAIN_CALENDAR_ID, calendar.calID)
         }
 
         private fun saveCalendarList(list: List<MyCalendar>) {
@@ -231,7 +242,7 @@ class UtilitiesCalendar {
         private fun returnListOfCalNames(myCalendarsList: MutableList<MyCalendar>): MutableList<String> {
             val listOfCalendars = mutableListOf<String>()
             for (i in myCalendarsList) {
-                listOfCalendars.add(i.calName)
+                listOfCalendars.add(i.calName!!)
             }
             return listOfCalendars
         }

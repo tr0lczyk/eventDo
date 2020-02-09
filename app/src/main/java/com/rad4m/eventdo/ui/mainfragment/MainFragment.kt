@@ -33,6 +33,7 @@ import com.rad4m.eventdo.models.EventModel
 import com.rad4m.eventdo.utils.HeaderItemDecoration
 import com.rad4m.eventdo.utils.Utilities.Companion.ITEM_VIEW_TYPE_HEADER
 import com.rad4m.eventdo.utils.Utilities.Companion.NEW_EVENT_PAGE
+import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_ID
 import com.rad4m.eventdo.utils.Utilities.Companion.showDialog
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.deleteCalendarEntry
@@ -161,8 +162,7 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
     )
     fun saveEventLocally(
         event: EventModel,
-        activity: FragmentActivity,
-        calendarId: String?
+        activity: FragmentActivity
     ) {
         showDialog(
             activity,
@@ -172,7 +172,7 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
             {
                 saveAndshowSnackBar(
                     event,
-                    activity, calendarId
+                    activity
                 )
             },
             "Cancel"
@@ -199,13 +199,11 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
 
     private fun saveAndshowSnackBar(
         event: EventModel,
-        activity: FragmentActivity,
-        calendarId: String?
+        activity: FragmentActivity
     ) {
         saveCalEventContentResolver(
             event,
-            activity,
-            calendarId
+            activity
         )
         Snackbar.make(binding.menuDrawer, R.string.event_saved, Snackbar.LENGTH_LONG).setAction(
             R.string.show_calendar
@@ -279,10 +277,7 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
             } else {
                 saveEventLocallyWithPermissionCheck(
                     event,
-                    activity!!,
-                    viewModel.sharedPrefs.getValueString(
-                        USER_MAIN_CALENDAR_ID
-                    )
+                    activity!!
                 )
             }
         }
