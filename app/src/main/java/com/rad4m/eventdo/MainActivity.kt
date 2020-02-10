@@ -60,6 +60,16 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
+    companion object {
+
+        lateinit var instance: MainActivity
+
+        fun getInstancem(): MainActivity {
+
+            return instance
+        }
+    }
+
     override fun onSupportNavigateUp() =
         NavHostFragment.findNavController(myNavHostFragment).navigateUp()
 }

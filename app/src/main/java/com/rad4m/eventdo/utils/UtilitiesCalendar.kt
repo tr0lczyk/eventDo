@@ -38,8 +38,7 @@ class UtilitiesCalendar {
         ) {
             val builder = CalendarContract.CONTENT_URI.buildUpon().appendPath("time")
             ContentUris.appendId(builder, convertStringToDate(event.dtStart!!).time)
-            val insertCalendarIntent = Intent()
-                .setData(builder.build())
+            val insertCalendarIntent = Intent(Intent.ACTION_VIEW, builder.build())
             activity.startActivity(insertCalendarIntent)
         }
 
@@ -69,7 +68,7 @@ class UtilitiesCalendar {
             } else {
                 insertCalendarIntent.putExtra(
                     CalendarContract.Events.CALENDAR_ID,
-                    getCalendarId(application).toInt()
+                    getCalendarId(application)
                 )
             }
             activity.startActivity(insertCalendarIntent)
@@ -113,7 +112,6 @@ class UtilitiesCalendar {
             }
         }
 
-        @SuppressLint("MissingPermission")
         fun saveCalEventContentResolver(
             event: EventModel,
             activity: FragmentActivity
@@ -131,7 +129,7 @@ class UtilitiesCalendar {
                     )!!
                 )
             }
-            activity.contentResolver.insert(CalendarContract.Events.CONTENT_URI, values)!!
+            activity.contentResolver.insert(CalendarContract.Events.CONTENT_URI, values)
             Timber.i("eventr added")
         }
 
@@ -142,8 +140,8 @@ class UtilitiesCalendar {
                 CalendarContract.Events._ID, // 0
                 CalendarContract.Events.TITLE  // 1
             )
-            val PROJECTION_EVENT_ID_INDEX: Int = 0
-            val PROJECTION_TITLE_INDEX: Int = 1
+            val PROJECTION_EVENT_ID_INDEX = 0
+            val PROJECTION_TITLE_INDEX = 1
 
             val cursor = activity.contentResolver.query(
                 CalendarContract.Events.CONTENT_URI,
@@ -175,12 +173,10 @@ class UtilitiesCalendar {
         fun getCalendarsIds(activity: FragmentActivity): MutableList<String> {
             val projection = arrayOf("_id", "calendar_displayName")
             val calendars: Uri = Uri.parse("content://com.android.calendar/calendars")
-
             val contentResolver: ContentResolver = activity.contentResolver
             val managedCursor =
                 contentResolver.query(calendars, projection, null, null, null)
             val mCalendars = mutableListOf<MyCalendar>()
-
             if (managedCursor!!.moveToFirst()) {
                 var calName: String?
                 var calID: String?
@@ -201,15 +197,13 @@ class UtilitiesCalendar {
             return returnListOfCalNames(mCalendars)
         }
 
-        private fun getCalendarId(application: Application): String {
+        private fun getCalendarId(application: Application): Int {
             val projection = arrayOf("_id", "calendar_displayName")
             val calendars: Uri = Uri.parse("content://com.android.calendar/calendars")
-
             val contentResolver: ContentResolver = application.contentResolver
             val managedCursor =
                 contentResolver.query(calendars, projection, null, null, null)
             val mCalendars = mutableListOf<MyCalendar>()
-
             if (managedCursor!!.moveToFirst()) {
                 var calName: String?
                 var calID: String?
@@ -227,7 +221,7 @@ class UtilitiesCalendar {
                 saveCalendarList(mCalendars)
                 managedCursor.close()
             }
-            return mCalendars[mCalendars.size - 1].calID
+            return mCalendars[mCalendars.size - 1].calID.toInt()
         }
 
         fun saveMainCalendar(calendar: MyCalendar) {
@@ -242,7 +236,7 @@ class UtilitiesCalendar {
         private fun returnListOfCalNames(myCalendarsList: MutableList<MyCalendar>): MutableList<String> {
             val listOfCalendars = mutableListOf<String>()
             for (i in myCalendarsList) {
-                listOfCalendars.add(i.calName!!)
+                listOfCalendars.add(i.calName)
             }
             return listOfCalendars
         }

@@ -15,6 +15,7 @@ import com.rad4m.eventdo.utils.Utilities.Companion.EVENT_ID_TITLE
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_LOGOUT
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_NUMBER
 import com.rad4m.eventdo.utils.Utilities.Companion.isValidEmail
+import com.rad4m.eventdo.utils.Utilities.Companion.makeStatusBarTransparent
 import com.rad4m.eventdo.utils.Utilities.Companion.toastMessage
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -153,7 +154,7 @@ class MyAccountViewModel @Inject constructor(
     private fun deleteUserAccountSuccess() {
         Timber.i("Success")
         navigateToLogin.value = true
-        sharedPrefs.removeValue(EVENT_ID_TITLE)
+//        sharedPrefs.removeValue(EVENT_ID_TITLE)
         sharedPrefs.clearSharedPreference()
         sharedPrefs.save(USER_LOGOUT, true)
         deleteAllEvents()

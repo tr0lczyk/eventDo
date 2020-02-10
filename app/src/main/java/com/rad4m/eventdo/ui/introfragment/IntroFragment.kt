@@ -12,8 +12,6 @@ import com.google.android.material.tabs.TabLayoutMediator
 import com.rad4m.eventdo.databinding.FragmentIntroBinding
 import com.rad4m.eventdo.di.appComponent
 import com.rad4m.eventdo.utils.SharedPreferences
-import com.rad4m.eventdo.utils.Utilities.Companion.USER_LOGOUT
-import com.rad4m.eventdo.utils.Utilities.Companion.makeStatusBarTransparent
 import javax.inject.Inject
 
 class IntroFragment : Fragment() {
@@ -39,12 +37,6 @@ class IntroFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
         binding.viewPager.adapter = IntroAdapter()
-        if (sharedPrefs.getValueBoolean(USER_LOGOUT) != null) {
-            if (sharedPrefs.getValueBoolean(USER_LOGOUT)!!) {
-                activity!!.makeStatusBarTransparent()
-                sharedPrefs.save(USER_LOGOUT, false)
-            }
-        }
         TabLayoutMediator(
             binding.tabLayout,
             binding.viewPager,

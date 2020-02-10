@@ -11,6 +11,7 @@ import androidx.navigation.fragment.findNavController
 import com.rad4m.eventdo.R
 import com.rad4m.eventdo.databinding.FragmentMyaccountBinding
 import com.rad4m.eventdo.di.appComponent
+import com.rad4m.eventdo.utils.Utilities.Companion.makeStatusBarTransparent
 import com.rad4m.eventdo.utils.Utilities.Companion.showDialog
 import com.rad4m.eventdo.utils.Utilities.Companion.showInformingDialog
 import com.rad4m.eventdo.utils.ViewModelFactory
@@ -51,6 +52,7 @@ class MyAccountFragment : Fragment() {
                     getString(R.string.account_deleted_message),
                     getString(R.string.account_deleted_title)
                 )
+                activity!!.makeStatusBarTransparent()
                 findNavController().navigate(MyAccountFragmentDirections.actionMyAccountFragmentToIntroFragment())
                 viewModel.navigateToLogin.value = false
             }
