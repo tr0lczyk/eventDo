@@ -2,7 +2,6 @@ package com.rad4m.eventdo.ui.mainfragment
 
 import android.Manifest
 import android.content.Intent
-import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
@@ -32,18 +31,21 @@ import com.rad4m.eventdo.di.appComponent
 import com.rad4m.eventdo.models.EventModel
 import com.rad4m.eventdo.utils.HeaderItemDecoration
 import com.rad4m.eventdo.utils.Utilities.Companion.ITEM_VIEW_TYPE_HEADER
+import com.rad4m.eventdo.utils.Utilities.Companion.NEW_CURSOR_EVENT
+import com.rad4m.eventdo.utils.Utilities.Companion.NEW_EVENT_ID
 import com.rad4m.eventdo.utils.Utilities.Companion.NEW_EVENT_PAGE
-import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_ID
+import com.rad4m.eventdo.utils.Utilities.Companion.makeStatusBarNotTransparent
 import com.rad4m.eventdo.utils.Utilities.Companion.showDialog
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.deleteCalendarEntry
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.getEventIdList
+import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.getEventImplCursorId
+import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.getLastEventId
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.openCalendar
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.saveCalEventContentResolver
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.saveEventToCalendar
-import com.rad4m.eventdo.utils.Utilities.Companion.makeStatusBarNotTransparent
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.saveNewEventIdTitleList
-
+import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.verifyLastIntentEvent
 import com.rad4m.eventdo.utils.ViewModelFactory
 import net.yslibrary.android.keyboardvisibilityevent.util.UIUtil
 import permissions.dispatcher.NeedsPermission
@@ -187,8 +189,8 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
         event: EventModel,
         activity: FragmentActivity
     ) {
-        val eventId = viewModel.returnEventId(event.title!!)
-        val deleteEntry = { deleteCalendarEntry(activity, eventId) }
+//        val eventId = viewModel.returnEventId(event.title!!)
+        val deleteEntry = { deleteCalendarEntry(activity, event) }
         showDialog(
             activity,
             "Event is already in calendar",
@@ -261,26 +263,39 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
         )
     }
 
+    private fun eventNotSaved(event: EventModel) {
+        if (viewModel.sharedPrefs.getValueBoolean(NEW_EVENT_PAGE) == true) {
+            saveEventToCalendarExternalWithPermissionCheck(
+                event,
+                activity!!
+            )
+        } else {
+            saveEventLocallyWithPermissionCheck(
+                event,
+                activity!!
+            )
+        }
+    }
+
     @NeedsPermission(
         Manifest.permission.READ_CALENDAR
     )
     fun onEventClick(event: EventModel) {
-//        viewModel.deleteEventIdTitlelist()
-        downloadALlEventsWithPermissionCheck()
-        if (viewModel.doesEventExists(event.title!!)) {
-            ifEventExistWithPermissionCheck(event, activity!!)
-        } else {
-            if (viewModel.sharedPrefs.getValueBoolean(NEW_EVENT_PAGE) == true) {
-                saveEventToCalendarExternalWithPermissionCheck(
-                    event,
-                    activity!!
-                )
-            } else {
-                saveEventLocallyWithPermissionCheck(
-                    event,
-                    activity!!
-                )
-            }
+        when (event.localEventId) {
+            null -> eventNotSaved(event)
+            else -> ifEventExistWithPermissionCheck(event, activity!!)
         }
+    }
+
+    @NeedsPermission(
+        Manifest.permission.READ_CALENDAR
+    )
+    fun verifyLastIntent(){
+        verifyLastIntentEvent(activity!!)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        verifyLastIntentWithPermissionCheck()
     }
 }

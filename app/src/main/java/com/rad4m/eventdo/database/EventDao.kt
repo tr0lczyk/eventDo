@@ -24,4 +24,7 @@ interface EventDao : BaseDao<EventModel> {
 
     @Query("select * from eventTable where dtEnd >:currentDate")
     fun getUpcomingEvents(currentDate: String): LiveData<List<EventModel>>
+
+    @Query("select * from eventTable where id =:id")
+    fun getEvent(id: Int): EventModel
 }

@@ -12,16 +12,23 @@ import android.provider.CalendarContract
 import androidx.fragment.app.FragmentActivity
 import com.rad4m.eventdo.EventDoApplication
 import com.rad4m.eventdo.R
+import com.rad4m.eventdo.database.EventsDatabase
 import com.rad4m.eventdo.models.EventIdTitle
 import com.rad4m.eventdo.models.EventModel
 import com.rad4m.eventdo.models.MyCalendar
 import com.rad4m.eventdo.utils.Utilities.Companion.EVENT_ID_TITLE
+import com.rad4m.eventdo.utils.Utilities.Companion.NEW_CURSOR_EVENT
+import com.rad4m.eventdo.utils.Utilities.Companion.NEW_EVENT_ID
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_ID
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_NAME
 import com.rad4m.eventdo.utils.Utilities.Companion.convertStringToDate
 import com.rad4m.eventdo.utils.Utilities.Companion.toastMessage
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.TimeZone
 
@@ -33,6 +40,9 @@ class UtilitiesCalendar {
             .build()
         val application = EventDoApplication.instance
         val sharedPrefs = SharedPreferences(application, moshi)
+        val database = EventsDatabase.invoke(application)
+        private val utilitiesCalendarJob = Job()
+        private val utilitiesCalendarScope = CoroutineScope(Dispatchers.IO + utilitiesCalendarJob)
 
         fun openCalendar(
             activity: FragmentActivity,
@@ -73,6 +83,8 @@ class UtilitiesCalendar {
                     getCalendarId(application)
                 )
             }
+            sharedPrefs.save(NEW_CURSOR_EVENT, getNewEventId(activity.contentResolver).toString())
+            sharedPrefs.save(NEW_EVENT_ID, event.id.toString())
             activity.startActivity(insertCalendarIntent)
         }
 
@@ -132,7 +144,13 @@ class UtilitiesCalendar {
                     )!!
                 )
             }
-            activity.contentResolver.insert(CalendarContract.Events.CONTENT_URI, values)
+            val uri: Uri =
+                activity.contentResolver.insert(CalendarContract.Events.CONTENT_URI, values)!!
+            val eventID: Long = uri.lastPathSegment!!.toLong()
+            val newEvent = event.apply {
+                this.localEventId = eventID
+            }
+            updateEvent(newEvent)
             Timber.i("eventr added")
         }
 
@@ -165,18 +183,23 @@ class UtilitiesCalendar {
             return eventIdTitleList
         }
 
-        fun deleteCalendarEntry(activity: FragmentActivity, entryID: Long) {
+        fun deleteCalendarEntry(activity: FragmentActivity, event: EventModel) {
             val deleteUri: Uri =
-                ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, entryID)
-//            activity.contentResolver.delete(deleteUri, null, null)
-            deleteEvent(
-                activity.contentResolver, deleteUri, sharedPrefs.getValueString(
-                    USER_MAIN_CALENDAR_ID
-                )!!.toInt()
-            )
-            Timber.i("$entryID eventr deleted")
+                ContentUris.withAppendedId(
+                    CalendarContract.Events.CONTENT_URI,
+                    event.localEventId!!
+                )
+            activity.contentResolver.delete(deleteUri, null, null)
+//            deleteEvent(
+//                activity.contentResolver, deleteUri, sharedPrefs.getValueString(
+//                    USER_MAIN_CALENDAR_ID
+//                )!!.toInt()
+//            )
             toastMessage(activity, R.string.event_deleted)
-            saveNewEventIdTitleList(getEventIdList(activity))
+            val newEvent = event.apply {
+                this.localEventId = null
+            }
+            updateEvent(newEvent)
         }
 
         private fun deleteEvent(
@@ -276,6 +299,64 @@ class UtilitiesCalendar {
 
         fun saveNewEventIdTitleList(eventIdTitleList: List<EventIdTitle>) {
             sharedPrefs.saveEventItTitleList(EVENT_ID_TITLE, eventIdTitleList)
+        }
+
+        private fun updateEvent(event: EventModel) {
+            utilitiesCalendarScope.launch {
+                database.eventsDao().update(event)
+            }
+        }
+
+        fun getEventImplCursorId(eventId: Int, cursorId: Long) {
+            utilitiesCalendarScope.launch {
+                val newEvent = database.eventsDao().getEvent(eventId).apply {
+                    this.localEventId = cursorId
+                }
+                updateEvent(newEvent)
+                sharedPrefs.removeValue(NEW_EVENT_ID)
+            }
+        }
+
+        @SuppressLint("MissingPermission")
+        fun getNewEventId(cr: ContentResolver): Long {
+            val cursor = cr.query(
+                CalendarContract.Events.CONTENT_URI,
+                arrayOf("MAX(_id) as max_id"),
+                null,
+                null,
+                "_id"
+            )
+            cursor!!.moveToFirst()
+            val max_val = cursor.getLong(cursor.getColumnIndex("max_id"))
+            cursor.close()
+            return max_val + 1
+        }
+
+        @SuppressLint("MissingPermission")
+        fun getLastEventId(cr: ContentResolver): Long {
+            val cursor = cr.query(
+                CalendarContract.Events.CONTENT_URI,
+                arrayOf("MAX(_id) as max_id"),
+                null,
+                null,
+                "_id"
+            )
+            cursor!!.moveToFirst()
+            val id = cursor.getLong(cursor.getColumnIndex("max_id"))
+            cursor.close()
+            return id
+        }
+
+        fun verifyLastIntentEvent(activity: FragmentActivity) {
+            val prev_id = getLastEventId(activity.contentResolver)
+            when (sharedPrefs.getValueString(NEW_CURSOR_EVENT)?.toLong()) {
+                prev_id -> getEventImplCursorId(
+                    sharedPrefs.getValueString(
+                        NEW_EVENT_ID
+                    )!!.toInt(), prev_id
+                )
+            }
+            sharedPrefs.removeValue(NEW_CURSOR_EVENT)
         }
     }
 }

@@ -47,5 +47,6 @@ data class EventModel(
     @Json(name = "title")
     val title: String?,
     @Json(name = "vendorId")
-    val vendorId: Int?
+    val vendorId: Int?,
+    var localEventId: Long? = null
 ) : Parcelable

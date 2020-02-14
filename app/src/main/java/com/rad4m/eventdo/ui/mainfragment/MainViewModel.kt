@@ -11,7 +11,6 @@ import androidx.lifecycle.Transformations
 import com.rad4m.eventdo.R
 import com.rad4m.eventdo.database.EventsDatabase
 import com.rad4m.eventdo.models.DataItem
-import com.rad4m.eventdo.models.EventIdTitle
 import com.rad4m.eventdo.models.EventModel
 import com.rad4m.eventdo.models.Result
 import com.rad4m.eventdo.networking.EventDoRepository
