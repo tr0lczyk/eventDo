@@ -6,6 +6,7 @@ import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Intent
+import android.database.Cursor
 import android.net.Uri
 import android.provider.CalendarContract
 import androidx.fragment.app.FragmentActivity
@@ -14,6 +15,7 @@ import com.rad4m.eventdo.R
 import com.rad4m.eventdo.models.EventIdTitle
 import com.rad4m.eventdo.models.EventModel
 import com.rad4m.eventdo.models.MyCalendar
+import com.rad4m.eventdo.utils.Utilities.Companion.EVENT_ID_TITLE
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_ID
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_NAME
 import com.rad4m.eventdo.utils.Utilities.Companion.convertStringToDate
@@ -112,6 +114,7 @@ class UtilitiesCalendar {
             }
         }
 
+        @SuppressLint("MissingPermission")
         fun saveCalEventContentResolver(
             event: EventModel,
             activity: FragmentActivity
@@ -165,9 +168,33 @@ class UtilitiesCalendar {
         fun deleteCalendarEntry(activity: FragmentActivity, entryID: Long) {
             val deleteUri: Uri =
                 ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, entryID)
-            activity.contentResolver.delete(deleteUri, null, null)
+//            activity.contentResolver.delete(deleteUri, null, null)
+            deleteEvent(
+                activity.contentResolver, deleteUri, sharedPrefs.getValueString(
+                    USER_MAIN_CALENDAR_ID
+                )!!.toInt()
+            )
             Timber.i("$entryID eventr deleted")
             toastMessage(activity, R.string.event_deleted)
+            saveNewEventIdTitleList(getEventIdList(activity))
+        }
+
+        private fun deleteEvent(
+            resolver: ContentResolver,
+            eventsUri: Uri,
+            calendarId: Int
+        ) {
+            val cursor: Cursor? = resolver.query(
+                eventsUri,
+                arrayOf("_id"),
+                "calendar_id=$calendarId",
+                null,
+                null
+            )
+            while (cursor!!.moveToNext()) {
+                resolver.delete(eventsUri, null, null)
+            }
+            cursor.close()
         }
 
         fun getCalendarsIds(activity: FragmentActivity): MutableList<String> {
@@ -245,6 +272,10 @@ class UtilitiesCalendar {
             return sharedPrefs.getCalendarList(Utilities.USER_CALENDAR_LIST)!!.filter {
                 it.calName == currentCalName
             }[0]
+        }
+
+        fun saveNewEventIdTitleList(eventIdTitleList: List<EventIdTitle>) {
+            sharedPrefs.saveEventItTitleList(EVENT_ID_TITLE, eventIdTitleList)
         }
     }
 }

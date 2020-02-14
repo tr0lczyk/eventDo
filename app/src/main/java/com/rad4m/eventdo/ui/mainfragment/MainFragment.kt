@@ -42,6 +42,7 @@ import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.openCalendar
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.saveCalEventContentResolver
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.saveEventToCalendar
 import com.rad4m.eventdo.utils.Utilities.Companion.makeStatusBarNotTransparent
+import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.saveNewEventIdTitleList
 
 import com.rad4m.eventdo.utils.ViewModelFactory
 import net.yslibrary.android.keyboardvisibilityevent.util.UIUtil
@@ -154,7 +155,7 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
         Manifest.permission.READ_CALENDAR
     )
     fun downloadALlEvents() {
-        viewModel.saveNewEventIdTitleList(getEventIdList(activity!!))
+        saveNewEventIdTitleList(getEventIdList(activity!!))
     }
 
     @NeedsPermission(
@@ -264,7 +265,7 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
         Manifest.permission.READ_CALENDAR
     )
     fun onEventClick(event: EventModel) {
-        viewModel.deleteEventIdTitlelist()
+//        viewModel.deleteEventIdTitlelist()
         downloadALlEventsWithPermissionCheck()
         if (viewModel.doesEventExists(event.title!!)) {
             ifEventExistWithPermissionCheck(event, activity!!)

@@ -1,11 +1,16 @@
 package com.rad4m.eventdo.utils
 
+import android.graphics.BitmapFactory
+import android.util.Base64
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.rad4m.eventdo.models.DataItem
+import com.rad4m.eventdo.networking.VendorLogoNetworking.Companion.downloadLogo
 import com.rad4m.eventdo.ui.mainfragment.EventsAdapter
+import de.hdodenhof.circleimageview.CircleImageView
 import java.text.SimpleDateFormat
 import java.util.Locale
 
@@ -51,4 +56,9 @@ fun TextView.convertHoursMinutes(date: String) {
 @BindingAdapter("setHintAs")
 fun EditText.setHintAs(value: String) {
     hint = value
+}
+
+@BindingAdapter("loadLogo")
+fun CircleImageView.loadLogo(vendorId: Int) {
+    downloadLogo(vendorId.toString(), this)
 }

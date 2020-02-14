@@ -127,4 +127,7 @@ dependencies {
     //Permissions
     implementation "org.permissionsdispatcher:permissionsdispatcher:4.5.0"
     kapt "org.permissionsdispatcher:permissionsdispatcher-processor:4.5.0"
+
+    //circleimages
+    implementation 'de.hdodenhof:circleimageview:3.0.0'
 }

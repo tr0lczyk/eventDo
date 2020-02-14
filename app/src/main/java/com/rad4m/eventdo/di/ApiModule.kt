@@ -61,6 +61,6 @@ class ApiModule {
     }
 
     companion object {
-        private const val BASE_URL = "https://api.eventdo.se/api/eventdo/"
+        const val BASE_URL = "https://api.eventdo.se/api/eventdo/"
     }
 }

@@ -36,29 +36,21 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <View
-            android:id="@+id/circleLine"
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/imageView2"
             android:layout_width="84dp"
             android:layout_height="0dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            android:background="@drawable/circle_drawable"
+            app:civ_border_width="1dp"
+            app:civ_border_color="@color/itemGrayBackground"
+            app:civ_circle_background_color="@android:color/white"
+            tools:src="@drawable/icon_logo"
+            app:loadLogo="@{viewModel.vendorId}"
             app:layout_constraintBottom_toBottomOf="@+id/vertLine"
             app:layout_constraintEnd_toEndOf="@+id/vertLine"
             app:layout_constraintStart_toStartOf="@+id/vertLine"
             app:layout_constraintTop_toTopOf="@+id/vertLine" />
-
-        <ImageView
-            android:id="@+id/imageView2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:adjustViewBounds="true"
-            android:cropToPadding="true"
-            android:src="@drawable/icon_logo"
-            app:layout_constraintBottom_toBottomOf="@id/circleLine"
-            app:layout_constraintEnd_toEndOf="@id/circleLine"
-            app:layout_constraintStart_toStartOf="@id/circleLine"
-            app:layout_constraintTop_toTopOf="@+id/circleLine" />
 
         <TextView
             android:id="@+id/eventTitle"
@@ -66,6 +58,7 @@
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
+            android:layout_marginStart="8dp"
             android:paddingStart="1dp"
             android:text="@{viewModel.title}"
             app:layout_constraintBottom_toTopOf="@+id/navIcon"
@@ -80,6 +73,7 @@
             android:layout_height="16dp"
             android:layout_marginBottom="24dp"
             android:adjustViewBounds="true"
+            android:layout_marginStart="8dp"
             android:src="@drawable/nav_arrow"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toEndOf="@+id/imageView2"

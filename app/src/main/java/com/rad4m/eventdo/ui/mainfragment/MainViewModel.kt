@@ -136,10 +136,6 @@ class MainViewModel @Inject constructor(
         }
     }
 
-    fun saveNewEventIdTitleList(eventIdTitleList: List<EventIdTitle>) {
-        sharedPrefs.saveEventItTitleList(EVENT_ID_TITLE, eventIdTitleList)
-    }
-
     fun doesEventExists(title: String): Boolean {
         if (sharedPrefs.getEventItTitleList(EVENT_ID_TITLE) != null) {
             return !sharedPrefs.getEventItTitleList(EVENT_ID_TITLE)?.filter {
