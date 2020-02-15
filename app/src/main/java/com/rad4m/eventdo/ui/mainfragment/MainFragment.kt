@@ -31,16 +31,12 @@ import com.rad4m.eventdo.di.appComponent
 import com.rad4m.eventdo.models.EventModel
 import com.rad4m.eventdo.utils.HeaderItemDecoration
 import com.rad4m.eventdo.utils.Utilities.Companion.ITEM_VIEW_TYPE_HEADER
-import com.rad4m.eventdo.utils.Utilities.Companion.NEW_CURSOR_EVENT
-import com.rad4m.eventdo.utils.Utilities.Companion.NEW_EVENT_ID
 import com.rad4m.eventdo.utils.Utilities.Companion.NEW_EVENT_PAGE
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_ID
 import com.rad4m.eventdo.utils.Utilities.Companion.makeStatusBarNotTransparent
 import com.rad4m.eventdo.utils.Utilities.Companion.showDialog
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.deleteCalendarEntry
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.getEventIdList
-import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.getEventImplCursorId
-import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.getLastEventId
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.openCalendar
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.saveCalEventContentResolver
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.saveEventToCalendar
@@ -91,7 +87,7 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
         ) {
 
         }
-        downloadALlEventsWithPermissionCheck()
+//        downloadALlEventsWithPermissionCheck()
         drawerToggle.isDrawerIndicatorEnabled = true
         binding.menuDrawer.addDrawerListener(drawerToggle)
         drawerToggle.syncState()
@@ -189,7 +185,6 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
         event: EventModel,
         activity: FragmentActivity
     ) {
-//        val eventId = viewModel.returnEventId(event.title!!)
         val deleteEntry = { deleteCalendarEntry(activity, event) }
         showDialog(
             activity,
@@ -290,7 +285,7 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
     @NeedsPermission(
         Manifest.permission.READ_CALENDAR
     )
-    fun verifyLastIntent(){
+    fun verifyLastIntent() {
         verifyLastIntentEvent(activity!!)
     }
 

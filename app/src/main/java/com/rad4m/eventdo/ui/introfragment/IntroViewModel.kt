@@ -10,5 +10,4 @@ class IntroViewModel : ViewModel() {
     fun openSignUpScreen() {
         navigateToSignUp.value = true
     }
-
 }

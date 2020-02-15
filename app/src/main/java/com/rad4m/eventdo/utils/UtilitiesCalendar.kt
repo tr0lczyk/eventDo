@@ -6,7 +6,6 @@ import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Intent
-import android.database.Cursor
 import android.net.Uri
 import android.provider.CalendarContract
 import androidx.fragment.app.FragmentActivity
@@ -147,10 +146,10 @@ class UtilitiesCalendar {
             val uri: Uri =
                 activity.contentResolver.insert(CalendarContract.Events.CONTENT_URI, values)!!
             val eventID: Long = uri.lastPathSegment!!.toLong()
-            val newEvent = event.apply {
+            event.apply {
                 this.localEventId = eventID
             }
-            updateEvent(newEvent)
+            updateEvent(event)
             Timber.i("eventr added")
         }
 
@@ -190,34 +189,11 @@ class UtilitiesCalendar {
                     event.localEventId!!
                 )
             activity.contentResolver.delete(deleteUri, null, null)
-//            deleteEvent(
-//                activity.contentResolver, deleteUri, sharedPrefs.getValueString(
-//                    USER_MAIN_CALENDAR_ID
-//                )!!.toInt()
-//            )
             toastMessage(activity, R.string.event_deleted)
-            val newEvent = event.apply {
+            event.apply {
                 this.localEventId = null
             }
-            updateEvent(newEvent)
-        }
-
-        private fun deleteEvent(
-            resolver: ContentResolver,
-            eventsUri: Uri,
-            calendarId: Int
-        ) {
-            val cursor: Cursor? = resolver.query(
-                eventsUri,
-                arrayOf("_id"),
-                "calendar_id=$calendarId",
-                null,
-                null
-            )
-            while (cursor!!.moveToNext()) {
-                resolver.delete(eventsUri, null, null)
-            }
-            cursor.close()
+            updateEvent(event)
         }
 
         fun getCalendarsIds(activity: FragmentActivity): MutableList<String> {
@@ -307,7 +283,7 @@ class UtilitiesCalendar {
             }
         }
 
-        fun getEventImplCursorId(eventId: Int, cursorId: Long) {
+        private fun getEventImplCursorId(eventId: Int, cursorId: Long) {
             utilitiesCalendarScope.launch {
                 val newEvent = database.eventsDao().getEvent(eventId).apply {
                     this.localEventId = cursorId
@@ -348,12 +324,12 @@ class UtilitiesCalendar {
         }
 
         fun verifyLastIntentEvent(activity: FragmentActivity) {
-            val prev_id = getLastEventId(activity.contentResolver)
+            val prevId = getLastEventId(activity.contentResolver)
             when (sharedPrefs.getValueString(NEW_CURSOR_EVENT)?.toLong()) {
-                prev_id -> getEventImplCursorId(
+                prevId -> getEventImplCursorId(
                     sharedPrefs.getValueString(
                         NEW_EVENT_ID
-                    )!!.toInt(), prev_id
+                    )!!.toInt(), prevId
                 )
             }
             sharedPrefs.removeValue(NEW_CURSOR_EVENT)

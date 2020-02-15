@@ -16,7 +16,6 @@ import com.rad4m.eventdo.models.Result
 import com.rad4m.eventdo.networking.EventDoRepository
 import com.rad4m.eventdo.utils.SharedPreferences
 import com.rad4m.eventdo.utils.Utilities.Companion.DEVICE_ID
-import com.rad4m.eventdo.utils.Utilities.Companion.EVENT_ID_TITLE
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_LAST_DATE
 import com.rad4m.eventdo.utils.Utilities.Companion.convertDateToString
 import com.rad4m.eventdo.utils.Utilities.Companion.convertDateToStringWithZ
@@ -73,7 +72,7 @@ class MainViewModel @Inject constructor(
         changeUpcomingColor(R.color.darkGray)
     }
 
-    fun verifyWhichList() {
+    private fun verifyWhichList() {
         if (showUpcomingEvents.value!!) {
             changeEmptyListContent(R.string.you_have_no_events_upcoming)
         } else {
@@ -133,24 +132,6 @@ class MainViewModel @Inject constructor(
         } else {
             emptyListInfoVisibility.value = View.GONE
         }
-    }
-
-    fun doesEventExists(title: String): Boolean {
-        if (sharedPrefs.getEventItTitleList(EVENT_ID_TITLE) != null) {
-            return !sharedPrefs.getEventItTitleList(EVENT_ID_TITLE)?.filter {
-                it.title == title
-            }.isNullOrEmpty()
-        } else {
-            return false
-        }
-    }
-
-    fun returnEventId(title: String): Long {
-        return sharedPrefs.getEventItTitleList(EVENT_ID_TITLE)!!.filter { it.title == title }[0].id
-    }
-
-    fun deleteEventIdTitlelist() {
-        sharedPrefs.removeValue(EVENT_ID_TITLE)
     }
 
     fun convertEventsToDataItems(list: List<EventModel>) {

@@ -3,7 +3,6 @@ package com.rad4m.eventdo.networking
 import android.app.Application
 import android.graphics.BitmapFactory
 import android.util.Base64
-import android.widget.ImageView
 import com.rad4m.eventdo.EventDoApplication
 import com.rad4m.eventdo.R
 import com.rad4m.eventdo.di.ApiModule.Companion.BASE_URL
