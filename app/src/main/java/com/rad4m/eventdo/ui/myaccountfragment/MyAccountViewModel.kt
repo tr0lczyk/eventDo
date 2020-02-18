@@ -41,9 +41,9 @@ class MyAccountViewModel @Inject constructor(
     val navigateToLogin = MutableLiveData<Boolean>()
     val showDeleteUserDialog = MutableLiveData<Boolean>()
 
-    val userBaseName = MutableLiveData<String>("First name")
-    val userBaseSurname = MutableLiveData<String>("Surname")
-    val userBaseMail = MutableLiveData<String>("Email")
+    val userBaseName = MutableLiveData<String>(application.getString(R.string.first_name_my_account))
+    val userBaseSurname = MutableLiveData<String>(application.getString(R.string.surname_my_account))
+    val userBaseMail = MutableLiveData<String>(application.getString(R.string.email_my_account))
 
     init {
         changeBackButtonColor(R.color.darkGray)

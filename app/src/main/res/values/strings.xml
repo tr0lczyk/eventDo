@@ -83,4 +83,16 @@ I want to tell you about an awesome app. Check out http://www.eventdo.se</string
     <string name="account_deleted_message">We are sorry to see you leaving us, but your account is now removed. Welcome back!</string>
     <string name="show_calendar">Show Calendar</string>
     <string name="event_deleted">Event deleted from calendar</string>
+    <string name="first_name_my_account">First name</string>
+    <string name="surname_my_account">Surname</string>
+    <string name="email_my_account">Email</string>
+    <string name="save_event_main_fragment">Save event</string>
+    <string name="cancel_main_fragment">Cancel</string>
+    <string name="add_main_fragment">Add \</string>
+    <string name="to_cal_main"> \ to the calendar?</string>
+    <string name="event_already_there">Event is already in calendar</string>
+    <string name="delete_main">DELETE</string>
+    <string name="account_delete_text">By clicking yes you will delete your account from the system. Do you want to proceed?</string>
+    <string name="yes_button">Yes</string>
+    <string name="no_button">No</string>
 </resources>

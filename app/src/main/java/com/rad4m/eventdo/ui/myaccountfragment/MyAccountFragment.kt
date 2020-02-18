@@ -63,11 +63,11 @@ class MyAccountFragment : Fragment() {
                 val deleteUser = { viewModel.deleteUserAccount() }
                 showDialog(
                     activity!!,
-                    "By clicking yes you will delete your account from the system. Do you want to proceed?",
-                    "Delete your account",
-                    "Yes",
+                    getString(R.string.account_delete_text),
+                    getString(R.string.delete_your_account),
+                    getString(R.string.yes_button),
                     deleteUser,
-                    "No"
+                    getString(R.string.no_button)
                 )
                 viewModel.showDeleteUserDialog.value = false
             }

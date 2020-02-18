@@ -46,7 +46,6 @@ class Utilities {
         const val CHANNEL_DESC = "Notification channel"
         const val FIREBASE_TOKEN = "tokenFirebase"
         const val DEVICE_ID = "deviceId"
-        const val EVENT_ID_TITLE = "eventIdTitle"
         const val NEW_CURSOR_EVENT = "newCursorEvent"
         const val NEW_EVENT_ID = "newEventId"
 

@@ -64,4 +64,16 @@
     <string name="you_have_no_events_past">Du har inga tidigare händelser.</string>
     <string name="you_have_no_events_upcoming">Du har inga Kommande händelser.</string>
     <string name="you_sign_up_quickly_and_easily_with_your_mobile_number">Du registrerar dig snabbt och enkelt med ditt mobilnummer</string>
+    <string name="first_name_my_account">Förnamn</string>
+    <string name="surname_my_account">Efternamn</string>
+    <string name="email_my_account">E-post</string>
+    <string name="save_event_main_fragment">Spara händelse</string>
+    <string name="cancel_main_fragment">Avbryt</string>
+    <string name="add_main_fragment">Lägg till \</string>
+    <string name="to_cal_main"> \ händelsen i kalendern?</string>
+    <string name="event_already_there">Lägg till händelsen i kalendern?</string>
+    <string name="delete_main">TA BORT</string>
+    <string name="account_delete_text">Är du säker på att du vill radera ditt konto inklusive all data som är sparad hos eventDo? Detta går inte att ångra.</string>
+    <string name="yes_button">Ja</string>
+    <string name="no_button">Nej</string>
 </resources>

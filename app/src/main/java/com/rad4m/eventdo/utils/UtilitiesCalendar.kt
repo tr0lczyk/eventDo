@@ -6,16 +6,16 @@ import android.content.ContentResolver
 import android.content.ContentUris
 import android.content.ContentValues
 import android.content.Intent
+import android.database.Cursor
 import android.net.Uri
 import android.provider.CalendarContract
+import android.text.TextUtils
 import androidx.fragment.app.FragmentActivity
 import com.rad4m.eventdo.EventDoApplication
 import com.rad4m.eventdo.R
 import com.rad4m.eventdo.database.EventsDatabase
-import com.rad4m.eventdo.models.EventIdTitle
 import com.rad4m.eventdo.models.EventModel
 import com.rad4m.eventdo.models.MyCalendar
-import com.rad4m.eventdo.utils.Utilities.Companion.EVENT_ID_TITLE
 import com.rad4m.eventdo.utils.Utilities.Companion.NEW_CURSOR_EVENT
 import com.rad4m.eventdo.utils.Utilities.Companion.NEW_EVENT_ID
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_ID
@@ -153,33 +153,25 @@ class UtilitiesCalendar {
             Timber.i("eventr added")
         }
 
-        @SuppressLint("MissingPermission")
-        fun getEventIdList(activity: FragmentActivity): ArrayList<EventIdTitle> {
-            val eventIdTitleList = ArrayList<EventIdTitle>()
-            val EVENT_PROJECTION: Array<String> = arrayOf(
-                CalendarContract.Events._ID, // 0
-                CalendarContract.Events.TITLE  // 1
-            )
-            val PROJECTION_EVENT_ID_INDEX = 0
-            val PROJECTION_TITLE_INDEX = 1
-
-            val cursor = activity.contentResolver.query(
-                CalendarContract.Events.CONTENT_URI,
-                EVENT_PROJECTION,
-                "",
-                arrayOf(),
-                null
-            )
-            cursor!!.let {
-                while (it.moveToNext()) {
-                    val eventId = it.getLong(PROJECTION_EVENT_ID_INDEX)
-                    val title = it.getString(PROJECTION_TITLE_INDEX)
-                    eventIdTitleList.add(EventIdTitle(eventId, title))
+        private fun isEventInCal(id: Long): Boolean {
+            val event =
+                ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, id)
+            val cursor: Cursor? = application.contentResolver.query(event, null, null, null, null)
+            return if (cursor != null && cursor.count == 1) { //the event exists?
+                if (cursor.moveToFirst() && !TextUtils.equals(
+                        cursor.getString(
+                            cursor.getColumnIndex(
+                                "deleted"
+                            )
+                        ), "1"
+                    )
+                ) {
+                    cursor.close()
+                    true
+                } else {
+                    false
                 }
-            }
-            cursor.close()
-            Timber.i("eventr list renewed")
-            return eventIdTitleList
+            } else false
         }
 
         fun deleteCalendarEntry(activity: FragmentActivity, event: EventModel) {
@@ -273,8 +265,30 @@ class UtilitiesCalendar {
             }[0]
         }
 
-        fun saveNewEventIdTitleList(eventIdTitleList: List<EventIdTitle>) {
-            sharedPrefs.saveEventItTitleList(EVENT_ID_TITLE, eventIdTitleList)
+        fun verifyIfEventDeleted() {
+            utilitiesCalendarScope.launch {
+                if (!database.eventsDao().getEventWithLocalEventId().isNullOrEmpty()) {
+                    checkEventsInDatabase()
+                }
+            }
+        }
+
+        private fun checkEventsInDatabase() {
+            for (i in database.eventsDao().getEventWithLocalEventId()!!) {
+                if (!isEventInCal(i.localEventId!!)) {
+                    updateEvent(i.apply {
+                        i.localEventId = null
+                    })
+                }
+            }
+        }
+
+        fun checkIfEventExist(event: EventModel) {
+            if (!isEventInCal(event.id)) {
+                updateEvent(event.apply {
+                    event.localEventId = null
+                })
+            }
         }
 
         private fun updateEvent(event: EventModel) {

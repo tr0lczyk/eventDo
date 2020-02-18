@@ -36,11 +36,10 @@ import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_ID
 import com.rad4m.eventdo.utils.Utilities.Companion.makeStatusBarNotTransparent
 import com.rad4m.eventdo.utils.Utilities.Companion.showDialog
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.deleteCalendarEntry
-import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.getEventIdList
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.openCalendar
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.saveCalEventContentResolver
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.saveEventToCalendar
-import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.saveNewEventIdTitleList
+import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.verifyIfEventDeleted
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.verifyLastIntentEvent
 import com.rad4m.eventdo.utils.ViewModelFactory
 import net.yslibrary.android.keyboardvisibilityevent.util.UIUtil
@@ -87,7 +86,6 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
         ) {
 
         }
-//        downloadALlEventsWithPermissionCheck()
         drawerToggle.isDrawerIndicatorEnabled = true
         binding.menuDrawer.addDrawerListener(drawerToggle)
         drawerToggle.syncState()
@@ -152,8 +150,8 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
     @NeedsPermission(
         Manifest.permission.READ_CALENDAR
     )
-    fun downloadALlEvents() {
-        saveNewEventIdTitleList(getEventIdList(activity!!))
+    fun checkIfEventsDeleted() {
+        verifyIfEventDeleted()
     }
 
     @NeedsPermission(
@@ -165,16 +163,16 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
     ) {
         showDialog(
             activity,
-            "Add ${event.title} to the calendar?",
-            "Save event",
-            "Add",
+            getString(R.string.add_main_fragment) + event.title + getString(R.string.to_cal_main),
+            getString(R.string.save_event_main_fragment),
+            getString(R.string.add_main_fragment),
             {
                 saveAndshowSnackBar(
                     event,
                     activity
                 )
             },
-            "Cancel"
+            getString(R.string.cancel_main_fragment)
         )
     }
 
@@ -188,10 +186,10 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
         val deleteEntry = { deleteCalendarEntry(activity, event) }
         showDialog(
             activity,
-            "Event is already in calendar",
-            "eventDo", "DELETE",
+            getString(R.string.event_already_there),
+            getString(R.string.app_name), getString(R.string.delete_main),
             deleteEntry,
-            "Cancel"
+            getString(R.string.cancel_main_fragment)
         )
     }
 
@@ -292,5 +290,6 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
     override fun onStart() {
         super.onStart()
         verifyLastIntentWithPermissionCheck()
+        checkIfEventsDeletedWithPermissionCheck()
     }
 }

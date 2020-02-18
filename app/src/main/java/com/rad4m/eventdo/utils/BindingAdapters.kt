@@ -25,7 +25,7 @@ fun TextView.convertDate(date: String) {
     date.let {
         val originalFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
         val newDate = originalFormat.parse(date)
-        val targetFormat = SimpleDateFormat("EEEE dd MMMM", Locale.ENGLISH)
+        val targetFormat = SimpleDateFormat("EEEE dd MMMM")
         val formattedDate = targetFormat.format(newDate)
         this.text = formattedDate
     }
