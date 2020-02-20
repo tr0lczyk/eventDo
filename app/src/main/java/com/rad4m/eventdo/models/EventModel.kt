@@ -16,9 +16,9 @@ data class EventModel(
     @Json(name = "description")
     val description: String?,
     @Json(name = "dtEnd")
-    val dtEnd: String?,
+    var dtEnd: String?,
     @Json(name = "dtStart")
-    val dtStart: String?,
+    var dtStart: String?,
     @Json(name = "duration")
     val duration: String?,
     @Json(name = "end")

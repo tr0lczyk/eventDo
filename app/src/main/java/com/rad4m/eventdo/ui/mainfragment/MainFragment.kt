@@ -102,7 +102,11 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
         })
 
         viewModel.eventList.observe(viewLifecycleOwner, Observer {
-            viewModel.convertEventsToDataItems(it.sortedBy { event -> event.dtStart })
+            if (viewModel.showUpcomingEvents.value!!) {
+                viewModel.convertEventsToDataItems(it.sortedBy { event -> event.dtStart })
+            } else {
+                viewModel.convertEventsToDataItemsBackwards(it.sortedByDescending { event -> event.dtStart })
+            }
         })
 
         viewModel.dataItemList.observe(this, Observer {

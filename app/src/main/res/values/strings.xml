@@ -23,8 +23,8 @@
     <string name="terms_link" translatable="false">http://eventdo.se/english/terms-of-use.html</string>
     <string name="proper_phone">Please enter your mobile number</string>
     <string name="events">Events</string>
-    <string name="upcoming" translatable="false">Upcoming</string>
-    <string name="past" translatable="false">Past</string>
+    <string name="upcoming">Upcoming</string>
+    <string name="past">Past</string>
     <string name="you_have_no_events_upcoming">You have no upcoming events</string>
     <string name="you_have_no_events_past">You have no past events</string>
     <string name="drawer_about">About eventDo</string>

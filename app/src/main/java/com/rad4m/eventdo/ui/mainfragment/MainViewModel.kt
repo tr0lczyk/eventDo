@@ -2,6 +2,7 @@ package com.rad4m.eventdo.ui.mainfragment
 
 import android.app.Application
 import android.os.Handler
+import android.text.format.DateUtils
 import android.view.View
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.AndroidViewModel
@@ -43,7 +44,7 @@ class MainViewModel @Inject constructor(
     val pastTextColor = MutableLiveData<Int>()
     val emptyListText = MutableLiveData<String>()
     val swipeRefreshing = MutableLiveData<Boolean>()
-    private val showUpcomingEvents = MutableLiveData<Boolean>()
+    val showUpcomingEvents = MutableLiveData<Boolean>()
     val eventList: LiveData<List<EventModel>> = Transformations.switchMap(showUpcomingEvents) {
         when (it) {
             true -> database.eventsDao().getUpcomingEvents(convertDateToStringWithZ(Date()))
@@ -118,6 +119,14 @@ class MainViewModel @Inject constructor(
     }
 
     private suspend fun saveEvents(data: List<EventModel>) {
+        for (i in data) {
+            i.apply {
+                dtStart =
+                    convertDateToStringWithZ(Date(convertStringToDate(dtStart!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
+                dtEnd =
+                    convertDateToStringWithZ(Date(convertStringToDate(dtEnd!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
+            }
+        }
         database.eventsDao().insertEvents(data)
     }
 
@@ -148,7 +157,38 @@ class MainViewModel @Inject constructor(
                 val currentDate =
                     TimeUnit.MILLISECONDS.toDays(convertStringToDate(event.dtStart!!).time)
                 if (previousDate < currentDate) {
-                    val currentHeader = DataItem.DataItemHeader(event.dtStart)
+                    val currentHeader = DataItem.DataItemHeader(event.dtStart!!)
+                    temporaryList.add(currentHeader)
+                    val currentItem = DataItem.DataItemEventModel(event)
+                    temporaryList.add(currentItem)
+                } else {
+                    val currentItem = DataItem.DataItemEventModel(event)
+                    temporaryList.add(currentItem)
+                }
+            }
+        }
+        dataItemList.value = temporaryList
+        Handler().postDelayed({
+            verifyWhichList()
+            checkEmptyInfoVisibility()
+        }, 100)
+    }
+
+    fun convertEventsToDataItemsBackwards(list: List<EventModel>) {
+        val temporaryList: MutableList<DataItem> = mutableListOf()
+        for ((index, event) in list.withIndex()) {
+            if (index == 0) {
+                val firstHeader = DataItem.DataItemHeader(event.dtStart!!)
+                temporaryList.add(firstHeader)
+                val firstItem = DataItem.DataItemEventModel(event)
+                temporaryList.add((firstItem))
+            } else {
+                val previousDate =
+                    TimeUnit.MILLISECONDS.toDays(convertStringToDate(list[index - 1].dtStart!!).time)
+                val currentDate =
+                    TimeUnit.MILLISECONDS.toDays(convertStringToDate(event.dtStart!!).time)
+                if (previousDate > currentDate) {
+                    val currentHeader = DataItem.DataItemHeader(event.dtStart!!)
                     temporaryList.add(currentHeader)
                     val currentItem = DataItem.DataItemEventModel(event)
                     temporaryList.add(currentItem)

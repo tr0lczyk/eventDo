@@ -1,9 +1,6 @@
 package com.rad4m.eventdo.utils
 
-import android.graphics.BitmapFactory
-import android.util.Base64
 import android.widget.EditText
-import android.widget.ImageView
 import android.widget.TextView
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -12,7 +9,6 @@ import com.rad4m.eventdo.networking.VendorLogoNetworking.Companion.downloadLogo
 import com.rad4m.eventdo.ui.mainfragment.EventsAdapter
 import de.hdodenhof.circleimageview.CircleImageView
 import java.text.SimpleDateFormat
-import java.util.Locale
 
 @BindingAdapter("eventList")
 fun RecyclerView.eventList(list: List<DataItem>?) {
@@ -26,7 +22,7 @@ fun TextView.convertDate(date: String) {
         val originalFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
         val newDate = originalFormat.parse(date)
         val targetFormat = SimpleDateFormat("EEEE dd MMMM")
-        val formattedDate = targetFormat.format(newDate)
+        val formattedDate = targetFormat.format(newDate).capitalize()
         this.text = formattedDate
     }
 }

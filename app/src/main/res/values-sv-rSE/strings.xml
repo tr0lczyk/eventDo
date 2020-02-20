@@ -33,6 +33,8 @@
     <string name="event_deleted">" Händelsen raderas från kalendern"</string>
     <string name="event_saved">" Händelse läggs till i kalendern"</string>
     <string name="events">Händelder</string>
+    <string name="upcoming">Kommande</string>
+    <string name="past">Tidigare</string>
     <string name="first_name">Förnamn</string>
     <string name="how_it_works">Så fungerar det!</string>
     <string name="mobile_number">Mobilnummer:</string>
