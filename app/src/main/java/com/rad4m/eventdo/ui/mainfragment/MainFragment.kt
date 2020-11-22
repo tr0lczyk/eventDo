@@ -111,13 +111,13 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
 
         viewModel.dataItemList.observe(this, Observer {
             adapter.submitList(it)
-            Handler().postDelayed({
-                binding.recyclerEvents.layoutManager!!.smoothScrollToPosition(
-                    binding.recyclerEvents,
-                    null,
-                    0
-                )
-            }, 100)
+//            Handler().postDelayed({
+//                binding.recyclerEvents.layoutManager!!.smoothScrollToPosition(
+//                    binding.recyclerEvents,
+//                    null,
+//                    0
+//                )
+//            }, 100)
         })
         return binding.root
     }
