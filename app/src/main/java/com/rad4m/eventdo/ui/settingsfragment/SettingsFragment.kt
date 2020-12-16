@@ -52,28 +52,28 @@ class SettingsFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
         downloadCalWithPermissionCheck()
-        viewModel.backNavigation.observe(this, {
+        viewModel.backNavigation.observe(this, Observer {
             if (it) {
                 this.findNavController().navigateUp()
                 viewModel.stopBackNavigation()
             }
         })
 
-        viewModel.isNewEventPageOn.observe(this, {
+        viewModel.isNewEventPageOn.observe(this, Observer {
             viewModel.sharedPrefs.save(NEW_EVENT_PAGE, it)
             if (it) {
                 viewModel.isAutoAddEventOn.value = false
             }
         })
 
-        viewModel.isAutoAddEventOn.observe(this, {
+        viewModel.isAutoAddEventOn.observe(this, Observer {
             viewModel.sharedPrefs.save(AUTO_ADD_EVENT, it)
             if (it) {
                 viewModel.isNewEventPageOn.value = false
             }
         })
 
-        viewModel.isPushEnabled.observe(this, {
+        viewModel.isPushEnabled.observe(this, Observer {
             viewModel.sharedPrefs.save(PUSH_NOTIFICATION, it)
             if (it) {
                 viewModel.updateFirebaseToken()
