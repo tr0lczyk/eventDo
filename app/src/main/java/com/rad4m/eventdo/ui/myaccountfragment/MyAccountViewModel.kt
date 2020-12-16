@@ -80,17 +80,17 @@ class MyAccountViewModel @Inject constructor(
 
     private fun setUserData(userData: UserResult) {
         if (!userData.name.isNullOrEmpty()) {
-            userBaseName.value = userData.name
+            userName.value = userData.name
         }
         if (!userData.surname.isNullOrEmpty()) {
-            userBaseSurname.value = userData.surname
+            userSurname.value = userData.surname
         }
         if (!userData.email.isNullOrEmpty()) {
-            userBaseMail.value = userData.email
+            userMail.value = userData.email
         }
     }
 
-    fun updateUserProfile() {
+    private fun updateUserProfile() {
         viewModelScope.launch {
             val credentials = UserUpdateModel(
                 phoneNumber.value,
@@ -112,7 +112,6 @@ class MyAccountViewModel @Inject constructor(
                 )
             }
         }
-        getUserProfile()
     }
 
     fun checkIfChangePossible() {
