@@ -31,7 +31,7 @@
     <string name="email_invalid">Ange en giltig e-postadress.</string>
     <string name="enter_code">Ange koden som du fick via SMS</string>
     <string name="event_deleted">" Händelsen raderas från kalendern"</string>
-    <string name="event_saved">" Händelse läggs till i kalendern"</string>
+    <string name="event_saved">" Händelse har sparats i kalendern"</string>
     <string name="events">Händelder</string>
     <string name="upcoming">Kommande</string>
     <string name="past">Tidigare</string>
