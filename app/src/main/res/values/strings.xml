@@ -95,4 +95,6 @@ I want to tell you about an awesome app. Check out http://www.eventdo.se</string
     <string name="account_delete_text">By clicking yes you will delete your account from the system. Do you want to proceed?</string>
     <string name="yes_button">Yes</string>
     <string name="no_button">No</string>
+    <string name="push_notifications">Push Notifications</string>
+    <string name="notify_me_when_the_new_event_is_received">Notify me when the new event is received</string>
 </resources>

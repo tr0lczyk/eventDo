@@ -50,10 +50,34 @@
             app:layout_constraintTop_toBottomOf="@+id/mainTitle" />
 
         <TextView
+            android:id="@+id/pushNotificationsTitle"
+            android:text="@string/push_notifications"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/view"
+            style="@style/setting_title" />
+
+        <TextView
+            android:id="@+id/pushNotificationsDescription"
+            android:text="@string/notify_me_when_the_new_event_is_received"
+            app:layout_constraintEnd_toEndOf="@+id/mainTitle"
+            app:layout_constraintStart_toStartOf="@+id/pushNotificationsTitle"
+            app:layout_constraintTop_toBottomOf="@+id/pushNotificationsTitle"
+            style="@style/setting_subtitle" />
+
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/pushNotificationsSwitch"
+            app:trackTint="@color/darkRedLighter"
+            app:layout_constraintBottom_toBottomOf="@+id/pushNotificationsDescription"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/pushNotificationsDescription"
+            android:checked="@={viewModel.isPushEnabled}"
+            style="@style/switch_style" />
+
+        <TextView
             android:id="@+id/autoAddTitle"
             android:text="@string/auto_add_events"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/view"
+            app:layout_constraintTop_toBottomOf="@+id/pushNotificationsDescription"
             style="@style/setting_title" />
 
         <TextView

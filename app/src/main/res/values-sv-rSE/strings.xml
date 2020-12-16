@@ -78,4 +78,6 @@
     <string name="account_delete_text">Är du säker på att du vill radera ditt konto inklusive all data som är sparad hos eventDo? Detta går inte att ångra.</string>
     <string name="yes_button">Ja</string>
     <string name="no_button">Nej</string>
+    <string name="push_notifications">Pushmeddelande</string>
+    <string name="notify_me_when_the_new_event_is_received">Meddela mig när en ny händelse tas emot</string>
 </resources>

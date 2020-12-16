@@ -11,10 +11,12 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.iid.FirebaseInstanceId
 import com.rad4m.eventdo.databinding.FragmentSettingsBinding
 import com.rad4m.eventdo.di.appComponent
 import com.rad4m.eventdo.utils.Utilities.Companion.AUTO_ADD_EVENT
 import com.rad4m.eventdo.utils.Utilities.Companion.NEW_EVENT_PAGE
+import com.rad4m.eventdo.utils.Utilities.Companion.PUSH_NOTIFICATION
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_NAME
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.getCalendarsIds
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.saveMainCalendar
@@ -24,6 +26,7 @@ import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.OnPermissionDenied
 import permissions.dispatcher.RuntimePermissions
 import javax.inject.Inject
+
 
 @RuntimePermissions
 class SettingsFragment : Fragment() {
@@ -49,24 +52,39 @@ class SettingsFragment : Fragment() {
         binding.lifecycleOwner = this
         binding.viewModel = viewModel
         downloadCalWithPermissionCheck()
-        viewModel.backNavigation.observe(this, Observer {
+        viewModel.backNavigation.observe(this, {
             if (it) {
                 this.findNavController().navigateUp()
                 viewModel.stopBackNavigation()
             }
         })
 
-        viewModel.isNewEventPageOn.observe(this, Observer {
+        viewModel.isNewEventPageOn.observe(this, {
             viewModel.sharedPrefs.save(NEW_EVENT_PAGE, it)
             if (it) {
                 viewModel.isAutoAddEventOn.value = false
             }
         })
 
-        viewModel.isAutoAddEventOn.observe(this, Observer {
+        viewModel.isAutoAddEventOn.observe(this, {
             viewModel.sharedPrefs.save(AUTO_ADD_EVENT, it)
             if (it) {
                 viewModel.isNewEventPageOn.value = false
+            }
+        })
+
+        viewModel.isPushEnabled.observe(this, {
+            viewModel.sharedPrefs.save(PUSH_NOTIFICATION, it)
+            if (it) {
+                viewModel.updateFirebaseToken()
+            } else {
+                Thread {
+                    try {
+                        FirebaseInstanceId.getInstance().deleteInstanceId()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }.start()
             }
         })
 
