@@ -16,7 +16,7 @@
     <string name="and">and</string>
     <string name="terms_of_use">terms of use</string>
     <string name="privacy_policy">privacy policy</string>
-    <string name="privacy_policy_link" translatable="false">http://eventdo.se/english/privacy-policy.html</string>
+    <string name="privacy_policy_link" translatable="false">https://eventdo.se/english/privacy-policy.html</string>
     <string name="about_us_link" translatable="false">http://www.facebook.com/eventdocom/</string>
     <string name="verification">Verification</string>
     <string name="enter_code">Enter the code you received via SMS</string>

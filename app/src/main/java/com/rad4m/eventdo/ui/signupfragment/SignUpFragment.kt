@@ -10,6 +10,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.rad4m.eventdo.R
 import com.rad4m.eventdo.databinding.FragmentSignUpBinding
 import com.rad4m.eventdo.di.appComponent
 import com.rad4m.eventdo.utils.ViewModelFactory
@@ -43,7 +44,7 @@ class SignUpFragment : Fragment() {
         viewModel.termsStarted.observe(this, Observer {
             if (it) {
                 val intent = Intent(Intent.ACTION_VIEW)
-                intent.data = Uri.parse(getString(com.rad4m.eventdo.R.string.terms_link))
+                intent.data = Uri.parse(getString(R.string.terms_link))
                 startActivity(intent)
                 viewModel.termsStarted.value = false
             }
@@ -52,7 +53,7 @@ class SignUpFragment : Fragment() {
         viewModel.policyStarted.observe(this, Observer {
             if (it) {
                 val intent = Intent(Intent.ACTION_VIEW)
-                intent.data = Uri.parse(getString(com.rad4m.eventdo.R.string.privacy_policy))
+                intent.data = Uri.parse(getString(R.string.privacy_policy_link))
                 startActivity(intent)
                 viewModel.policyStarted.value = false
             }
