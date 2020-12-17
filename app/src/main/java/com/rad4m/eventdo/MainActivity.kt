@@ -14,11 +14,9 @@ import com.rad4m.eventdo.utils.SharedPreferences
 import com.rad4m.eventdo.utils.Utilities.Companion.CHANNEL_DESC
 import com.rad4m.eventdo.utils.Utilities.Companion.CHANNEL_ID
 import com.rad4m.eventdo.utils.Utilities.Companion.CHANNEL_NAME
-import com.rad4m.eventdo.utils.Utilities.Companion.FIREBASE_TOKEN
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_TOKEN
 import com.rad4m.eventdo.utils.Utilities.Companion.makeStatusBarTransparent
-import kotlinx.android.synthetic.main.activity_main.myNavHostFragment
-import timber.log.Timber
+import kotlinx.android.synthetic.main.activity_main.*
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
@@ -36,9 +34,6 @@ class MainActivity : AppCompatActivity() {
                 if (!task.isSuccessful) {
                     return@OnCompleteListener
                 }
-                val token = task.result?.token
-                sharedPrefs.save(FIREBASE_TOKEN, "$token")
-                Timber.d("======$token")
             })
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(

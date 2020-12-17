@@ -119,7 +119,7 @@ class SharedPreferences @Inject constructor(application: Application, val moshi:
     }
 
     fun getValueBoolean(KEY_NAME: String): Boolean? {
-        return sharedPref.getBoolean(KEY_NAME, false)
+        return sharedPref.getBoolean(KEY_NAME,false)
     }
 
     fun clearSharedPreference() {

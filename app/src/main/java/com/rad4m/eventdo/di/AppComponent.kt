@@ -8,6 +8,7 @@ import com.rad4m.eventdo.ui.myaccountfragment.MyAccountFragment
 import com.rad4m.eventdo.ui.settingsfragment.SettingsFragment
 import com.rad4m.eventdo.ui.signupfragment.SignUpFragment
 import com.rad4m.eventdo.ui.verificationfragment.VerificationFragment
+import com.rad4m.eventdo.utils.MyFirebaseMessagingService
 import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
@@ -31,6 +32,8 @@ interface AppComponent {
     fun inject(activity: MyAccountFragment)
 
     fun inject(activity: SettingsFragment)
+
+    fun inject(service: MyFirebaseMessagingService)
 
     @Component.Builder
     interface Builder {

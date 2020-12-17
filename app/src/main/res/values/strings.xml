@@ -16,7 +16,7 @@
     <string name="and">and</string>
     <string name="terms_of_use">terms of use</string>
     <string name="privacy_policy">privacy policy</string>
-    <string name="privacy_policy_link" translatable="false">http://eventdo.se/english/privacy-policy.html</string>
+    <string name="privacy_policy_link" translatable="false">https://eventdo.se/english/privacy-policy.html</string>
     <string name="about_us_link" translatable="false">http://www.facebook.com/eventdocom/</string>
     <string name="verification">Verification</string>
     <string name="enter_code">Enter the code you received via SMS</string>
@@ -91,8 +91,12 @@ I want to tell you about an awesome app. Check out http://www.eventdo.se</string
     <string name="add_main_fragment">Add \</string>
     <string name="to_cal_main"> \ to the calendar?</string>
     <string name="event_already_there">Event is already in calendar</string>
+    <string name="event">Event</string>
+    <string name="already_there">is already in calendar</string>
     <string name="delete_main">DELETE</string>
-    <string name="account_delete_text">By clicking yes you will delete your account from the system. Do you want to proceed?</string>
+    <string name="account_delete_text">Are you sure you want to delete your account including all data stored at eventDo? This action cannot be undone.</string>
     <string name="yes_button">Yes</string>
     <string name="no_button">No</string>
+    <string name="push_notifications">Push Notifications</string>
+    <string name="notify_me_when_the_new_event_is_received">Notify me when the new event is received</string>
 </resources>

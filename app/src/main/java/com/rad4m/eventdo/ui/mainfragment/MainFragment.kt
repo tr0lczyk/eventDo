@@ -190,7 +190,7 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
         val deleteEntry = { deleteCalendarEntry(activity, event) }
         showDialog(
             activity,
-            getString(R.string.event_already_there),
+            "${getString(R.string.event)} ${event.title} ${getString(R.string.already_there)}",
             getString(R.string.app_name), getString(R.string.delete_main),
             deleteEntry,
             getString(R.string.cancel_main_fragment)
@@ -205,11 +205,12 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
             event,
             activity
         )
-        Snackbar.make(binding.menuDrawer, R.string.event_saved, Snackbar.LENGTH_LONG).setAction(
-            R.string.show_calendar
-        ) {
-            openCalendar(activity, event)
-        }.show()
+        Snackbar.make(binding.menuDrawer, "Event is already in calendar", Snackbar.LENGTH_LONG)
+            .setAction(
+                R.string.show_calendar
+            ) {
+                openCalendar(activity, event)
+            }.show()
     }
 
     @OnPermissionDenied(
