@@ -91,6 +91,8 @@ I want to tell you about an awesome app. Check out http://www.eventdo.se</string
     <string name="add_main_fragment">Add \</string>
     <string name="to_cal_main"> \ to the calendar?</string>
     <string name="event_already_there">Event is already in calendar</string>
+    <string name="event">Event</string>
+    <string name="already_there">is already in calendar</string>
     <string name="delete_main">DELETE</string>
     <string name="account_delete_text">Are you sure you want to delete your account including all data stored at eventDo? This action cannot be undone.</string>
     <string name="yes_button">Yes</string>
