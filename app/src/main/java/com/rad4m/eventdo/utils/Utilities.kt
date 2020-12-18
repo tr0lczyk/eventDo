@@ -18,17 +18,14 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.iid.FirebaseInstanceId
 import com.rad4m.eventdo.EventDoApplication
 import com.rad4m.eventdo.MainActivity
 import com.rad4m.eventdo.R
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import timber.log.Timber
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.UUID
+import java.util.*
+
 
 class Utilities {
 
@@ -194,11 +191,13 @@ class Utilities {
 //            if(sharedPreferences.getValueBoolean(PUSH_NOTIFICATION) != false){
                 val intent = Intent(context, MainActivity::class.java)
 
+            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
+
                 val pendingIntent = PendingIntent.getActivity(
                     context,
-                    100,
+                    0,
                     intent,
-                    PendingIntent.FLAG_CANCEL_CURRENT
+                    PendingIntent.FLAG_UPDATE_CURRENT
                 )
 
                 val mBuilder = NotificationCompat.Builder(context, CHANNEL_ID)

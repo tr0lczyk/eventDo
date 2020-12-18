@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import com.google.firebase.iid.FirebaseInstanceId
 import com.rad4m.eventdo.R
 import com.rad4m.eventdo.databinding.FragmentMyaccountBinding
 import com.rad4m.eventdo.di.appComponent
@@ -47,6 +48,13 @@ class MyAccountFragment : Fragment() {
 
         viewModel.navigateToLogin.observe(this, Observer {
             if (it) {
+                Thread {
+                    try {
+                        FirebaseInstanceId.getInstance().deleteInstanceId()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                    }
+                }.start()
                 showInformingDialog(
                     activity!!,
                     getString(R.string.account_deleted_message),

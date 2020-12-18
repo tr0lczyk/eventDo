@@ -16,6 +16,7 @@ import com.rad4m.eventdo.models.EventModel
 import com.rad4m.eventdo.models.Result
 import com.rad4m.eventdo.networking.EventDoRepository
 import com.rad4m.eventdo.utils.SharedPreferences
+import com.rad4m.eventdo.utils.Utilities
 import com.rad4m.eventdo.utils.Utilities.Companion.DEVICE_ID
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_LAST_DATE
 import com.rad4m.eventdo.utils.Utilities.Companion.convertDateToString
@@ -109,11 +110,13 @@ class MainViewModel @Inject constructor(
     }
 
     private fun updateFirebaseToken() {
-        viewModelScope.launch {
-            when (val response = repository.updateFirebaseToken()) {
-                is Result.Success -> sharedPrefs.save(DEVICE_ID, response.data!!.message!!)
-                is Result.Failure -> Timber.i(response.failure)
-                is Result.Error -> Timber.i(response.error)
+        if (sharedPrefs.getValueString(DEVICE_ID).isNullOrEmpty()) {
+            viewModelScope.launch {
+                when (val response = repository.updateFirebaseToken()) {
+                    is Result.Success -> sharedPrefs.save(DEVICE_ID, response.data!!.message!!)
+                    is Result.Failure -> Timber.i(response.failure)
+                    is Result.Error -> Timber.i(response.error)
+                }
             }
         }
     }

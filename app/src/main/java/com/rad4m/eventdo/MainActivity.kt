@@ -14,6 +14,7 @@ import com.rad4m.eventdo.utils.SharedPreferences
 import com.rad4m.eventdo.utils.Utilities.Companion.CHANNEL_DESC
 import com.rad4m.eventdo.utils.Utilities.Companion.CHANNEL_ID
 import com.rad4m.eventdo.utils.Utilities.Companion.CHANNEL_NAME
+import com.rad4m.eventdo.utils.Utilities.Companion.FIREBASE_TOKEN
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_TOKEN
 import com.rad4m.eventdo.utils.Utilities.Companion.makeStatusBarTransparent
 import kotlinx.android.synthetic.main.activity_main.*
@@ -29,12 +30,14 @@ class MainActivity : AppCompatActivity() {
         appComponent.inject(this)
         makeStatusBarTransparent()
         setContentView(R.layout.activity_main)
-        FirebaseInstanceId.getInstance().instanceId
-            .addOnCompleteListener(OnCompleteListener { task ->
-                if (!task.isSuccessful) {
-                    return@OnCompleteListener
-                }
-            })
+        if(sharedPrefs.getValueString(FIREBASE_TOKEN).isNullOrEmpty()){
+            FirebaseInstanceId.getInstance().instanceId
+                .addOnCompleteListener(OnCompleteListener { task ->
+                    if (!task.isSuccessful) {
+                        return@OnCompleteListener
+                    }
+                })
+        }
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val channel = NotificationChannel(
                 CHANNEL_ID,
