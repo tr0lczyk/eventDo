@@ -11,6 +11,7 @@ import com.rad4m.eventdo.models.UserUpdateModel
 import com.rad4m.eventdo.models.UserUpdateResponse
 import com.rad4m.eventdo.utils.SharedPreferences
 import com.rad4m.eventdo.utils.Utilities.Companion.FIREBASE_TOKEN
+import com.rad4m.eventdo.utils.Utilities.Companion.USER_LAST_DATE
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_NUMBER
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_TOKEN
 import com.rad4m.eventdo.utils.Utilities.Companion.convertDateToString
@@ -27,7 +28,7 @@ class EventDoRepository @Inject constructor(
     private val userToken = "bearer $token"
     private val userNumber = sharedPrefs.getValueString(USER_NUMBER)?.replace("+", "") ?: ""
     private val lastDate =
-        /*sharedPrefs.getValueString(USER_LAST_DATE) ?:*/ convertDateToString(Date(0))
+        sharedPrefs.getValueString(USER_LAST_DATE) ?: convertDateToString(Date(0))
 
     suspend fun putAuthoriseNumber(
         phonenumber: String

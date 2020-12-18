@@ -128,6 +128,10 @@ class MainViewModel @Inject constructor(
                     convertDateToStringWithZ(Date(convertStringToDate(dtStart!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
                 dtEnd =
                     convertDateToStringWithZ(Date(convertStringToDate(dtEnd!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
+                modifiedDate = dtStart
+                createdDate = dtEnd
+                end = dtEnd
+                start = dtStart
             }
         }
         database.eventsDao().insertEvents(data)
