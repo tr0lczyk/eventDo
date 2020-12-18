@@ -97,7 +97,10 @@ class MainViewModel @Inject constructor(
     fun downloadEvents() {
         viewModelScope.launch {
             when (val response = repository.getEventsList()) {
-                is Result.Success -> saveEvents(response.data!!.result)
+                is Result.Success -> {
+                    saveEvents(response.data!!.result)
+                    sharedPrefs.save(USER_LAST_DATE, convertDateToString(Date()))
+                }
                 is Result.Failure -> Timber.i("failure")
                 is Result.Error -> toastMessage(
                     getApplication(),
@@ -105,7 +108,6 @@ class MainViewModel @Inject constructor(
                 )
             }
         }
-        sharedPrefs.save(USER_LAST_DATE, convertDateToString(Date()))
         swipeRefreshing.value = false
     }
 
