@@ -18,17 +18,15 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
-import com.google.android.gms.tasks.OnCompleteListener
-import com.google.firebase.iid.FirebaseInstanceId
+import com.google.firebase.messaging.RemoteMessage
 import com.rad4m.eventdo.EventDoApplication
 import com.rad4m.eventdo.MainActivity
 import com.rad4m.eventdo.R
+import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.application
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import timber.log.Timber
 import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.UUID
+import java.util.*
 
 class Utilities {
 
@@ -57,6 +55,13 @@ class Utilities {
         const val NEW_CURSOR_EVENT = "newCursorEvent"
         const val NEW_EVENT_ID = "newEventId"
 
+        const val NOTIFICATION_EVENT_ID = "notificationEventId"
+        const val NOTIFICATION_EVENT_DTSTART = "notificationEventDtStart"
+        const val NOTIFICATION_EVENT_DTEND = "notificationDtEnd"
+        const val NOTIFICATION_EVENT_TITLE = "notificationEventTitle"
+        const val NOTIFICATION_EVENT_DESCRIPTION = "notificationEventDescription"
+        const val NOTIFICATION_EVENT_LOCATION = "notificationEventLocation"
+
         val sharedPreferences = SharedPreferences(
             EventDoApplication.instance, Moshi.Builder()
                 .add(KotlinJsonAdapterFactory())
@@ -83,7 +88,16 @@ class Utilities {
         }
 
         fun convertStringToDate(text: String): Date {
-            return SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(text)
+            return if (text.contains("T")) {
+                SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(text)
+            } else {
+//                val currentDate = text.replace("/","-")
+//                val currentArray = currentDate.split(' ')
+//                SimpleDateFormat("${currentArray[0]}'T'${currentArray[1]}'Z'")
+                val date = SimpleDateFormat("MM/dd/yyyy HH:mm:ss a").parse(text)
+                val currentDate = convertDateToStringWithZ(date)
+                SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(currentDate)
+            }
         }
 
         fun showDialog(
@@ -190,28 +204,50 @@ class Utilities {
 
     object NotificationHelper {
 
-        fun displayNotification(context: Context, title: String, body: String) {
-//            if(sharedPreferences.getValueBoolean(PUSH_NOTIFICATION) != false){
-                val intent = Intent(context, MainActivity::class.java)
+        fun displayNotification(
+            context: Context,
+            title: String,
+            body: String,
+            remoteMessage: RemoteMessage
+        ) {
 
-                val pendingIntent = PendingIntent.getActivity(
-                    context,
-                    100,
-                    intent,
-                    PendingIntent.FLAG_CANCEL_CURRENT
-                )
+            val data = remoteMessage.data
+            val broadcastIntent =
+                Intent(EventDoApplication.instance, MainActivity::class.java).apply {
+                    putExtra(NOTIFICATION_EVENT_ID, data.get("id"))
+                    putExtra(NOTIFICATION_EVENT_DTSTART, data.get("dataStart"))
+                    putExtra(NOTIFICATION_EVENT_DTEND, data.get("dataEnd"))
+                    putExtra(NOTIFICATION_EVENT_DESCRIPTION, body)
+                    putExtra(NOTIFICATION_EVENT_LOCATION, data.get("location"))
+                    putExtra(NOTIFICATION_EVENT_TITLE, title)
+                }
 
-                val mBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
-                    .setSmallIcon(R.drawable.notifications_icon)
-                    .setContentTitle(title)
-                    .setContentText(body)
-                    .setContentIntent(pendingIntent)
-                    .setAutoCancel(true)
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+            val saveEventIntent = PendingIntent.getActivity(
+                application,
+                0,
+                broadcastIntent,
+                PendingIntent.FLAG_CANCEL_CURRENT
+            )
 
-                val mNotificationMgr = NotificationManagerCompat.from(context)
-                mNotificationMgr.notify(1, mBuilder.build())
-//            }
+            val intent = Intent(context, MainActivity::class.java)
+
+            val pendingIntent = PendingIntent.getActivity(
+                context,
+                100,
+                intent,
+                PendingIntent.FLAG_CANCEL_CURRENT
+            )
+
+            val mBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
+                .setSmallIcon(R.drawable.notifications_icon)
+                .setContentTitle(title)
+                .setContentText(body)
+                .setContentIntent(saveEventIntent)
+                .setAutoCancel(true)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+
+            val mNotificationMgr = NotificationManagerCompat.from(context)
+            mNotificationMgr.notify(1, mBuilder.build())
         }
     }
 

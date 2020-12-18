@@ -16,6 +16,7 @@ import com.rad4m.eventdo.models.EventModel
 import com.rad4m.eventdo.models.Result
 import com.rad4m.eventdo.networking.EventDoRepository
 import com.rad4m.eventdo.utils.SharedPreferences
+import com.rad4m.eventdo.utils.Utilities
 import com.rad4m.eventdo.utils.Utilities.Companion.DEVICE_ID
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_LAST_DATE
 import com.rad4m.eventdo.utils.Utilities.Companion.convertDateToString

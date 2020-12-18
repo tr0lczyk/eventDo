@@ -2,10 +2,7 @@ package com.rad4m.eventdo.utils
 
 import android.annotation.SuppressLint
 import android.app.Application
-import android.content.ContentResolver
-import android.content.ContentUris
-import android.content.ContentValues
-import android.content.Intent
+import android.content.*
 import android.database.Cursor
 import android.net.Uri
 import android.provider.CalendarContract
@@ -153,6 +150,34 @@ class UtilitiesCalendar {
             Timber.i("eventr added")
         }
 
+        @SuppressLint("MissingPermission")
+        fun saveCalEventContentResolverBroadcast(
+            event: EventModel,
+            context: Context
+        ) {
+            val values = ContentValues()
+            if (sharedPrefs.getValueString(
+                    USER_MAIN_CALENDAR_ID
+                ).isNullOrEmpty()
+            ) {
+                calendarIdDontKnown(values, event)
+            } else {
+                calendarIdKnown(
+                    values, event, sharedPrefs.getValueString(
+                        USER_MAIN_CALENDAR_ID
+                    )!!
+                )
+            }
+            val uri: Uri =
+                context.contentResolver.insert(CalendarContract.Events.CONTENT_URI, values)!!
+            val eventID: Long = uri.lastPathSegment!!.toLong()
+            event.apply {
+                this.localEventId = eventID
+            }
+            updateEventBroadcast(event)
+            Timber.i("eventr added")
+        }
+
         private fun isEventInCal(id: Long): Boolean {
             val event =
                 ContentUris.withAppendedId(CalendarContract.Events.CONTENT_URI, id)
@@ -294,6 +319,12 @@ class UtilitiesCalendar {
         private fun updateEvent(event: EventModel) {
             utilitiesCalendarScope.launch {
                 database.eventsDao().update(event)
+            }
+        }
+
+        private fun updateEventBroadcast(event: EventModel) {
+            utilitiesCalendarScope.launch {
+                database.eventsDao().insert(event)
             }
         }
 

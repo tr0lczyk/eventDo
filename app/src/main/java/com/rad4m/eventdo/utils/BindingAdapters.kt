@@ -19,7 +19,12 @@ fun RecyclerView.eventList(list: List<DataItem>?) {
 @BindingAdapter("convertDate")
 fun TextView.convertDate(date: String) {
     date.let {
-        val originalFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+        var originalFormat =SimpleDateFormat()
+        if(date.contains("T")){
+            originalFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+        } else {
+            originalFormat = SimpleDateFormat("MM/dd/yyyy HH:mm:ss a")
+        }
         val newDate = originalFormat.parse(date)
         val targetFormat = SimpleDateFormat("EEEE dd MMMM")
         val formattedDate = targetFormat.format(newDate).capitalize()
@@ -30,7 +35,12 @@ fun TextView.convertDate(date: String) {
 @BindingAdapter("convertDateTime")
 fun TextView.convertDateTime(date: String) {
     date.let {
-        val originalFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+        var originalFormat =SimpleDateFormat()
+        if(date.contains("T")){
+            originalFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+        } else {
+            originalFormat = SimpleDateFormat("MM/dd/yyyy HH:mm:ss a")
+        }
         val newDate = originalFormat.parse(date)
         val targetFormat = SimpleDateFormat("dd MMM yyyy HH:mm")
         val formattedDate = targetFormat.format(newDate)
@@ -41,7 +51,12 @@ fun TextView.convertDateTime(date: String) {
 @BindingAdapter("convertHoursMinutes")
 fun TextView.convertHoursMinutes(date: String) {
     date.let {
-        val originalFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+        var originalFormat =SimpleDateFormat()
+        if(date.contains("T")){
+            originalFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+        } else {
+            originalFormat = SimpleDateFormat("MM/dd/yyyy HH:mm:ss a")
+        }
         val newDate = originalFormat.parse(date)
         val targetFormat = SimpleDateFormat("HH:mm")
         val formattedDate = targetFormat.format(newDate)

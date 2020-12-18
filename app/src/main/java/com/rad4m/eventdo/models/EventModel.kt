@@ -10,43 +10,43 @@ import kotlinx.android.parcel.Parcelize
 @Parcelize
 data class EventModel(
     @Json(name = "createdBy")
-    val createdBy: Int?,
+    var createdBy: Int? = 0,
     @Json(name = "createdDate")
-    val createdDate: String?,
+    var createdDate: String? ="",
     @Json(name = "description")
-    val description: String?,
+    var description: String? ="",
     @Json(name = "dtEnd")
-    var dtEnd: String?,
+    var dtEnd: String? ="",
     @Json(name = "dtStart")
-    var dtStart: String?,
+    var dtStart: String? ="",
     @Json(name = "duration")
-    val duration: String?,
+    var duration: String? ="",
     @Json(name = "end")
-    val end: String?,
+    var end: String? ="",
     @Json(name = "geographicLocation")
-    val geographicLocation: String?,
+    var geographicLocation: String? ="",
     @PrimaryKey
     @Json(name = "id")
-    val id: Long,
+    var id: Long = 0,
     @Json(name = "isActive")
-    val isActive: Boolean?,
+    var isActive: Boolean? = true,
     @Json(name = "isAllDay")
-    val isAllDay: Boolean?,
+    var isAllDay: Boolean?= false,
     @Json(name = "location")
-    val location: String?,
+    var location: String? ="",
     @Json(name = "modifiedBy")
-    val modifiedBy: Int?,
+    var modifiedBy: Int? = 0,
     @Json(name = "modifiedDate")
-    val modifiedDate: String?,
+    var modifiedDate: String? ="",
     @Json(name = "phoneNumber")
-    val phoneNumber: String?,
+    var phoneNumber: String? ="",
     @Json(name = "start")
-    val start: String?,
+    var start: String? ="",
     @Json(name = "status")
-    val status: String?,
+    var status: String? ="",
     @Json(name = "title")
-    val title: String?,
+    var title: String? ="",
     @Json(name = "vendorId")
-    val vendorId: Int?,
+    var vendorId: Int? = 0,
     var localEventId: Long? = null
 ) : Parcelable

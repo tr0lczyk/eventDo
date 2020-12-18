@@ -60,6 +60,8 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
 
     lateinit var binding: FragmentMainBinding
 
+    lateinit var notificationEventModel: EventModel
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         appComponent.inject(this)
@@ -119,6 +121,11 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
 //                )
 //            }, 100)
         })
+        arguments?.let {
+            if (MainFragmentArgs.fromBundle(it).eventArg!= null){
+                notificationEventModel = MainFragmentArgs.fromBundle(it).eventArg!!
+            }
+        }
         return binding.root
     }
 

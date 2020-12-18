@@ -1,14 +1,11 @@
 package com.rad4m.eventdo.database
 
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Update
+import androidx.room.*
 
 @Dao
 interface BaseDao<T> {
 
-    @Insert
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
     fun insert(`object`: T)
 
     @Update

@@ -45,7 +45,7 @@ class VerificationFragment : Fragment() {
             if (it) {
                 UIUtil.hideKeyboard(activity)
                 this.findNavController()
-                    .navigate(VerificationFragmentDirections.actionVerificationFragmentToMainFragment())
+                    .navigate(VerificationFragmentDirections.actionVerificationFragmentToMainFragment(null))
                 viewModel.navigateToMain.value = false
             }
         })

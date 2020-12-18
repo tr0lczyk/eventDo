@@ -21,7 +21,8 @@ class MyFirebaseMessagingService :
             Utilities.NotificationHelper.displayNotification(
                 applicationContext,
                 remoteMessage.notification!!.title!!,
-                remoteMessage.notification!!.body!!
+                remoteMessage.notification!!.body!!,
+                remoteMessage
             )
         }
     }
