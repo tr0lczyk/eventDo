@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -21,11 +20,7 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
 import com.rad4m.eventdo.R
-import com.rad4m.eventdo.R.id.accountItem
-import com.rad4m.eventdo.R.id.infoItem
-import com.rad4m.eventdo.R.id.rateItem
-import com.rad4m.eventdo.R.id.settingsItem
-import com.rad4m.eventdo.R.id.shareItem
+import com.rad4m.eventdo.R.id.*
 import com.rad4m.eventdo.databinding.FragmentMainBinding
 import com.rad4m.eventdo.di.appComponent
 import com.rad4m.eventdo.models.EventModel

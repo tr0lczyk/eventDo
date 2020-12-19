@@ -9,6 +9,3 @@ val Activity.appComponent: AppComponent
 
 val Fragment.appComponent: AppComponent
     get() = requireActivity().appComponent
-
-val Service.appComponent: AppComponent
-    get() = (application as AppComponentProvider).appComponent

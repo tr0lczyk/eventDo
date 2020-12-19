@@ -1,6 +1,7 @@
 package com.rad4m.eventdo.di
 
 import android.app.Application
+import com.rad4m.eventdo.EventDoApplication
 import com.rad4m.eventdo.MainActivity
 import com.rad4m.eventdo.ui.introfragment.IntroFragment
 import com.rad4m.eventdo.ui.mainfragment.MainFragment
@@ -32,8 +33,6 @@ interface AppComponent {
     fun inject(activity: MyAccountFragment)
 
     fun inject(activity: SettingsFragment)
-
-    fun inject(service: MyFirebaseMessagingService)
 
     @Component.Builder
     interface Builder {

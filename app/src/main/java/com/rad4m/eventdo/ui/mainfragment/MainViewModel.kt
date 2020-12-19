@@ -9,14 +9,17 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
+import androidx.work.PeriodicWorkRequest
+import androidx.work.PeriodicWorkRequestBuilder
+import androidx.work.WorkManager
 import com.rad4m.eventdo.R
 import com.rad4m.eventdo.database.EventsDatabase
 import com.rad4m.eventdo.models.DataItem
 import com.rad4m.eventdo.models.EventModel
 import com.rad4m.eventdo.models.Result
 import com.rad4m.eventdo.networking.EventDoRepository
+import com.rad4m.eventdo.utils.EventsDownloadWorker
 import com.rad4m.eventdo.utils.SharedPreferences
-import com.rad4m.eventdo.utils.Utilities
 import com.rad4m.eventdo.utils.Utilities.Companion.DEVICE_ID
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_LAST_DATE
 import com.rad4m.eventdo.utils.Utilities.Companion.convertDateToString
@@ -28,7 +31,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.Date
+import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
@@ -59,7 +62,8 @@ class MainViewModel @Inject constructor(
         updateFirebaseToken()
         swipeRefreshing.value = false
         upcomingButton()
-        downloadEvents()
+        downloadEventsWorkManager()
+//        downloadEvents()
     }
 
     fun upcomingButton() {
@@ -212,5 +216,14 @@ class MainViewModel @Inject constructor(
             verifyWhichList()
             checkEmptyInfoVisibility()
         }, 100)
+    }
+
+    fun downloadEventsWorkManager() {
+        val workManager = WorkManager.getInstance(getApplication())
+
+        val periodicRequest =
+            PeriodicWorkRequestBuilder<EventsDownloadWorker>( 15, TimeUnit.MINUTES)
+                .build()
+        workManager.enqueue(periodicRequest)
     }
 }
