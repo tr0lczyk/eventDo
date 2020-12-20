@@ -2,14 +2,12 @@ package com.rad4m.eventdo.utils
 
 import android.annotation.SuppressLint
 import android.app.Application
-import android.content.ContentResolver
-import android.content.ContentUris
-import android.content.ContentValues
-import android.content.Intent
+import android.content.*
 import android.database.Cursor
 import android.net.Uri
 import android.provider.CalendarContract
 import android.text.TextUtils
+import android.text.format.DateUtils
 import androidx.fragment.app.FragmentActivity
 import com.rad4m.eventdo.EventDoApplication
 import com.rad4m.eventdo.R
@@ -29,7 +27,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
-import java.util.TimeZone
+import java.util.*
 
 class UtilitiesCalendar {
 
@@ -152,6 +150,35 @@ class UtilitiesCalendar {
             updateEvent(event)
             Timber.i("eventr added")
         }
+
+        @SuppressLint("MissingPermission")
+        fun saveCalEventContentResolverBroadcast(
+            event: EventModel,
+            context: Context
+        ) {
+            val values = ContentValues()
+            if (sharedPrefs.getValueString(
+                    USER_MAIN_CALENDAR_ID
+                ).isNullOrEmpty()
+            ) {
+                calendarIdDontKnown(values, event)
+            } else {
+                calendarIdKnown(
+                    values, event, sharedPrefs.getValueString(
+                        USER_MAIN_CALENDAR_ID
+                    )!!
+                )
+            }
+            val uri: Uri =
+                context.contentResolver.insert(CalendarContract.Events.CONTENT_URI, values)!!
+            val eventID: Long = uri.lastPathSegment!!.toLong()
+            event.apply {
+                this.localEventId = eventID
+            }
+            saveEvent(event)
+            Timber.i("eventr added")
+        }
+
 
         private fun isEventInCal(id: Long): Boolean {
             val event =
@@ -294,6 +321,18 @@ class UtilitiesCalendar {
         private fun updateEvent(event: EventModel) {
             utilitiesCalendarScope.launch {
                 database.eventsDao().update(event)
+            }
+        }
+
+        private fun saveEvent(event: EventModel) {
+            event.apply {
+                dtStart =
+                    Utilities.convertDateToStringWithZ(Date(convertStringToDate(dtStart!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
+                dtEnd =
+                    Utilities.convertDateToStringWithZ(Date(convertStringToDate(dtEnd!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
+            }
+            utilitiesCalendarScope.launch {
+                database.eventsDao().insert(event)
             }
         }
 

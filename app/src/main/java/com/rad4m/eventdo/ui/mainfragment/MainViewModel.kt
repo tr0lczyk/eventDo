@@ -9,7 +9,6 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
-import androidx.work.PeriodicWorkRequest
 import androidx.work.PeriodicWorkRequestBuilder
 import androidx.work.WorkManager
 import com.rad4m.eventdo.R
@@ -20,9 +19,13 @@ import com.rad4m.eventdo.models.Result
 import com.rad4m.eventdo.networking.EventDoRepository
 import com.rad4m.eventdo.utils.EventsDownloadWorker
 import com.rad4m.eventdo.utils.SharedPreferences
+import com.rad4m.eventdo.utils.Utilities
+import com.rad4m.eventdo.utils.Utilities.Companion.AUTO_ADD_EVENT
 import com.rad4m.eventdo.utils.Utilities.Companion.DEVICE_ID
+import com.rad4m.eventdo.utils.Utilities.Companion.NEW_EVENT_PAGE
+import com.rad4m.eventdo.utils.Utilities.Companion.NOT_FIRST_SETTINGS_OPENING
+import com.rad4m.eventdo.utils.Utilities.Companion.PUSH_NOTIFICATION
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_LAST_DATE
-import com.rad4m.eventdo.utils.Utilities.Companion.convertDateToString
 import com.rad4m.eventdo.utils.Utilities.Companion.convertDateToStringWithZ
 import com.rad4m.eventdo.utils.Utilities.Companion.convertStringToDate
 import com.rad4m.eventdo.utils.Utilities.Companion.toastMessage
@@ -59,11 +62,21 @@ class MainViewModel @Inject constructor(
     val dataItemList = MutableLiveData<List<DataItem>>()
 
     init {
+        if (sharedPrefs.getValueBoolean(NOT_FIRST_SETTINGS_OPENING) == false) {
+            setDefaults()
+            sharedPrefs.save(NOT_FIRST_SETTINGS_OPENING, true)
+        }
         updateFirebaseToken()
         swipeRefreshing.value = false
         upcomingButton()
         downloadEventsWorkManager()
 //        downloadEvents()
+    }
+
+    private fun setDefaults() {
+        sharedPrefs.save(NEW_EVENT_PAGE, false)
+        sharedPrefs.save(AUTO_ADD_EVENT, true)
+        sharedPrefs.save(PUSH_NOTIFICATION, true)
     }
 
     fun upcomingButton() {
@@ -102,8 +115,15 @@ class MainViewModel @Inject constructor(
         viewModelScope.launch {
             when (val response = repository.getEventsList()) {
                 is Result.Success -> {
-                    saveEvents(response.data!!.result)
-                    sharedPrefs.save(USER_LAST_DATE, convertDateToString(Date()))
+                    if (sharedPrefs.getValueBoolean(AUTO_ADD_EVENT) == true) {
+                        Utilities.addEachNewEventToCalendar(
+                            response.data!!.result,
+                            getApplication()
+                        )
+                    } else {
+                        saveEvents(response.data!!.result)
+                    }
+                    sharedPrefs.save(USER_LAST_DATE, convertDateToStringWithZ(Date()))
                 }
                 is Result.Failure -> Timber.i("failure")
                 is Result.Error -> toastMessage(
@@ -134,10 +154,6 @@ class MainViewModel @Inject constructor(
                     convertDateToStringWithZ(Date(convertStringToDate(dtStart!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
                 dtEnd =
                     convertDateToStringWithZ(Date(convertStringToDate(dtEnd!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
-                modifiedDate = dtStart
-                createdDate = dtEnd
-                end = dtEnd
-                start = dtStart
             }
         }
         database.eventsDao().insertEvents(data)
@@ -222,7 +238,8 @@ class MainViewModel @Inject constructor(
         val workManager = WorkManager.getInstance(getApplication())
 
         val periodicRequest =
-            PeriodicWorkRequestBuilder<EventsDownloadWorker>( 15, TimeUnit.MINUTES)
+            PeriodicWorkRequestBuilder<EventsDownloadWorker>(15, TimeUnit.MINUTES)
+                .setInitialDelay(1, TimeUnit.MINUTES)
                 .build()
         workManager.enqueue(periodicRequest)
     }

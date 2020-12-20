@@ -4,6 +4,7 @@ import android.Manifest
 import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -41,6 +42,7 @@ import net.yslibrary.android.keyboardvisibilityevent.util.UIUtil
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.OnPermissionDenied
 import permissions.dispatcher.RuntimePermissions
+import timber.log.Timber
 import javax.inject.Inject
 
 @RuntimePermissions
@@ -117,6 +119,15 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
         return binding.root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        permissionToReadWithPermissionCheck()
+        Handler().postDelayed({
+            permissionToWriteWithPermissionCheck()
+        }, 5000)
+
+    }
+
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             infoItem -> goToEventDoPage()
@@ -152,6 +163,21 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
     fun checkIfEventsDeleted() {
         verifyIfEventDeleted()
     }
+
+    @NeedsPermission(
+        Manifest.permission.WRITE_CALENDAR
+    )
+    fun permissionToWrite() {
+        Timber.i("WRITE aability")
+    }
+
+    @NeedsPermission(
+        Manifest.permission.READ_CALENDAR
+    )
+    fun permissionToRead() {
+        Timber.i("READ aability")
+    }
+
 
     @NeedsPermission(
         Manifest.permission.WRITE_CALENDAR
@@ -214,7 +240,7 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
     fun onDenied() {
         Toast.makeText(
             activity,
-            getString(R.string.denied_calendar_access_text),
+            getString(R.string.denied_calendar_access_text_write),
             Toast.LENGTH_LONG
         )
             .show()
@@ -226,7 +252,7 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
     fun onDenied2() {
         Toast.makeText(
             activity,
-            getString(R.string.denied_calendar_access_text),
+            getString(R.string.denied_calendar_access_text_read),
             Toast.LENGTH_LONG
         )
             .show()

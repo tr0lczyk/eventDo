@@ -21,7 +21,8 @@
     <string name="continuing">Genom att fortsätta godkänner du eventDos användarvillkor och integritetspolicy.</string>
     <string name="delete_account_internet_fail">i kan inte radera ditt konto. Kontrollera din internetanslutning.</string>
     <string name="delete_your_account">Radera ditt konto</string>
-    <string name="denied_calendar_access_text">Du kommer inte att kunna välja standardkalender</string>
+    <string name="denied_calendar_access_text_write">Du kommer inte att kunna välja standardkalender</string>
+    <string name="denied_calendar_access_text_read">Du kommer inte att kunna välja standardkalender</string>
     <string name="download_events_internet_fail">Kontrollera din internetanslutning och försök igen</string>
     <string name="drawer_about">Om eventDo</string>
     <string name="drawer_my_account">Mitt konto</string>

@@ -11,9 +11,12 @@ import com.rad4m.eventdo.di.ApiModule
 import com.rad4m.eventdo.models.EventModel
 import com.rad4m.eventdo.networking.ApiService
 import com.rad4m.eventdo.networking.EventDoRepository
+import com.rad4m.eventdo.utils.Utilities.Companion.USER_LAST_DATE
+import com.rad4m.eventdo.utils.Utilities.Companion.addEachNewEventToCalendar
+import com.rad4m.eventdo.utils.Utilities.Companion.convertDateToStringWithZ
+import com.rad4m.eventdo.utils.Utilities.Companion.convertStringToDate
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
-import dagger.Provides
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import okhttp3.OkHttpClient
@@ -22,12 +25,9 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import timber.log.Timber
 import java.util.*
-import javax.inject.Inject
-import javax.inject.Provider
-import javax.inject.Singleton
 
-class EventsDownloadWorker @Inject constructor(
-    appContext: Context,
+class EventsDownloadWorker(
+    private val appContext: Context,
     workerParams: WorkerParameters
 ) : CoroutineWorker(
     appContext,
@@ -54,7 +54,8 @@ class EventsDownloadWorker @Inject constructor(
         .build().create<ApiService>(ApiService::class.java)
 
     val repository = EventDoRepository(
-        apiService,sharedPrefs)
+        apiService, sharedPrefs
+    )
 
     val database = EventsDatabase(appContext)
 
@@ -64,10 +65,17 @@ class EventsDownloadWorker @Inject constructor(
             Timber.i("=========log")
             when (val response = repository.getEventsList()) {
                 is com.rad4m.eventdo.models.Result.Success -> {
-                    saveEvents(response.data!!.result)
+                    if (sharedPrefs.getValueBoolean(Utilities.AUTO_ADD_EVENT) == true) {
+                        addEachNewEventToCalendar(
+                            response.data!!.result,
+                            appContext
+                        )
+                    } else {
+                        saveEvents(response.data!!.result)
+                    }
                     sharedPrefs.save(
-                        Utilities.USER_LAST_DATE,
-                        Utilities.convertDateToString(Date())
+                        USER_LAST_DATE,
+                        convertDateToStringWithZ(Date())
                     )
                     Result.success()
                 }
@@ -76,9 +84,9 @@ class EventsDownloadWorker @Inject constructor(
                     Result.failure()
                 }
                 is com.rad4m.eventdo.models.Result.Error -> {
-                    if (!Utilities.appInForeground(applicationContext)) {
+                    if (!Utilities.appInForeground(appContext)) {
                         Utilities.toastMessage(
-                            applicationContext,
+                            appContext,
                             R.string.download_events_internet_fail
                         )
                     }
@@ -86,23 +94,18 @@ class EventsDownloadWorker @Inject constructor(
                 }
                 else -> Result.failure()
             }
-            Result.success()
         } catch (e: Exception) {
             Result.failure()
         }
     }
 
-        private suspend fun saveEvents(data: List<EventModel>) {
+    private suspend fun saveEvents(data: List<EventModel>) {
         for (i in data) {
             i.apply {
                 dtStart =
-                    Utilities.convertDateToStringWithZ(Date(Utilities.convertStringToDate(dtStart!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
+                    convertDateToStringWithZ(Date(convertStringToDate(dtStart!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
                 dtEnd =
-                    Utilities.convertDateToStringWithZ(Date(Utilities.convertStringToDate(dtEnd!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
-                modifiedDate = dtStart
-                createdDate = dtEnd
-                end = dtEnd
-                start = dtStart
+                    convertDateToStringWithZ(Date(convertStringToDate(dtEnd!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
             }
         }
         database.eventsDao().insertEvents(data)

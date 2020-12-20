@@ -11,7 +11,6 @@ import com.rad4m.eventdo.networking.EventDoRepository
 import com.rad4m.eventdo.utils.SharedPreferences
 import com.rad4m.eventdo.utils.Utilities
 import com.rad4m.eventdo.utils.Utilities.Companion.AUTO_ADD_EVENT
-import com.rad4m.eventdo.utils.Utilities.Companion.NOT_FIRST_SETTINGS_OPENING
 import com.rad4m.eventdo.utils.Utilities.Companion.NEW_EVENT_PAGE
 import com.rad4m.eventdo.utils.Utilities.Companion.PUSH_NOTIFICATION
 import kotlinx.coroutines.launch
@@ -32,14 +31,10 @@ class SettingsViewModel @Inject constructor(
 
     init {
         changeBackButtonColor(R.color.darkGray)
-        if (sharedPrefs.getValueBoolean(NOT_FIRST_SETTINGS_OPENING) == false) {
-            setDefaults()
-            sharedPrefs.save(NOT_FIRST_SETTINGS_OPENING, true)
-        } else {
-            isNewEventPageOn.value = sharedPrefs.getValueBoolean(NEW_EVENT_PAGE)
-            isAutoAddEventOn.value = sharedPrefs.getValueBoolean(AUTO_ADD_EVENT)
-            isPushEnabled.value = sharedPrefs.getValueBoolean(PUSH_NOTIFICATION)
-        }
+        isNewEventPageOn.value = sharedPrefs.getValueBoolean(NEW_EVENT_PAGE)
+        isAutoAddEventOn.value = sharedPrefs.getValueBoolean(AUTO_ADD_EVENT)
+        isPushEnabled.value = sharedPrefs.getValueBoolean(PUSH_NOTIFICATION)
+
     }
 
     fun startBackNavigation() {
@@ -54,12 +49,6 @@ class SettingsViewModel @Inject constructor(
 
     private fun changeBackButtonColor(colorInt: Int) {
         backIconTintColor.value = ContextCompat.getColor(getApplication(), colorInt)
-    }
-
-    private fun setDefaults() {
-        isNewEventPageOn.value = false
-        isAutoAddEventOn.value = true
-        isPushEnabled.value = true
     }
 
     fun updateFirebaseToken() {

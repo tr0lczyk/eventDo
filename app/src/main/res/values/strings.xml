@@ -67,7 +67,8 @@
     <string name="send_with">Send with</string>
     <string name="chooser_link">Hello,
 I want to tell you about an awesome app. Check out http://www.eventdo.se</string>
-    <string name="denied_calendar_access_text">You will not be able to choose the default calendar</string>
+    <string name="denied_calendar_access_text_write">You will not be able to write the default calendar</string>
+    <string name="denied_calendar_access_text_read">You will not be able to read the default calendar</string>
     <string name="event_saved">Event saved to calendar!</string>
     <string name="sign_up_internet_fail">Sign up failed. Check your internet connection and try again</string>
     <string name="verification_internet_fail">Verification failed. Check your internet connection and try again.</string>

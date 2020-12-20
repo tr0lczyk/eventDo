@@ -10,6 +10,7 @@ import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.text.TextUtils
+import android.text.format.DateUtils
 import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
@@ -21,10 +22,13 @@ import androidx.fragment.app.FragmentActivity
 import com.rad4m.eventdo.EventDoApplication
 import com.rad4m.eventdo.MainActivity
 import com.rad4m.eventdo.R
+import com.rad4m.eventdo.models.EventModel
+import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.sharedPrefs
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import java.text.SimpleDateFormat
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 
 class Utilities {
@@ -53,6 +57,8 @@ class Utilities {
         const val DEVICE_ID = "deviceId"
         const val NEW_CURSOR_EVENT = "newCursorEvent"
         const val NEW_EVENT_ID = "newEventId"
+        const val ONE_MINUTE_IN_MILLIS: Long = 60000
+        const val ONE_HOUR_IN_MILLIS: Long = 3600000
 
         val sharedPreferences = SharedPreferences(
             EventDoApplication.instance, Moshi.Builder()
@@ -62,12 +68,16 @@ class Utilities {
 
         fun convertDateToString(date: Date): String {
             val originalFormat = SimpleDateFormat("yyyy-MM-dd HH:mm:ss")
-            return originalFormat.format(date)
+            val t = date.time
+            val newDate = Date(t - ONE_MINUTE_IN_MILLIS)
+            return originalFormat.format(newDate)
         }
 
         fun convertDateToStringWithZ(date: Date): String {
             val originalFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
-            return originalFormat.format(date)
+            val t = date.time
+            val newDate = Date(t - ONE_MINUTE_IN_MILLIS)
+            return originalFormat.format(newDate)
         }
 
         fun showKeyboard(activity: FragmentActivity) {
@@ -81,6 +91,13 @@ class Utilities {
 
         fun convertStringToDate(text: String): Date {
             return SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(text)
+        }
+
+        fun convertStringToDateWithLongerZ(text: String): Date {
+            val date = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS'Z'").parse(text)
+            val t = date.time
+            val newDate = Date(t + ONE_HOUR_IN_MILLIS)
+            return newDate
         }
 
         fun showDialog(
@@ -183,35 +200,55 @@ class Utilities {
                 Toast.LENGTH_LONG
             ).show()
         }
+
+        fun addEachNewEventToCalendar(eventModels: List<EventModel>, context: Context) {
+            val lastDate =
+                TimeUnit.MILLISECONDS.toSeconds(convertStringToDate(
+                        sharedPrefs.getValueString(
+                            USER_LAST_DATE
+                        ) ?: convertDateToStringWithZ(Date(0))
+                    ).time)
+
+            for (i in eventModels) {
+//                i.apply {
+//                    dtStart =
+//                        convertDateToStringWithZ(Date(convertStringToDate(dtStart!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
+//                    dtEnd =
+//                        convertDateToStringWithZ(Date(convertStringToDate(dtEnd!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
+//                }
+                val eventCreateDate =
+                    TimeUnit.MILLISECONDS.toSeconds(convertStringToDateWithLongerZ(i.createdDate!!).time)
+                if (lastDate < eventCreateDate) {
+                    UtilitiesCalendar.saveCalEventContentResolverBroadcast(i, context)
+                }
+            }
+        }
     }
 
     object NotificationHelper {
 
         fun displayNotification(context: Context, title: String, body: String) {
-//            if(sharedPreferences.getValueBoolean(PUSH_NOTIFICATION) != false){
-                val intent = Intent(context, MainActivity::class.java)
+            val intent = Intent(context, MainActivity::class.java)
 
             intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
 
-                val pendingIntent = PendingIntent.getActivity(
-                    context,
-                    0,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT
-                )
+            val pendingIntent = PendingIntent.getActivity(
+                context,
+                0,
+                intent,
+                PendingIntent.FLAG_UPDATE_CURRENT
+            )
 
-                val mBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
-                    .setSmallIcon(R.drawable.notifications_icon)
-                    .setContentTitle(title)
-                    .setContentText(body)
-                    .setContentIntent(pendingIntent)
-                    .setAutoCancel(true)
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+            val mBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
+                .setSmallIcon(R.drawable.notifications_icon)
+                .setContentTitle(title)
+                .setContentText(body)
+                .setContentIntent(pendingIntent)
+                .setAutoCancel(true)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
 
-                val mNotificationMgr = NotificationManagerCompat.from(context)
-                mNotificationMgr.notify(1, mBuilder.build())
-//            }
+            val mNotificationMgr = NotificationManagerCompat.from(context)
+            mNotificationMgr.notify(1, mBuilder.build())
         }
     }
-
 }
