@@ -1,8 +1,6 @@
 package com.rad4m.eventdo
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.os.Build
+import android.content.Intent
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavOptions
@@ -11,13 +9,11 @@ import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId
 import com.rad4m.eventdo.di.appComponent
 import com.rad4m.eventdo.utils.SharedPreferences
-import com.rad4m.eventdo.utils.Utilities.Companion.CHANNEL_DESC
-import com.rad4m.eventdo.utils.Utilities.Companion.CHANNEL_ID
-import com.rad4m.eventdo.utils.Utilities.Companion.CHANNEL_NAME
 import com.rad4m.eventdo.utils.Utilities.Companion.FIREBASE_TOKEN
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_TOKEN
 import com.rad4m.eventdo.utils.Utilities.Companion.makeStatusBarTransparent
 import kotlinx.android.synthetic.main.activity_main.*
+import timber.log.Timber
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
@@ -38,17 +34,6 @@ class MainActivity : AppCompatActivity() {
                     }
                 })
         }
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val channel = NotificationChannel(
-                CHANNEL_ID,
-                CHANNEL_NAME,
-                NotificationManager.IMPORTANCE_DEFAULT
-            )
-            channel.description = CHANNEL_DESC
-            val manager = getSystemService(NotificationManager::class.java)
-            manager.createNotificationChannel(channel)
-        }
-
         val navOptions = NavOptions.Builder()
             .setPopUpTo(R.id.introFragment, true)
             .build()

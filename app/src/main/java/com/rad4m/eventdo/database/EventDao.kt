@@ -28,6 +28,9 @@ interface EventDao : BaseDao<EventModel> {
     @Query("select * from eventTable where id =:id")
     fun getEvent(id: Int): EventModel
 
+    @Query("select * from eventTable where id =:id")
+    fun getEventById(id: Int): LiveData<EventModel>
+
     @Query("select * from eventTable where localEventId != 0")
     fun getEventWithLocalEventId(): List<EventModel>?
 }

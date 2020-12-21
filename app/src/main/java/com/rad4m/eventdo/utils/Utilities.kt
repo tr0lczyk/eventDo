@@ -59,6 +59,7 @@ class Utilities {
         const val NEW_EVENT_ID = "newEventId"
         const val ONE_MINUTE_IN_MILLIS: Long = 60000
         const val ONE_HOUR_IN_MILLIS: Long = 3600000
+        const val EVENT_ID_NOTIFICATION= "eventIdNotification"
 
         val sharedPreferences = SharedPreferences(
             EventDoApplication.instance, Moshi.Builder()
@@ -222,33 +223,6 @@ class Utilities {
                     UtilitiesCalendar.saveCalEventContentResolverBroadcast(i, context)
                 }
             }
-        }
-    }
-
-    object NotificationHelper {
-
-        fun displayNotification(context: Context, title: String, body: String) {
-            val intent = Intent(context, MainActivity::class.java)
-
-            intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_NEW_TASK)
-
-            val pendingIntent = PendingIntent.getActivity(
-                context,
-                0,
-                intent,
-                PendingIntent.FLAG_UPDATE_CURRENT
-            )
-
-            val mBuilder = NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.drawable.notifications_icon)
-                .setContentTitle(title)
-                .setContentText(body)
-                .setContentIntent(pendingIntent)
-                .setAutoCancel(true)
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-
-            val mNotificationMgr = NotificationManagerCompat.from(context)
-            mNotificationMgr.notify(1, mBuilder.build())
         }
     }
 }

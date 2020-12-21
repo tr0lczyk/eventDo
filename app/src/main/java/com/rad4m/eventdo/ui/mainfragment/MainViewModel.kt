@@ -29,10 +29,7 @@ import com.rad4m.eventdo.utils.Utilities.Companion.USER_LAST_DATE
 import com.rad4m.eventdo.utils.Utilities.Companion.convertDateToStringWithZ
 import com.rad4m.eventdo.utils.Utilities.Companion.convertStringToDate
 import com.rad4m.eventdo.utils.Utilities.Companion.toastMessage
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -46,7 +43,8 @@ class MainViewModel @Inject constructor(
 ) : AndroidViewModel(application) {
 
     private val viewModelJob = Job()
-    private val viewModelScope = CoroutineScope(Dispatchers.Main + viewModelJob)
+     val viewModelScope = CoroutineScope(Dispatchers.Main + viewModelJob)
+     private val viewModelScopeDatabase = CoroutineScope(Dispatchers.IO + viewModelJob)
     val upcomingTextColor = MutableLiveData<Int>()
     val pastTextColor = MutableLiveData<Int>()
     val emptyListText = MutableLiveData<String>()
@@ -242,5 +240,11 @@ class MainViewModel @Inject constructor(
                 .setInitialDelay(1, TimeUnit.MINUTES)
                 .build()
         workManager.enqueue(periodicRequest)
+    }
+
+     suspend fun getOneEvent(eventId: String): EventModel {
+         return viewModelScopeDatabase.async {
+             database.eventsDao().getEvent(eventId.toInt())
+         }.await()
     }
 }

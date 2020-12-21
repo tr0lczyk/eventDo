@@ -3,6 +3,7 @@ package com.rad4m.eventdo.di
 import android.app.Application
 import com.rad4m.eventdo.EventDoApplication
 import com.rad4m.eventdo.MainActivity
+import com.rad4m.eventdo.SplashActivity
 import com.rad4m.eventdo.ui.introfragment.IntroFragment
 import com.rad4m.eventdo.ui.mainfragment.MainFragment
 import com.rad4m.eventdo.ui.myaccountfragment.MyAccountFragment
@@ -21,6 +22,8 @@ interface AppComponent {
     fun application(): Application
 
     fun inject(activity: MainActivity)
+
+    fun inject(activity: SplashActivity)
 
     fun inject(activity: MainFragment)
 

@@ -5,6 +5,7 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -26,6 +27,7 @@ import com.rad4m.eventdo.databinding.FragmentMainBinding
 import com.rad4m.eventdo.di.appComponent
 import com.rad4m.eventdo.models.EventModel
 import com.rad4m.eventdo.utils.HeaderItemDecoration
+import com.rad4m.eventdo.utils.Utilities.Companion.EVENT_ID_NOTIFICATION
 import com.rad4m.eventdo.utils.Utilities.Companion.ITEM_VIEW_TYPE_HEADER
 import com.rad4m.eventdo.utils.Utilities.Companion.NEW_EVENT_PAGE
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_ID
@@ -38,6 +40,7 @@ import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.saveEventToCalendar
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.verifyIfEventDeleted
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.verifyLastIntentEvent
 import com.rad4m.eventdo.utils.ViewModelFactory
+import kotlinx.coroutines.launch
 import net.yslibrary.android.keyboardvisibilityevent.util.UIUtil
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.OnPermissionDenied
@@ -125,7 +128,20 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
         Handler().postDelayed({
             permissionToWriteWithPermissionCheck()
         }, 5000)
-
+        if (!viewModel.sharedPrefs.getValueString(EVENT_ID_NOTIFICATION).isNullOrBlank()) {
+            viewModel.downloadEvents()
+            Handler(Looper.getMainLooper()).postDelayed({
+                viewModel.viewModelScope.launch {
+                    val eventModel = viewModel.getOneEvent(
+                        viewModel.sharedPrefs.getValueString(
+                            EVENT_ID_NOTIFICATION
+                        )!!
+                    )
+                    onEventClickWithPermissionCheck(eventModel)
+                    viewModel.sharedPrefs.removeValue(EVENT_ID_NOTIFICATION)
+                }
+            }, 3000)
+        }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -226,7 +242,7 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
             event,
             activity
         )
-        Snackbar.make(binding.menuDrawer, "Event is already in calendar", Snackbar.LENGTH_LONG)
+        Snackbar.make(binding.menuDrawer, getString(R.string.events_added_to_calendar), Snackbar.LENGTH_LONG)
             .setAction(
                 R.string.show_calendar
             ) {

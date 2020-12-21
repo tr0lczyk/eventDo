@@ -100,4 +100,5 @@ I want to tell you about an awesome app. Check out http://www.eventdo.se</string
     <string name="no_button">No</string>
     <string name="push_notifications">Push Notifications</string>
     <string name="notify_me_when_the_new_event_is_received">Notify me when the new event is received</string>
+    <string name="events_added_to_calendar">Event added to calendar</string>
 </resources>
