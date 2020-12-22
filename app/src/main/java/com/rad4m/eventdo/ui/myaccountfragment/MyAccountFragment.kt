@@ -73,9 +73,9 @@ class MyAccountFragment : Fragment() {
                     activity!!,
                     getString(R.string.account_delete_text),
                     getString(R.string.delete_your_account),
-                    getString(R.string.yes_button),
+                    getString(R.string.delete_main),
                     deleteUser,
-                    getString(R.string.no_button)
+                    getString(R.string.cancel)
                 )
                 viewModel.showDeleteUserDialog.value = false
             }

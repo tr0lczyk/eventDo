@@ -254,24 +254,26 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
         Manifest.permission.WRITE_CALENDAR
     )
     fun onDenied() {
-        Toast.makeText(
-            activity,
-            getString(R.string.denied_calendar_access_text_write),
-            Toast.LENGTH_LONG
-        )
-            .show()
+//        Toast.makeText(
+//            activity,
+//            getString(R.string.denied_calendar_access_text_write),
+//            Toast.LENGTH_LONG
+//        )
+//            .show()
+        Timber.i("write calendar toast")
     }
 
     @OnPermissionDenied(
         Manifest.permission.READ_CALENDAR
     )
     fun onDenied2() {
-        Toast.makeText(
-            activity,
-            getString(R.string.denied_calendar_access_text_read),
-            Toast.LENGTH_LONG
-        )
-            .show()
+//        Toast.makeText(
+//            activity,
+//            getString(R.string.denied_calendar_access_text_read),
+//            Toast.LENGTH_LONG
+//        )
+//            .show()
+        Timber.i("read calendar toast")
     }
 
     override fun onRequestPermissionsResult(
