@@ -12,6 +12,9 @@ import com.google.firebase.iid.FirebaseInstanceId
 import com.rad4m.eventdo.R
 import com.rad4m.eventdo.databinding.FragmentMyaccountBinding
 import com.rad4m.eventdo.di.appComponent
+import com.rad4m.eventdo.utils.Utilities.Companion.USER_EMAIL
+import com.rad4m.eventdo.utils.Utilities.Companion.USER_NAME
+import com.rad4m.eventdo.utils.Utilities.Companion.USER_SURNAME
 import com.rad4m.eventdo.utils.Utilities.Companion.makeStatusBarTransparent
 import com.rad4m.eventdo.utils.Utilities.Companion.showDialog
 import com.rad4m.eventdo.utils.Utilities.Companion.showInformingDialog
@@ -78,6 +81,74 @@ class MyAccountFragment : Fragment() {
                     getString(R.string.cancel)
                 )
                 viewModel.showDeleteUserDialog.value = false
+            }
+        })
+
+        viewModel.userMail.observe(this, Observer {
+            if (viewModel.contentLoaded && !it.equals(
+                    viewModel.sharedPrefs.getValueString(
+                        USER_EMAIL
+                    )
+                )
+            ) {
+                viewModel.buttonBackground.value = R.color.darkRed
+                viewModel.buttonClickability.value = true
+            } else if (viewModel.contentLoaded && it.equals(
+                    viewModel.sharedPrefs.getValueString(
+                        USER_EMAIL
+                    )
+                ) && viewModel.userName.value.equals(viewModel.sharedPrefs.getValueString(USER_NAME)) && viewModel.userSurname.value.equals(
+                    viewModel.sharedPrefs.getValueString(
+                        USER_SURNAME
+                    )
+                )
+            ) {
+                viewModel.buttonBackground.value = R.color.darkGray
+                viewModel.buttonClickability.value = false
+            }
+        })
+
+        viewModel.userName.observe(this, Observer {
+            if (viewModel.contentLoaded && !it.equals(viewModel.sharedPrefs.getValueString(USER_NAME))) {
+                viewModel.buttonBackground.value = R.color.darkRed
+                viewModel.buttonClickability.value = true
+            } else if (viewModel.contentLoaded && it.equals(
+                    viewModel.sharedPrefs.getValueString(
+                        USER_NAME
+                    )
+                ) && viewModel.userMail.value.equals(viewModel.sharedPrefs.getValueString(USER_EMAIL)) && viewModel.userSurname.value.equals(
+                    viewModel.sharedPrefs.getValueString(
+                        USER_SURNAME
+                    )
+                )
+            ) {
+                viewModel.buttonBackground.value = R.color.darkGray
+                viewModel.buttonClickability.value = false
+            }
+        })
+
+        viewModel.userSurname.observe(this, Observer {
+            if (viewModel.contentLoaded && !it.equals(
+                    viewModel.sharedPrefs.getValueString(
+                        USER_SURNAME
+                    )
+                )
+            ) {
+                viewModel.buttonBackground.value = R.color.darkRed
+                viewModel.buttonClickability.value = true
+            } else if (viewModel.contentLoaded && it.equals(
+                    viewModel.sharedPrefs.getValueString(
+                        USER_SURNAME
+                    )
+                )
+                && viewModel.userName.value.equals(viewModel.sharedPrefs.getValueString(USER_NAME)) && viewModel.userMail.value.equals(
+                    viewModel.sharedPrefs.getValueString(
+                        USER_EMAIL
+                    )
+                )
+            ) {
+                viewModel.buttonBackground.value = R.color.darkGray
+                viewModel.buttonClickability.value = false
             }
         })
 

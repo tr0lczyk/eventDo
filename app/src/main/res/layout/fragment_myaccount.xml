@@ -143,13 +143,14 @@
 
             <com.google.android.material.button.MaterialButton
                 style="@style/Widget.MaterialComponents.Button"
-                android:onClick="@{() -> viewModel.checkIfChangePossible()}"
+                android:onClick="@{() -> viewModel.updateUserProfile()}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"
                 android:layout_marginStart="8dp"
                 android:layout_marginEnd="8dp"
-                android:backgroundTint="@color/darkGray"
+                app:setBackgroundTint="@{viewModel.buttonBackground}"
+                android:clickable="@{viewModel.buttonClickability}"
                 android:text="@string/save"
                 android:textAllCaps="false"
                 android:textSize="18sp"

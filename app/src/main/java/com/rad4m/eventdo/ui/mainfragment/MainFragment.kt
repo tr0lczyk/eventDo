@@ -10,7 +10,6 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -30,6 +29,7 @@ import com.rad4m.eventdo.utils.HeaderItemDecoration
 import com.rad4m.eventdo.utils.Utilities.Companion.EVENT_ID_NOTIFICATION
 import com.rad4m.eventdo.utils.Utilities.Companion.ITEM_VIEW_TYPE_HEADER
 import com.rad4m.eventdo.utils.Utilities.Companion.NEW_EVENT_PAGE
+import com.rad4m.eventdo.utils.Utilities.Companion.TODAY_APP_START
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_ID
 import com.rad4m.eventdo.utils.Utilities.Companion.makeStatusBarNotTransparent
 import com.rad4m.eventdo.utils.Utilities.Companion.showDialog
@@ -111,37 +111,33 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
 
         viewModel.dataItemList.observe(this, Observer {
             adapter.submitList(it)
-//            Handler().postDelayed({
-//                binding.recyclerEvents.layoutManager!!.smoothScrollToPosition(
-//                    binding.recyclerEvents,
-//                    null,
-//                    0
-//                )
-//            }, 100)
         })
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        permissionToReadWithPermissionCheck()
-        Handler().postDelayed({
-            permissionToWriteWithPermissionCheck()
-        }, 5000)
-        if (!viewModel.sharedPrefs.getValueString(EVENT_ID_NOTIFICATION).isNullOrBlank()) {
-            viewModel.downloadEvents()
-            Handler(Looper.getMainLooper()).postDelayed({
-                viewModel.viewModelScope.launch {
-                    val eventModel = viewModel.getOneEvent(
-                        viewModel.sharedPrefs.getValueString(
-                            EVENT_ID_NOTIFICATION
-                        )!!
-                    )
-                    onEventClickWithPermissionCheck(eventModel)
-                    viewModel.sharedPrefs.removeValue(EVENT_ID_NOTIFICATION)
-                }
-            }, 3000)
+        if (viewModel.sharedPrefs.getValueBoolean(TODAY_APP_START) == false) {
+            permissionToReadWithPermissionCheck()
+            Handler().postDelayed({
+                permissionToWriteWithPermissionCheck()
+                viewModel.sharedPrefs.save(TODAY_APP_START,true)
+            }, 5000)
         }
+//        if (!viewModel.sharedPrefs.getValueString(EVENT_ID_NOTIFICATION).isNullOrBlank()) {
+//            viewModel.downloadEvents()
+//            Handler(Looper.getMainLooper()).postDelayed({
+//                viewModel.viewModelScope.launch {
+//                    val eventModel = viewModel.getOneEvent(
+//                        viewModel.sharedPrefs.getValueString(
+//                            EVENT_ID_NOTIFICATION
+//                        )!!
+//                    )
+//                    onEventClickWithPermissionCheck(eventModel)
+//                    viewModel.sharedPrefs.removeValue(EVENT_ID_NOTIFICATION)
+//                }
+//            }, 3000)
+//        }
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -242,7 +238,11 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
             event,
             activity
         )
-        Snackbar.make(binding.menuDrawer, getString(R.string.events_added_to_calendar), Snackbar.LENGTH_LONG)
+        Snackbar.make(
+            binding.menuDrawer,
+            getString(R.string.events_added_to_calendar),
+            Snackbar.LENGTH_LONG
+        )
             .setAction(
                 R.string.show_calendar
             ) {
@@ -331,9 +331,22 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
         verifyLastIntentEvent(activity!!)
     }
 
+    override fun onDestroy() {
+        super.onDestroy()
+        viewModel.sharedPrefs.removeValue(TODAY_APP_START)
+    }
+
     override fun onStart() {
         super.onStart()
         verifyLastIntentWithPermissionCheck()
         checkIfEventsDeletedWithPermissionCheck()
+    }
+
+    override fun onResume() {
+        super.onResume()
+        if (!viewModel.sharedPrefs.getValueString(EVENT_ID_NOTIFICATION).isNullOrBlank()) {
+            viewModel.downloadEvents()
+            viewModel.sharedPrefs.removeValue(EVENT_ID_NOTIFICATION)
+        }
     }
 }

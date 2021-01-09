@@ -3,10 +3,8 @@ package com.rad4m.eventdo.utils
 import android.app.Activity
 import android.app.ActivityManager
 import android.app.AlertDialog
-import android.app.PendingIntent
 import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
-import android.content.Intent
 import android.graphics.Color
 import android.os.Build
 import android.text.TextUtils
@@ -15,12 +13,9 @@ import android.view.View
 import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import com.rad4m.eventdo.EventDoApplication
-import com.rad4m.eventdo.MainActivity
 import com.rad4m.eventdo.R
 import com.rad4m.eventdo.models.EventModel
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.sharedPrefs
@@ -58,8 +53,13 @@ class Utilities {
         const val NEW_CURSOR_EVENT = "newCursorEvent"
         const val NEW_EVENT_ID = "newEventId"
         const val ONE_MINUTE_IN_MILLIS: Long = 60000
-        const val ONE_HOUR_IN_MILLIS: Long = 3600000
+        const val ONE_HOUR_IN_MILLIS: Long = 3540000
         const val EVENT_ID_NOTIFICATION= "eventIdNotification"
+        const val TODAY_APP_START= "todayAppStart"
+        const val NOT_FIRST_START= "notFirstStart"
+        const val USER_NAME= "userName"
+        const val USER_SURNAME= "userSurname"
+        const val USER_EMAIL= "userEmail"
 
         val sharedPreferences = SharedPreferences(
             EventDoApplication.instance, Moshi.Builder()
@@ -220,6 +220,12 @@ class Utilities {
                 val eventCreateDate =
                     TimeUnit.MILLISECONDS.toSeconds(convertStringToDateWithLongerZ(i.createdDate!!).time)
                 if (lastDate < eventCreateDate) {
+                    i.apply {
+                        dtStart =
+                            convertDateToStringWithZ(Date(convertStringToDate(dtStart!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
+                        dtEnd =
+                            convertDateToStringWithZ(Date(convertStringToDate(dtEnd!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
+                    }
                     UtilitiesCalendar.saveCalEventContentResolverBroadcast(i, context)
                 }
             }

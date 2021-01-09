@@ -1,9 +1,12 @@
 package com.rad4m.eventdo.utils
 
+import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.databinding.BindingAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.button.MaterialButton
 import com.rad4m.eventdo.models.DataItem
 import com.rad4m.eventdo.networking.VendorLogoNetworking.Companion.downloadLogo
 import com.rad4m.eventdo.ui.mainfragment.EventsAdapter
@@ -52,6 +55,11 @@ fun TextView.convertHoursMinutes(date: String) {
 @BindingAdapter("setHintAs")
 fun EditText.setHintAs(value: String) {
     hint = value
+}
+
+@BindingAdapter("setBackgroundTint")
+fun MaterialButton.setBackgroundTint(value: Int) {
+    backgroundTintList = ContextCompat.getColorStateList(this.context,value)
 }
 
 @BindingAdapter("loadLogo")

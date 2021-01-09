@@ -325,12 +325,12 @@ class UtilitiesCalendar {
         }
 
         private fun saveEvent(event: EventModel) {
-            event.apply {
-                dtStart =
-                    Utilities.convertDateToStringWithZ(Date(convertStringToDate(dtStart!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
-                dtEnd =
-                    Utilities.convertDateToStringWithZ(Date(convertStringToDate(dtEnd!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
-            }
+//            event.apply {
+//                dtStart =
+//                    Utilities.convertDateToStringWithZ(Date(convertStringToDate(dtStart!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
+//                dtEnd =
+//                    Utilities.convertDateToStringWithZ(Date(convertStringToDate(dtEnd!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
+//            }
             utilitiesCalendarScope.launch {
                 database.eventsDao().insert(event)
             }

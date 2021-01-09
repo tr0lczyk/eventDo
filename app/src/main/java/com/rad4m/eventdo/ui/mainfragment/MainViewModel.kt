@@ -24,6 +24,7 @@ import com.rad4m.eventdo.utils.Utilities.Companion.AUTO_ADD_EVENT
 import com.rad4m.eventdo.utils.Utilities.Companion.DEVICE_ID
 import com.rad4m.eventdo.utils.Utilities.Companion.NEW_EVENT_PAGE
 import com.rad4m.eventdo.utils.Utilities.Companion.NOT_FIRST_SETTINGS_OPENING
+import com.rad4m.eventdo.utils.Utilities.Companion.NOT_FIRST_START
 import com.rad4m.eventdo.utils.Utilities.Companion.PUSH_NOTIFICATION
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_LAST_DATE
 import com.rad4m.eventdo.utils.Utilities.Companion.convertDateToStringWithZ
@@ -43,8 +44,8 @@ class MainViewModel @Inject constructor(
 ) : AndroidViewModel(application) {
 
     private val viewModelJob = Job()
-     val viewModelScope = CoroutineScope(Dispatchers.Main + viewModelJob)
-     private val viewModelScopeDatabase = CoroutineScope(Dispatchers.IO + viewModelJob)
+    val viewModelScope = CoroutineScope(Dispatchers.Main + viewModelJob)
+    private val viewModelScopeDatabase = CoroutineScope(Dispatchers.IO + viewModelJob)
     val upcomingTextColor = MutableLiveData<Int>()
     val pastTextColor = MutableLiveData<Int>()
     val emptyListText = MutableLiveData<String>()
@@ -232,19 +233,23 @@ class MainViewModel @Inject constructor(
         }, 100)
     }
 
-    fun downloadEventsWorkManager() {
+    private fun downloadEventsWorkManager() {
         val workManager = WorkManager.getInstance(getApplication())
-
+        var duration = 0L
+        if (sharedPrefs.getValueBoolean(NOT_FIRST_START) == false) {
+            duration = 1L
+            sharedPrefs.save(NOT_FIRST_START, true)
+        }
         val periodicRequest =
             PeriodicWorkRequestBuilder<EventsDownloadWorker>(15, TimeUnit.MINUTES)
-                .setInitialDelay(1, TimeUnit.MINUTES)
+                .setInitialDelay(duration, TimeUnit.MINUTES)
                 .build()
         workManager.enqueue(periodicRequest)
     }
 
-     suspend fun getOneEvent(eventId: String): EventModel {
-         return viewModelScopeDatabase.async {
-             database.eventsDao().getEvent(eventId.toInt())
-         }.await()
+    suspend fun getOneEvent(eventId: String): EventModel {
+        return viewModelScopeDatabase.async {
+            database.eventsDao().getEvent(eventId.toInt())
+        }.await()
     }
 }

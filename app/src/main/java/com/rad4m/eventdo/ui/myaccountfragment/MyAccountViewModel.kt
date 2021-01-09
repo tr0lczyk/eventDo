@@ -11,8 +11,11 @@ import com.rad4m.eventdo.models.UserResult
 import com.rad4m.eventdo.models.UserUpdateModel
 import com.rad4m.eventdo.networking.EventDoRepository
 import com.rad4m.eventdo.utils.SharedPreferences
+import com.rad4m.eventdo.utils.Utilities.Companion.USER_EMAIL
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_LOGOUT
+import com.rad4m.eventdo.utils.Utilities.Companion.USER_NAME
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_NUMBER
+import com.rad4m.eventdo.utils.Utilities.Companion.USER_SURNAME
 import com.rad4m.eventdo.utils.Utilities.Companion.isValidEmail
 import com.rad4m.eventdo.utils.Utilities.Companion.toastMessage
 import kotlinx.coroutines.CoroutineScope
@@ -44,6 +47,9 @@ class MyAccountViewModel @Inject constructor(
     val userBaseName = MutableLiveData<String>(application.getString(R.string.first_name_my_account))
     val userBaseSurname = MutableLiveData<String>(application.getString(R.string.surname_my_account))
     val userBaseMail = MutableLiveData<String>(application.getString(R.string.email_my_account))
+    var contentLoaded = false
+    val buttonBackground = MutableLiveData<Int>(R.color.darkGray)
+    val buttonClickability = MutableLiveData<Boolean>(false)
 
     init {
         changeBackButtonColor(R.color.darkGray)
@@ -75,22 +81,26 @@ class MyAccountViewModel @Inject constructor(
                     R.string.my_account_internet_fail
                 )
             }
+            contentLoaded = true
         }
     }
 
     private fun setUserData(userData: UserResult) {
         if (!userData.name.isNullOrEmpty()) {
             userName.value = userData.name
+            sharedPrefs.save(USER_NAME,userData.name)
         }
         if (!userData.surname.isNullOrEmpty()) {
             userSurname.value = userData.surname
+            sharedPrefs.save(USER_SURNAME,userData.surname)
         }
         if (!userData.email.isNullOrEmpty()) {
             userMail.value = userData.email
+            sharedPrefs.save(USER_EMAIL,userData.email)
         }
     }
 
-    private fun updateUserProfile() {
+    fun updateUserProfile() {
         viewModelScope.launch {
             val credentials = UserUpdateModel(
                 phoneNumber.value,
@@ -111,17 +121,6 @@ class MyAccountViewModel @Inject constructor(
                     R.string.update_account_internet_fail
                 )
             }
-        }
-    }
-
-    fun checkIfChangePossible() {
-        if (isValidEmail(userMail.value.toString())) {
-            updateUserProfile()
-        } else {
-            toastMessage(
-                getApplication(),
-                R.string.email_invalid
-            )
         }
     }
 
