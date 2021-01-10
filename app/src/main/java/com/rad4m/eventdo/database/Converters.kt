@@ -1,5 +1,6 @@
 package com.rad4m.eventdo.database
 
+import android.graphics.Bitmap
 import androidx.room.TypeConverter
 import com.squareup.moshi.JsonAdapter
 import com.squareup.moshi.Moshi
@@ -39,4 +40,12 @@ class Converters {
     @TypeConverter
     fun stringToAny(value: String): Any? =
         moshi.adapter(Any::class.java).fromJson(value)
+
+    @TypeConverter
+    fun bitmapToString(any: Bitmap?): String? =
+        moshi.adapter(Bitmap::class.java).toJson(any)
+
+    @TypeConverter
+    fun stringToBitmap(value: String): Bitmap? =
+        moshi.adapter(Bitmap::class.java).fromJson(value)
 }

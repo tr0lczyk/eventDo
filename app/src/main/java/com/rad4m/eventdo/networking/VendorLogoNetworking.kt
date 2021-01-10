@@ -5,6 +5,7 @@ import android.graphics.BitmapFactory
 import android.util.Base64
 import com.rad4m.eventdo.EventDoApplication
 import com.rad4m.eventdo.R
+import com.rad4m.eventdo.database.EventsDatabase
 import com.rad4m.eventdo.di.ApiModule.Companion.BASE_URL
 import com.rad4m.eventdo.models.Result
 import com.rad4m.eventdo.models.VendorLogoResponse
@@ -26,6 +27,7 @@ import retrofit2.http.GET
 import retrofit2.http.Header
 import retrofit2.http.Path
 import timber.log.Timber
+
 
 private val moshi = Moshi.Builder()
     .add(KotlinJsonAdapterFactory())
@@ -88,26 +90,42 @@ class VendorLogoNetworking {
 
         val application = EventDoApplication.instance
         private val repository = VendorLogoRepository(application)
+        val database = EventsDatabase(application)
         private val vendorLogoJob = Job()
         private val vendorLogoScope = CoroutineScope(Dispatchers.Main + vendorLogoJob)
+        private val vendorLogoDatabaseScope = CoroutineScope(Dispatchers.IO + vendorLogoJob)
 
         fun downloadLogo(vendorId: String, view: CircleImageView) {
             vendorLogoScope.launch {
                 when (val response = repository.getVendorLogo(vendorId)) {
-                    is Result.Success -> view.loadNewImage(response.data?.result)
+                    is Result.Success -> view.loadNewImage(response.data?.result, vendorId)
                     is Result.Failure -> view.setImageResource(R.drawable.icon_logo)
                     is Result.Error -> view.setImageResource(R.drawable.icon_logo)
                 }
             }
         }
 
-        private fun CircleImageView.loadNewImage(link: String?) {
+        private fun CircleImageView.loadNewImage(link: String?, vendorId: String) {
             if (link != null && link.isNotEmpty()) {
                 val newLink = link.removePrefix("data:image/gif;base64,")
                 val decodedString = Base64.decode(newLink, Base64.DEFAULT)
                 val bitmap2 = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
                 this.setImageBitmap(bitmap2)
+                vendorLogoDatabaseScope.launch {
+                    val event = database.eventsDao().getEventByIVendord(vendorId)
+                    event.apply {
+                        codedImage = newLink
+                    }
+                    database.eventsDao().update(event)
+                }
             } else {
+                vendorLogoDatabaseScope.launch {
+                    val event = database.eventsDao().getEventByIVendord(vendorId)
+                    event.apply {
+                        codedImage = "1"
+                    }
+                    database.eventsDao().update(event)
+                }
                 this.setImageResource(R.drawable.icon_logo)
                 Timber.i("beenherenow")
             }

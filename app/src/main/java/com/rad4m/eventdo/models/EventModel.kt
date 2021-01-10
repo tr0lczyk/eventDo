@@ -1,8 +1,10 @@
 package com.rad4m.eventdo.models
 
+import android.graphics.Bitmap
 import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.rad4m.eventdo.R
 import com.squareup.moshi.Json
 import kotlinx.android.parcel.Parcelize
 
@@ -48,5 +50,6 @@ data class EventModel(
     var title: String? ="",
     @Json(name = "vendorId")
     var vendorId: Int? = 0,
-    var localEventId: Long? = null
+    var localEventId: Long? = null,
+    var codedImage: String?= ""
 ) : Parcelable

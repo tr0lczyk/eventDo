@@ -36,15 +36,12 @@
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
-        <de.hdodenhof.circleimageview.CircleImageView
+        <ImageView
             android:layout_width="84dp"
-            android:layout_height="0dp"
+            android:layout_height="84dp"
             android:layout_marginTop="8dp"
             android:layout_marginBottom="8dp"
-            app:civ_border_width="1dp"
-            app:civ_border_color="@color/itemGrayBackground"
-            app:civ_circle_background_color="@android:color/white"
-            android:src="@drawable/icon_logo"
+            android:background="@drawable/circle_drawable"
             app:layout_constraintBottom_toBottomOf="@+id/vertLine"
             app:layout_constraintEnd_toEndOf="@+id/vertLine"
             app:layout_constraintStart_toStartOf="@+id/vertLine"
@@ -59,8 +56,8 @@
             app:civ_border_width="1dp"
             app:civ_border_color="@color/itemGrayBackground"
             app:civ_circle_background_color="@android:color/white"
-            tools:src="@drawable/icon_logo"
-            app:loadLogo="@{viewModel.vendorId}"
+            app:vendorId="@{viewModel.vendorId}"
+            app:codedImage="@{viewModel.codedImage}"
             app:layout_constraintBottom_toBottomOf="@+id/vertLine"
             app:layout_constraintEnd_toEndOf="@+id/vertLine"
             app:layout_constraintStart_toStartOf="@+id/vertLine"

@@ -237,19 +237,13 @@ class MainViewModel @Inject constructor(
         val workManager = WorkManager.getInstance(getApplication())
         var duration = 0L
         if (sharedPrefs.getValueBoolean(NOT_FIRST_START) == false) {
-            duration = 1L
+            duration = 5L
             sharedPrefs.save(NOT_FIRST_START, true)
         }
         val periodicRequest =
             PeriodicWorkRequestBuilder<EventsDownloadWorker>(15, TimeUnit.MINUTES)
-                .setInitialDelay(duration, TimeUnit.MINUTES)
+                .setInitialDelay(duration, TimeUnit.SECONDS)
                 .build()
         workManager.enqueue(periodicRequest)
-    }
-
-    suspend fun getOneEvent(eventId: String): EventModel {
-        return viewModelScopeDatabase.async {
-            database.eventsDao().getEvent(eventId.toInt())
-        }.await()
     }
 }
