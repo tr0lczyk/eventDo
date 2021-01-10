@@ -134,6 +134,7 @@
             app:layout_constraintStart_toStartOf="parent"
             android:foreground="?android:attr/selectableItemBackground"
             android:onClick="@{() -> viewModel.sendNumber()}"
+            android:textAllCaps="true"
             style="@style/bottom_big_button_style"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

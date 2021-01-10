@@ -123,7 +123,7 @@ class Utilities {
                     .create()
             dialog.show()
             dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
-                .setTextColor(ContextCompat.getColor(activity, R.color.darkRed))
+                .setTextColor(ContextCompat.getColor(activity, R.color.darkGray))
             dialog.getButton(AlertDialog.BUTTON_POSITIVE)
                 .setTextColor(ContextCompat.getColor(activity, R.color.darkRed))
         }

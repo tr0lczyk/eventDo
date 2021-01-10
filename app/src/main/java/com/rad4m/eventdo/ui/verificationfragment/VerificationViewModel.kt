@@ -71,7 +71,7 @@ class VerificationViewModel @Inject constructor(
         sharedPrefs.save(USER_TOKEN, token)
         Toast.makeText(
             getApplication(),
-            "code Verified correctly",
+            getApplication<Application>().getString(R.string.code_verified_correctly),
             Toast.LENGTH_SHORT
         ).show()
         openMain()

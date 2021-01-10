@@ -43,6 +43,7 @@
                 android:id="@+id/signUpButton"
                 android:onClick="@{() -> viewModel.openSignUpScreen()}"
                 android:text="@string/sign_up"
+                android:textAllCaps="true"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
