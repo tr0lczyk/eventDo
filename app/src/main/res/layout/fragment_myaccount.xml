@@ -143,7 +143,7 @@
 
             <com.google.android.material.button.MaterialButton
                 style="@style/Widget.MaterialComponents.Button"
-                android:onClick="@{() -> viewModel.updateUserProfile()}"
+                android:onClick="@{() -> viewModel.checkIfChangePossible()}"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="24dp"

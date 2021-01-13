@@ -64,6 +64,7 @@ class MyAccountFragment : Fragment() {
                     getString(R.string.account_deleted_title)
                 )
                 activity!!.makeStatusBarTransparent()
+                viewModel.deleteEventsInCalendar(requireActivity())
                 findNavController().navigate(MyAccountFragmentDirections.actionMyAccountFragmentToIntroFragment())
                 viewModel.navigateToLogin.value = false
             }

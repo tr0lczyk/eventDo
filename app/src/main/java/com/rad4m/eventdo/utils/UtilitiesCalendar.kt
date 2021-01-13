@@ -215,6 +215,18 @@ class UtilitiesCalendar {
             updateEvent(event)
         }
 
+        fun deleteCalendarEntryFromViewModel(activity: EventDoApplication, event: EventModel) {
+            val deleteUri: Uri =
+                ContentUris.withAppendedId(
+                    CalendarContract.Events.CONTENT_URI,
+                    event.localEventId!!
+                )
+            activity.contentResolver.delete(deleteUri, null, null)
+            event.apply {
+                this.localEventId = null
+            }
+        }
+
         fun getCalendarsIds(activity: FragmentActivity): MutableList<String> {
             val projection = arrayOf("_id", "calendar_displayName")
             val calendars: Uri = Uri.parse("content://com.android.calendar/calendars")
@@ -266,7 +278,7 @@ class UtilitiesCalendar {
                 saveCalendarList(mCalendars)
                 managedCursor.close()
             }
-            return mCalendars[mCalendars.size - 1].calID.toInt()
+            return mCalendars.get(0).calID.toInt()
         }
 
         fun saveMainCalendar(calendar: MyCalendar) {
@@ -306,6 +318,14 @@ class UtilitiesCalendar {
                     updateEvent(i.apply {
                         i.localEventId = null
                     })
+                }
+            }
+        }
+
+        fun checkWhichEventIsInCalendar(activity: FragmentActivity) {
+            for (i in database.eventsDao().getEventWithLocalEventId()!!) {
+                if (!isEventInCal(i.localEventId!!)) {
+                    deleteCalendarEntry(activity,i)
                 }
             }
         }

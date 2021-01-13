@@ -2,6 +2,7 @@ package com.rad4m.eventdo.ui.myaccountfragment
 
 import android.app.Application
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.FragmentActivity
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import com.rad4m.eventdo.R
@@ -18,6 +19,7 @@ import com.rad4m.eventdo.utils.Utilities.Companion.USER_NUMBER
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_SURNAME
 import com.rad4m.eventdo.utils.Utilities.Companion.isValidEmail
 import com.rad4m.eventdo.utils.Utilities.Companion.toastMessage
+import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.checkWhichEventIsInCalendar
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -34,6 +36,7 @@ class MyAccountViewModel @Inject constructor(
 
     private val viewModelJob = Job()
     private val viewModelScope = CoroutineScope(Dispatchers.Main + viewModelJob)
+    private val viewModelScopeDatabase = CoroutineScope(Dispatchers.IO + viewModelJob)
 
     val backIconTintColor = MutableLiveData<Int>()
     val backNavigation = MutableLiveData<Boolean>()
@@ -44,8 +47,10 @@ class MyAccountViewModel @Inject constructor(
     val navigateToLogin = MutableLiveData<Boolean>()
     val showDeleteUserDialog = MutableLiveData<Boolean>()
 
-    val userBaseName = MutableLiveData<String>(application.getString(R.string.first_name_my_account))
-    val userBaseSurname = MutableLiveData<String>(application.getString(R.string.surname_my_account))
+    val userBaseName =
+        MutableLiveData<String>(application.getString(R.string.first_name_my_account))
+    val userBaseSurname =
+        MutableLiveData<String>(application.getString(R.string.surname_my_account))
     val userBaseMail = MutableLiveData<String>(application.getString(R.string.email_my_account))
     var contentLoaded = false
     val buttonBackground = MutableLiveData<Int>(R.color.darkGray)
@@ -88,15 +93,15 @@ class MyAccountViewModel @Inject constructor(
     private fun setUserData(userData: UserResult) {
         if (!userData.name.isNullOrEmpty()) {
             userName.value = userData.name
-            sharedPrefs.save(USER_NAME,userData.name)
+            sharedPrefs.save(USER_NAME, userData.name)
         }
         if (!userData.surname.isNullOrEmpty()) {
             userSurname.value = userData.surname
-            sharedPrefs.save(USER_SURNAME,userData.surname)
+            sharedPrefs.save(USER_SURNAME, userData.surname)
         }
         if (!userData.email.isNullOrEmpty()) {
             userMail.value = userData.email
-            sharedPrefs.save(USER_EMAIL,userData.email)
+            sharedPrefs.save(USER_EMAIL, userData.email)
         }
     }
 
@@ -111,16 +116,31 @@ class MyAccountViewModel @Inject constructor(
             when (val response = repository.updateUserProfile(
                 credentials
             )) {
-                is Result.Success -> toastMessage(
-                    getApplication(),
-                    R.string.account_detail_updated
-                )
+                is Result.Success -> {
+                    toastMessage(
+                        getApplication(),
+                        R.string.account_detail_updated
+                    )
+                    buttonBackground.value = R.color.darkGray
+                    buttonClickability.value = false
+                }
                 is Result.Failure -> Timber.i(response.failure)
                 is Result.Error -> toastMessage(
                     getApplication(),
                     R.string.update_account_internet_fail
                 )
             }
+        }
+    }
+
+    fun checkIfChangePossible() {
+        if (isValidEmail(userMail.value.toString())) {
+            updateUserProfile()
+        } else {
+            toastMessage(
+                getApplication(),
+                R.string.email_invalid
+            )
         }
     }
 
@@ -141,6 +161,13 @@ class MyAccountViewModel @Inject constructor(
         }
     }
 
+    fun deleteEventsInCalendar(fragmentActivity: FragmentActivity){
+        viewModelScopeDatabase.launch {
+            checkWhichEventIsInCalendar(fragmentActivity)
+            deleteAllEvents()
+        }
+    }
+
     private fun deleteAllEvents() {
         viewModelScope.launch {
             database.eventsDao().deleteEvents()
@@ -152,6 +179,5 @@ class MyAccountViewModel @Inject constructor(
         navigateToLogin.value = true
         sharedPrefs.clearSharedPreference()
         sharedPrefs.save(USER_LOGOUT, true)
-        deleteAllEvents()
     }
 }
