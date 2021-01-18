@@ -32,7 +32,7 @@ interface EventDao : BaseDao<EventModel> {
     fun getEventById(id: Int): LiveData<EventModel>
 
     @Query("select * from eventTable where vendorId =:vendorId")
-    fun getEventByIVendord(vendorId: String): EventModel
+    fun getEventByIVendord(vendorId: String): List<EventModel>
 
     @Query("select * from eventTable where localEventId != 0")
     fun getEventWithLocalEventId(): List<EventModel>?

@@ -91,12 +91,9 @@ class VendorLogoNetworking {
         val application = EventDoApplication.instance
         private val repository = VendorLogoRepository(application)
         val database = EventsDatabase(application)
-        private val vendorLogoJob = Job()
-        private val vendorLogoScope = CoroutineScope(Dispatchers.Main + vendorLogoJob)
-        private val vendorLogoDatabaseScope = CoroutineScope(Dispatchers.IO + vendorLogoJob)
 
         fun downloadLogo(vendorId: String, view: CircleImageView) {
-            vendorLogoScope.launch {
+            CoroutineScope(Dispatchers.Main).launch {
                 when (val response = repository.getVendorLogo(vendorId)) {
                     is Result.Success -> view.loadNewImage(response.data?.result, vendorId)
                     is Result.Failure -> view.setImageResource(R.drawable.icon_logo)
@@ -111,20 +108,20 @@ class VendorLogoNetworking {
                 val decodedString = Base64.decode(newLink, Base64.DEFAULT)
                 val bitmap2 = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.size)
                 this.setImageBitmap(bitmap2)
-                vendorLogoDatabaseScope.launch {
-                    val event = database.eventsDao().getEventByIVendord(vendorId)
-                    event.apply {
-                        codedImage = newLink
+                CoroutineScope(Dispatchers.IO).launch {
+                    val events = database.eventsDao().getEventByIVendord(vendorId)
+                    for (i in events){
+                        i.codedImage = newLink
+                        database.eventsDao().update(i)
                     }
-                    database.eventsDao().update(event)
                 }
             } else {
-                vendorLogoDatabaseScope.launch {
-                    val event = database.eventsDao().getEventByIVendord(vendorId)
-                    event.apply {
-                        codedImage = "1"
+                CoroutineScope(Dispatchers.IO).launch {
+                    val events = database.eventsDao().getEventByIVendord(vendorId)
+                    for (i in events){
+                        i.codedImage = "1"
+                        database.eventsDao().update(i)
                     }
-                    database.eventsDao().update(event)
                 }
                 this.setImageResource(R.drawable.icon_logo)
                 Timber.i("beenherenow")
