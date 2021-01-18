@@ -36,4 +36,7 @@ interface EventDao : BaseDao<EventModel> {
 
     @Query("select * from eventTable where localEventId != 0")
     fun getEventWithLocalEventId(): List<EventModel>?
+
+    @Query("select * from eventTable order by :id desc limit 1")
+    fun getLastEvent(id: Int): EventModel
 }

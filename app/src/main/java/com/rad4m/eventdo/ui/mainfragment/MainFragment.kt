@@ -5,7 +5,6 @@ import android.content.Intent
 import android.net.Uri
 import android.os.Bundle
 import android.os.Handler
-import android.os.Looper
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -34,14 +33,12 @@ import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_ID
 import com.rad4m.eventdo.utils.Utilities.Companion.makeStatusBarNotTransparent
 import com.rad4m.eventdo.utils.Utilities.Companion.showDialog
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.deleteCalendarEntry
-import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.getCalendarsIds
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.openCalendar
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.saveCalEventContentResolver
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.saveEventToCalendar
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.verifyIfEventDeleted
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.verifyLastIntentEvent
 import com.rad4m.eventdo.utils.ViewModelFactory
-import kotlinx.coroutines.launch
 import net.yslibrary.android.keyboardvisibilityevent.util.UIUtil
 import permissions.dispatcher.NeedsPermission
 import permissions.dispatcher.OnPermissionDenied
@@ -113,6 +110,19 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
         viewModel.dataItemList.observe(this, Observer {
             adapter.submitList(it)
         })
+
+        viewModel.showSnackBarFromNotification.observe(this, Observer { event ->
+            if (event != null) {
+                Snackbar.make(
+                    binding.menuDrawer,
+                    getString(R.string.events_added_to_calendar),
+                    Snackbar.LENGTH_LONG
+                )
+                    .setAction(R.string.show_calendar) { openCalendar(requireActivity(), event) }
+                    .show()
+                viewModel.showSnackBarFromNotification.value = null
+            }
+        })
         return binding.root
     }
 
@@ -122,7 +132,7 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
             permissionToReadWithPermissionCheck()
             Handler().postDelayed({
                 permissionToWriteWithPermissionCheck()
-                viewModel.sharedPrefs.save(TODAY_APP_START,true)
+                viewModel.sharedPrefs.save(TODAY_APP_START, true)
             }, 5000)
         }
 //        if (!viewModel.sharedPrefs.getValueString(EVENT_ID_NOTIFICATION).isNullOrBlank()) {
@@ -346,8 +356,14 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
     override fun onResume() {
         super.onResume()
         if (!viewModel.sharedPrefs.getValueString(EVENT_ID_NOTIFICATION).isNullOrBlank()) {
-            viewModel.downloadEvents()
+            viewModel.executrWorkStart(
+                viewModel.sharedPrefs.getValueString(EVENT_ID_NOTIFICATION)!!.toInt()
+            ).invokeOnCompletion {
+                viewModel.downloadEvents()
+            }
             viewModel.sharedPrefs.removeValue(EVENT_ID_NOTIFICATION)
+        } else {
+            viewModel.downloadEventsWorkManager()
         }
     }
 }

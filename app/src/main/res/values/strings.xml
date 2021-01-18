@@ -1,6 +1,7 @@
 <resources>
     <string name="app_name">eventDo</string>
     <string name="sign_up">Sign up</string>
+    <string name="sign_up_title">Sign up</string>
     <string name="calendar_phrase">Events are automatically added to your calendar</string>
     <string name="subtitle">- fast, easy and completely free</string>
     <string name="how_it_works">How it works!</string>

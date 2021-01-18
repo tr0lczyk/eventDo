@@ -190,8 +190,7 @@ class Utilities {
         }
 
         fun isValidEmail(target: CharSequence): Boolean {
-            return !TextUtils.isEmpty(target) &&
-                    android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches()
+            return android.util.Patterns.EMAIL_ADDRESS.matcher(target).matches()
         }
 
         fun toastMessage(context: Context, toastText: Int) {

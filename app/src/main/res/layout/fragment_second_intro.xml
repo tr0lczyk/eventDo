@@ -36,7 +36,7 @@
 
         <TextView
             android:id="@+id/titleOne"
-            android:text="@string/sign_up"
+            android:text="@string/sign_up_title"
             style="@style/title_style" />
 
         <TextView

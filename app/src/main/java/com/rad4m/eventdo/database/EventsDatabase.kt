@@ -9,7 +9,7 @@ import com.rad4m.eventdo.models.EventModel
 
 @Database(
     entities = [EventModel::class],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 @TypeConverters(Converters::class)

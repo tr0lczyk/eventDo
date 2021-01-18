@@ -30,7 +30,10 @@ import com.rad4m.eventdo.utils.Utilities.Companion.USER_LAST_DATE
 import com.rad4m.eventdo.utils.Utilities.Companion.convertDateToStringWithZ
 import com.rad4m.eventdo.utils.Utilities.Companion.convertStringToDate
 import com.rad4m.eventdo.utils.Utilities.Companion.toastMessage
-import kotlinx.coroutines.*
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
 import java.util.concurrent.TimeUnit
@@ -51,6 +54,7 @@ class MainViewModel @Inject constructor(
     val emptyListText = MutableLiveData<String>()
     val swipeRefreshing = MutableLiveData<Boolean>()
     val showUpcomingEvents = MutableLiveData<Boolean>()
+    val showSnackBarFromNotification = MutableLiveData<EventModel>()
     val eventList: LiveData<List<EventModel>> = Transformations.switchMap(showUpcomingEvents) {
         when (it) {
             true -> database.eventsDao().getUpcomingEvents(convertDateToStringWithZ(Date()))
@@ -68,7 +72,6 @@ class MainViewModel @Inject constructor(
         updateFirebaseToken()
         swipeRefreshing.value = false
         upcomingButton()
-        downloadEventsWorkManager()
 //        downloadEvents()
     }
 
@@ -131,7 +134,7 @@ class MainViewModel @Inject constructor(
                 )
             }
         }
-        swipeRefreshing.value = false
+        swipeRefreshing.postValue(false)
     }
 
     private fun updateFirebaseToken() {
@@ -233,7 +236,13 @@ class MainViewModel @Inject constructor(
         }, 100)
     }
 
-    private fun downloadEventsWorkManager() {
+    fun executrWorkStart(int: Int): Job {
+        return viewModelScopeDatabase.launch {
+            showSnackBarFromNotification.postValue(database.eventsDao().getLastEvent(int))
+        }
+    }
+
+    fun downloadEventsWorkManager() {
         val workManager = WorkManager.getInstance(getApplication())
         var duration = 0L
         if (sharedPrefs.getValueBoolean(NOT_FIRST_START) == false) {

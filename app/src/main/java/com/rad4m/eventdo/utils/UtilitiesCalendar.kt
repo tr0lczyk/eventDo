@@ -51,6 +51,15 @@ class UtilitiesCalendar {
             activity.startActivity(insertCalendarIntent)
         }
 
+        fun openCalendarFromViewModel(
+            event: EventModel
+        ) {
+            val builder = CalendarContract.CONTENT_URI.buildUpon().appendPath("time")
+            ContentUris.appendId(builder, convertStringToDate(event.dtStart!!).time)
+            val insertCalendarIntent = Intent(Intent.ACTION_VIEW, builder.build())
+            application.startActivity(insertCalendarIntent)
+        }
+
         fun saveEventToCalendar(
             event: EventModel,
             activity: FragmentActivity,
