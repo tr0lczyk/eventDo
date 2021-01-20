@@ -39,6 +39,7 @@ import java.util.*
 import java.util.concurrent.TimeUnit
 import javax.inject.Inject
 
+
 class MainViewModel @Inject constructor(
     private val repository: EventDoRepository,
     private val database: EventsDatabase,

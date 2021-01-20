@@ -8,6 +8,7 @@ import androidx.navigation.fragment.NavHostFragment
 import com.google.android.gms.tasks.OnCompleteListener
 import com.google.firebase.iid.FirebaseInstanceId
 import com.rad4m.eventdo.di.appComponent
+import com.rad4m.eventdo.ui.mainfragment.NetworkService
 import com.rad4m.eventdo.utils.SharedPreferences
 import com.rad4m.eventdo.utils.Utilities.Companion.FIREBASE_TOKEN
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_TOKEN
@@ -55,4 +56,9 @@ class MainActivity : AppCompatActivity() {
 
     override fun onSupportNavigateUp() =
         NavHostFragment.findNavController(myNavHostFragment).navigateUp()
+
+    override fun onDestroy() {
+        super.onDestroy()
+        stopService(Intent(EventDoApplication.instance, NetworkService::class.java))
+    }
 }

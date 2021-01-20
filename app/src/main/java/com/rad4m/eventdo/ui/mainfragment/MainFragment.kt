@@ -19,12 +19,14 @@ import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
+import com.rad4m.eventdo.EventDoApplication
 import com.rad4m.eventdo.R
 import com.rad4m.eventdo.R.id.*
 import com.rad4m.eventdo.databinding.FragmentMainBinding
 import com.rad4m.eventdo.di.appComponent
 import com.rad4m.eventdo.models.EventModel
 import com.rad4m.eventdo.utils.HeaderItemDecoration
+import com.rad4m.eventdo.utils.Utilities
 import com.rad4m.eventdo.utils.Utilities.Companion.EVENT_ID_NOTIFICATION
 import com.rad4m.eventdo.utils.Utilities.Companion.ITEM_VIEW_TYPE_HEADER
 import com.rad4m.eventdo.utils.Utilities.Companion.NEW_EVENT_PAGE
@@ -325,6 +327,22 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
         }
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        var delay = 0L
+        if (viewModel.sharedPrefs.getValueBoolean(Utilities.NOT_FIRST_START) == false) {
+            delay = 5L
+        }
+        Handler().postDelayed({
+            requireActivity().startService(
+                Intent(
+                    EventDoApplication.instance,
+                    NetworkService::class.java
+                )
+            )
+        }, delay)
+    }
+
     @NeedsPermission(
         Manifest.permission.READ_CALENDAR
     )
@@ -364,6 +382,7 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
             viewModel.sharedPrefs.removeValue(EVENT_ID_NOTIFICATION)
         } else {
             viewModel.downloadEventsWorkManager()
+
         }
     }
 }
