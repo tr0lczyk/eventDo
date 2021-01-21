@@ -90,6 +90,7 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
         drawerToggle.syncState()
         binding.navigationView.setNavigationItemSelectedListener(this)
         UIUtil.hideKeyboard(activity)
+        binding.recyclerEvents.itemAnimator = null
 
         val adapter = EventsAdapter(EventsAdapter.EventListener {
             onEventClick(it)
@@ -287,11 +288,6 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
         if (setupPermissions()) {
             verifyLastIntentEvent(activity!!)
         }
-    }
-
-    override fun onDestroy() {
-        super.onDestroy()
-        viewModel.sharedPrefs.removeValue(TODAY_APP_START)
     }
 
     override fun onStart() {

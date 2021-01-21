@@ -204,6 +204,7 @@ class MainViewModel @Inject constructor(
                 }
             }
         }
+        dataItemList.value = emptyList()
         dataItemList.value = temporaryList
         Handler().postDelayed({
             verifyWhichList()
@@ -235,6 +236,7 @@ class MainViewModel @Inject constructor(
                 }
             }
         }
+        dataItemList.value = emptyList()
         dataItemList.value = temporaryList
         Handler().postDelayed({
             verifyWhichList()
@@ -250,14 +252,8 @@ class MainViewModel @Inject constructor(
 
     fun downloadEventsWorkManager() {
         val workManager = WorkManager.getInstance(getApplication())
-        var duration = 0L
-        if (sharedPrefs.getValueBoolean(NOT_FIRST_START) == false) {
-            duration = 5L
-            sharedPrefs.save(NOT_FIRST_START, true)
-        }
         val periodicRequest =
             PeriodicWorkRequestBuilder<EventsDownloadWorker>(15, TimeUnit.MINUTES)
-                .setInitialDelay(duration, TimeUnit.SECONDS)
                 .build()
         workManager.enqueue(periodicRequest)
     }
