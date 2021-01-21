@@ -89,4 +89,5 @@
     <string name="privacy_policy_link">https://eventdo.se/integritetspolicy.html</string>
     <string name="terms_link">https://eventdo.se/anvandarvillkor.html</string>
     <string name="sign_up_title">Registrera Dig</string>
+    <string name="calendar_access_denied">You won\'t access the calendar</string>
 </resources>

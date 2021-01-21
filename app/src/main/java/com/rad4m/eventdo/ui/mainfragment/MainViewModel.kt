@@ -56,6 +56,7 @@ class MainViewModel @Inject constructor(
     val swipeRefreshing = MutableLiveData<Boolean>()
     val showUpcomingEvents = MutableLiveData<Boolean>()
     val showSnackBarFromNotification = MutableLiveData<EventModel>()
+    val permissionGranted = MutableLiveData<Boolean>(false)
     val eventList: LiveData<List<EventModel>> = Transformations.switchMap(showUpcomingEvents) {
         when (it) {
             true -> database.eventsDao().getUpcomingEvents(convertDateToStringWithZ(Date()))
@@ -74,6 +75,10 @@ class MainViewModel @Inject constructor(
         swipeRefreshing.value = false
         upcomingButton()
 //        downloadEvents()
+    }
+
+    fun verifyPermissionBeforeEventsDownload(){
+        permissionGranted.value = true
     }
 
     private fun setDefaults() {

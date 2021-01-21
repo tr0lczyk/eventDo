@@ -103,4 +103,5 @@ I want to tell you about an awesome app. Check out http://www.eventdo.se</string
     <string name="notify_me_when_the_new_event_is_received">Notify me when the new event is received</string>
     <string name="events_added_to_calendar">Event added to calendar</string>
     <string name="code_verified_correctly">code Verified correctly</string>
+    <string name="calendar_access_denied">You won\'t access the calendar</string>
 </resources>

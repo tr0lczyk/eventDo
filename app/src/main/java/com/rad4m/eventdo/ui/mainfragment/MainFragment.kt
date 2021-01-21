@@ -2,14 +2,15 @@ package com.rad4m.eventdo.ui.mainfragment
 
 import android.Manifest
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
-import android.os.Handler
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.ActionBarDrawerToggle
+import androidx.core.content.ContextCompat
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import androidx.fragment.app.Fragment
@@ -26,7 +27,6 @@ import com.rad4m.eventdo.databinding.FragmentMainBinding
 import com.rad4m.eventdo.di.appComponent
 import com.rad4m.eventdo.models.EventModel
 import com.rad4m.eventdo.utils.HeaderItemDecoration
-import com.rad4m.eventdo.utils.Utilities
 import com.rad4m.eventdo.utils.Utilities.Companion.EVENT_ID_NOTIFICATION
 import com.rad4m.eventdo.utils.Utilities.Companion.ITEM_VIEW_TYPE_HEADER
 import com.rad4m.eventdo.utils.Utilities.Companion.NEW_EVENT_PAGE
@@ -34,6 +34,7 @@ import com.rad4m.eventdo.utils.Utilities.Companion.TODAY_APP_START
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_ID
 import com.rad4m.eventdo.utils.Utilities.Companion.makeStatusBarNotTransparent
 import com.rad4m.eventdo.utils.Utilities.Companion.showDialog
+import com.rad4m.eventdo.utils.Utilities.Companion.toastMessage
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.deleteCalendarEntry
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.openCalendar
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.saveCalEventContentResolver
@@ -42,13 +43,9 @@ import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.verifyIfEventDeleted
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.verifyLastIntentEvent
 import com.rad4m.eventdo.utils.ViewModelFactory
 import net.yslibrary.android.keyboardvisibilityevent.util.UIUtil
-import permissions.dispatcher.NeedsPermission
-import permissions.dispatcher.OnPermissionDenied
-import permissions.dispatcher.RuntimePermissions
 import timber.log.Timber
 import javax.inject.Inject
 
-@RuntimePermissions
 class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener {
 
     @Inject
@@ -59,6 +56,8 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
     private lateinit var drawer: DrawerLayout
 
     lateinit var binding: FragmentMainBinding
+
+    private val RECORD_REQUEST_CODE = 101
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,7 +92,7 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
         UIUtil.hideKeyboard(activity)
 
         val adapter = EventsAdapter(EventsAdapter.EventListener {
-            onEventClickWithPermissionCheck(it)
+            onEventClick(it)
         })
 
         binding.recyclerEvents.adapter = adapter
@@ -125,32 +124,17 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
                 viewModel.showSnackBarFromNotification.value = null
             }
         })
-        return binding.root
-    }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-        if (viewModel.sharedPrefs.getValueBoolean(TODAY_APP_START) == false) {
-            permissionToReadWithPermissionCheck()
-            Handler().postDelayed({
-                permissionToWriteWithPermissionCheck()
-                viewModel.sharedPrefs.save(TODAY_APP_START, true)
-            }, 5000)
-        }
-//        if (!viewModel.sharedPrefs.getValueString(EVENT_ID_NOTIFICATION).isNullOrBlank()) {
-//            viewModel.downloadEvents()
-//            Handler(Looper.getMainLooper()).postDelayed({
-//                viewModel.viewModelScope.launch {
-//                    val eventModel = viewModel.getOneEvent(
-//                        viewModel.sharedPrefs.getValueString(
-//                            EVENT_ID_NOTIFICATION
-//                        )!!
-//                    )
-//                    onEventClickWithPermissionCheck(eventModel)
-//                    viewModel.sharedPrefs.removeValue(EVENT_ID_NOTIFICATION)
-//                }
-//            }, 3000)
-//        }
+        viewModel.permissionGranted.observe(this, Observer {
+            if (it) {
+                if (setupPermissions()) {
+                    viewModel.downloadEvents()
+                }
+                viewModel.permissionGranted.value = false
+                viewModel.swipeRefreshing.value = false
+            }
+        })
+        return binding.root
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -182,65 +166,47 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
         startActivity(Intent.createChooser(chooseIntent, getString(R.string.send_with)))
     }
 
-    @NeedsPermission(
-        Manifest.permission.READ_CALENDAR
-    )
     fun checkIfEventsDeleted() {
-        verifyIfEventDeleted()
+        if (setupPermissions()) {
+            verifyIfEventDeleted()
+        }
     }
 
-    @NeedsPermission(
-        Manifest.permission.WRITE_CALENDAR
-    )
-    fun permissionToWrite() {
-        Timber.i("WRITE aability")
-    }
-
-    @NeedsPermission(
-        Manifest.permission.READ_CALENDAR
-    )
-    fun permissionToRead() {
-        Timber.i("READ aability")
-    }
-
-
-    @NeedsPermission(
-        Manifest.permission.WRITE_CALENDAR
-    )
     fun saveEventLocally(
         event: EventModel,
         activity: FragmentActivity
     ) {
-        showDialog(
-            activity,
-            getString(R.string.add_main_fragment) + event.title + getString(R.string.to_cal_main),
-            getString(R.string.save_event_main_fragment),
-            getString(R.string.add_main_fragment),
-            {
-                saveAndshowSnackBar(
-                    event,
-                    activity
-                )
-            },
-            getString(R.string.cancel_main_fragment)
-        )
+        if (setupPermissions()) {
+            showDialog(
+                activity,
+                getString(R.string.add_main_fragment) + event.title + getString(R.string.to_cal_main),
+                getString(R.string.save_event_main_fragment),
+                getString(R.string.add_main_fragment),
+                {
+                    saveAndshowSnackBar(
+                        event,
+                        activity
+                    )
+                },
+                getString(R.string.cancel_main_fragment)
+            )
+        }
     }
 
-    @NeedsPermission(
-        Manifest.permission.WRITE_CALENDAR
-    )
     fun ifEventExist(
         event: EventModel,
         activity: FragmentActivity
     ) {
-        val deleteEntry = { deleteCalendarEntry(activity, event) }
-        showDialog(
-            activity,
-            "${getString(R.string.event)} ${event.title} ${getString(R.string.already_there)}",
-            getString(R.string.app_name), getString(R.string.delete_main),
-            deleteEntry,
-            getString(R.string.cancel_main_fragment)
-        )
+        if (setupPermissions()) {
+            val deleteEntry = { deleteCalendarEntry(activity, event) }
+            showDialog(
+                activity,
+                "${getString(R.string.event)} ${event.title} ${getString(R.string.already_there)}",
+                getString(R.string.app_name), getString(R.string.delete_main),
+                deleteEntry,
+                getString(R.string.cancel_main_fragment)
+            )
+        }
     }
 
     private fun saveAndshowSnackBar(
@@ -263,64 +229,28 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
             }.show()
     }
 
-    @OnPermissionDenied(
-        Manifest.permission.WRITE_CALENDAR
-    )
-    fun onDenied() {
-//        Toast.makeText(
-//            activity,
-//            getString(R.string.denied_calendar_access_text_write),
-//            Toast.LENGTH_LONG
-//        )
-//            .show()
-        Timber.i("write calendar toast")
-    }
-
-    @OnPermissionDenied(
-        Manifest.permission.READ_CALENDAR
-    )
-    fun onDenied2() {
-//        Toast.makeText(
-//            activity,
-//            getString(R.string.denied_calendar_access_text_read),
-//            Toast.LENGTH_LONG
-//        )
-//            .show()
-        Timber.i("read calendar toast")
-    }
-
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
-        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
-        onRequestPermissionsResult(requestCode, grantResults)
-    }
-
-    @NeedsPermission(
-        Manifest.permission.WRITE_CALENDAR
-    )
     fun saveEventToCalendarExternal(
         event: EventModel,
         activity: FragmentActivity
     ) {
-        saveEventToCalendar(
-            event, activity,
-            viewModel.sharedPrefs.getValueString(
-                USER_MAIN_CALENDAR_ID
+        if (setupPermissions()) {
+            saveEventToCalendar(
+                event, activity,
+                viewModel.sharedPrefs.getValueString(
+                    USER_MAIN_CALENDAR_ID
+                )
             )
-        )
+        }
     }
 
     private fun eventNotSaved(event: EventModel) {
         if (viewModel.sharedPrefs.getValueBoolean(NEW_EVENT_PAGE) == true) {
-            saveEventToCalendarExternalWithPermissionCheck(
+            saveEventToCalendarExternal(
                 event,
                 activity!!
             )
         } else {
-            saveEventLocallyWithPermissionCheck(
+            saveEventLocally(
                 event,
                 activity!!
             )
@@ -329,35 +259,34 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        var delay = 0L
-        if (viewModel.sharedPrefs.getValueBoolean(Utilities.NOT_FIRST_START) == false) {
-            delay = 5L
+        if (setupPermissions()) {
+            startService()
         }
-        Handler().postDelayed({
-            requireActivity().startService(
-                Intent(
-                    EventDoApplication.instance,
-                    NetworkService::class.java
-                )
+    }
+
+    fun startService(){
+        requireActivity().startService(
+            Intent(
+                EventDoApplication.instance,
+                NetworkService::class.java
             )
-        }, delay)
+        )
     }
 
-    @NeedsPermission(
-        Manifest.permission.READ_CALENDAR
-    )
     fun onEventClick(event: EventModel) {
-        when (event.localEventId) {
-            null -> eventNotSaved(event)
-            else -> ifEventExistWithPermissionCheck(event, activity!!)
+        if (setupPermissions()) {
+            when (event.localEventId) {
+                null -> eventNotSaved(event)
+                else -> ifEventExist(event, activity!!)
+            }
         }
     }
 
-    @NeedsPermission(
-        Manifest.permission.READ_CALENDAR
-    )
+
     fun verifyLastIntent() {
-        verifyLastIntentEvent(activity!!)
+        if (setupPermissions()) {
+            verifyLastIntentEvent(activity!!)
+        }
     }
 
     override fun onDestroy() {
@@ -367,8 +296,8 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
 
     override fun onStart() {
         super.onStart()
-        verifyLastIntentWithPermissionCheck()
-        checkIfEventsDeletedWithPermissionCheck()
+        verifyLastIntent()
+        checkIfEventsDeleted()
     }
 
     override fun onResume() {
@@ -380,9 +309,54 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
                 viewModel.downloadEvents()
             }
             viewModel.sharedPrefs.removeValue(EVENT_ID_NOTIFICATION)
-        } else {
-            viewModel.downloadEventsWorkManager()
+        }
+    }
 
+    private fun setupPermissions(): Boolean {
+        val permissions = mutableListOf<Int>()
+        permissions.add(
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.WRITE_CALENDAR
+            )
+        )
+
+        permissions.add(
+            ContextCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.READ_CALENDAR
+            )
+        )
+        for (i in permissions) {
+            if (i != PackageManager.PERMISSION_GRANTED) {
+                Timber.i("Permission to record denied")
+                makeRequest()
+                return false
+            }
+        }
+        return true
+    }
+
+    private fun daniel() {
+        toastMessage(requireContext(), R.string.calendar_access_denied)
+    }
+
+    private fun makeRequest() {
+        requestPermissions(
+            arrayOf(Manifest.permission.WRITE_CALENDAR, Manifest.permission.READ_CALENDAR),
+            RECORD_REQUEST_CODE
+        )
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        if (permissions.isNotEmpty() && grantResults.get(0) != 0 && grantResults.get(1) != 0) {
+            daniel()
+        } else if (permissions.isNotEmpty() && grantResults.get(0) == 0 && grantResults.get(1) == 0) {
+            startService()
         }
     }
 }

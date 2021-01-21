@@ -1,6 +1,7 @@
 package com.rad4m.eventdo
 
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavOptions
@@ -22,12 +23,14 @@ class MainActivity : AppCompatActivity() {
     @Inject
     lateinit var sharedPrefs: SharedPreferences
 
+    private val RECORD_REQUEST_CODE = 101
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         appComponent.inject(this)
         makeStatusBarTransparent()
         setContentView(R.layout.activity_main)
-        if(sharedPrefs.getValueString(FIREBASE_TOKEN).isNullOrEmpty()){
+        if (sharedPrefs.getValueString(FIREBASE_TOKEN).isNullOrEmpty()) {
             FirebaseInstanceId.getInstance().instanceId
                 .addOnCompleteListener(OnCompleteListener { task ->
                     if (!task.isSuccessful) {
@@ -60,5 +63,13 @@ class MainActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         stopService(Intent(EventDoApplication.instance, NetworkService::class.java))
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<String>,
+        grantResults: IntArray
+    ) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
     }
 }
