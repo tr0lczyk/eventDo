@@ -28,7 +28,10 @@ fun TextView.convertDate(date: String) {
         val newDate = originalFormat.parse(date)
         val targetFormat = SimpleDateFormat("EEEE dd MMMM")
         val formattedDate = targetFormat.format(newDate).capitalize()
-        this.text = formattedDate
+        val formattedAgainDate = formattedDate.split(" ")
+        val month = formattedAgainDate.get(2).capitalize()
+        val finalDate = "${formattedAgainDate[0]} ${formattedAgainDate[1]} ${month}"
+        this.text = finalDate
     }
 }
 

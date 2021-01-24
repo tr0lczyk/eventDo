@@ -202,8 +202,8 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
             val deleteEntry = { deleteCalendarEntry(activity, event) }
             showDialog(
                 activity,
-                "${getString(R.string.event)} ${event.title} ${getString(R.string.already_there)}",
-                getString(R.string.app_name), getString(R.string.delete_main),
+                "${getString(R.string.event)} ${getString(R.string.already_there)}",
+                "${event.title}", getString(R.string.delete_main),
                 deleteEntry,
                 getString(R.string.cancel_main_fragment)
             )
@@ -258,13 +258,6 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
         }
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-        if (setupPermissions()) {
-            startService()
-        }
-    }
-
     fun startService(){
         requireActivity().startService(
             Intent(
@@ -305,6 +298,10 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
                 viewModel.downloadEvents()
             }
             viewModel.sharedPrefs.removeValue(EVENT_ID_NOTIFICATION)
+        } else {
+            if (setupPermissions()) {
+                startService()
+            }
         }
     }
 
@@ -353,6 +350,19 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
             daniel()
         } else if (permissions.isNotEmpty() && grantResults.get(0) == 0 && grantResults.get(1) == 0) {
             startService()
+            this.findNavController().navigate(
+                MainFragmentDirections.actionMainFragmentToSettingsFragment("openPopUp")
+            )
         }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        requireActivity().stopService(
+            Intent(
+                EventDoApplication.instance,
+                NetworkService::class.java
+            )
+        )
     }
 }

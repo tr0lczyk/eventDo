@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="app_name">eventDo</string>
+    <string name="app_name">EventDo</string>
     <string name="account_deleted_message">Vi är ledsna att du lämnar oss men ditt konto är nu borttaget. Välkommen åter!</string>
-    <string name="account_deleted_title">Radera kontot</string>
+    <string name="account_deleted_title">Konto Raderat</string>
     <string name="account_detail_updated">Kontouppgifterna har uppdaterats!</string>
     <string name="add">Lagg till</string>
     <string name="added_to_your_calendar">Sparas i din kalender</string>
@@ -52,7 +52,7 @@
     <string name="settings">Inställningar</string>
     <string name="show_as">Visa som</string>
     <string name="show_calendar">Visa kalender</string>
-    <string name="show_desc">Visa en förifylld Ny händelsesida innan händelser läggs till i min kalender</string>
+    <string name="show_desc">Visa en förifylld \"Ny händelsesida\" innan händelser läggs till i min kalender</string>
     <string name="show_new_event_page">Visa ny händelsesida</string>
     <string name="sign_up">Registrera</string>
     <string name="sign_up_internet_fail">Regisreringen misslyckades. Kontrollera din internetanslutning.</string>
@@ -71,9 +71,9 @@
     <string name="surname_my_account">Efternamn</string>
     <string name="email_my_account">E-post</string>
     <string name="save_event_main_fragment">Spara händelse</string>
-    <string name="cancel_main_fragment">Avbryt</string>
+    <string name="cancel_main_fragment">AVBRYT</string>
     <string name="add_main_fragment">Lägg till \</string>
-    <string name="to_cal_main"> \ händelsen i kalendern?</string>
+    <string name="to_cal_main"> \ i kalendern?</string>
     <string name="event_already_there">Lägg till händelsen i kalendern?</string>
     <string name="event">Lägg till händelsen</string>
     <string name="already_there">i kalendern?</string>

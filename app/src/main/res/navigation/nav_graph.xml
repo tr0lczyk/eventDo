@@ -77,7 +77,13 @@
         android:id="@+id/settingsFragment"
         android:name="com.rad4m.eventdo.ui.settingsfragment.SettingsFragment"
         android:label="SettingsFragment"
-        tools:layout="@layout/fragment_settings"/>
+        tools:layout="@layout/fragment_settings">
+        <argument
+            android:name="OPEN_POP_UP"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null" />
+    </fragment>
     <fragment
         android:id="@+id/myAccountFragment"
         android:name="com.rad4m.eventdo.ui.myaccountfragment.MyAccountFragment"

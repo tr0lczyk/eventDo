@@ -11,13 +11,16 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
 import androidx.navigation.fragment.findNavController
+import androidx.navigation.fragment.navArgs
 import com.google.firebase.iid.FirebaseInstanceId
+import com.rad4m.eventdo.R
 import com.rad4m.eventdo.databinding.FragmentSettingsBinding
 import com.rad4m.eventdo.di.appComponent
 import com.rad4m.eventdo.utils.Utilities.Companion.AUTO_ADD_EVENT
 import com.rad4m.eventdo.utils.Utilities.Companion.NEW_EVENT_PAGE
 import com.rad4m.eventdo.utils.Utilities.Companion.PUSH_NOTIFICATION
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_NAME
+import com.rad4m.eventdo.utils.Utilities.Companion.showInformingDialog
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.getCalendarsIds
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.saveMainCalendar
 import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.searchForCal
@@ -37,6 +40,8 @@ class SettingsFragment : Fragment() {
     private val viewModel: SettingsViewModel by viewModels { viewModelFactory }
 
     lateinit var binding: FragmentSettingsBinding
+
+    private val args: SettingsFragmentArgs by navArgs()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -88,6 +93,15 @@ class SettingsFragment : Fragment() {
             }
         })
 
+        args.let {
+            if (!it.OPENPOPUP.isNullOrEmpty()) {
+                showInformingDialog(
+                    requireActivity(),
+                    getString(R.string.cal_desc),
+                    getString(R.string.calendar_sync)
+                )
+            }
+        }
         return binding.root
     }
 

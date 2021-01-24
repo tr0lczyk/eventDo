@@ -70,7 +70,7 @@ class NetworkService : Service() {
         mainHandler.post(object : Runnable {
             override fun run() {
                 actualTask()
-                mainHandler.postDelayed(this, 5000)
+                mainHandler.postDelayed(this, 8000)
             }
         })
         return START_NOT_STICKY
