@@ -35,6 +35,7 @@ class NetworkService : Service() {
     val appContext = EventDoApplication.instance
     val job = Job()
     val serviceScope = CoroutineScope(Dispatchers.Main + job)
+    val mainHandler = Handler(Looper.getMainLooper())
 
     val sharedPrefs = SharedPreferences(
         EventDoApplication.instance, Moshi.Builder()
@@ -66,7 +67,6 @@ class NetworkService : Service() {
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
-        val mainHandler = Handler(Looper.getMainLooper())
         mainHandler.post(object : Runnable {
             override fun run() {
                 actualTask()
@@ -98,7 +98,7 @@ class NetworkService : Service() {
                     Timber.i("failure")
                 }
                 is Result.Error -> {
-                    if (!Utilities.appInForeground(appContext)) {
+                    if (Utilities.appInForeground(appContext)) {
                         Utilities.toastMessage(
                             appContext,
                             R.string.download_events_internet_fail
@@ -130,6 +130,6 @@ class NetworkService : Service() {
 
     override fun onDestroy() {
         super.onDestroy()
-
+        mainHandler.removeCallbacksAndMessages(null)
     }
 }

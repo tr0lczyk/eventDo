@@ -67,7 +67,7 @@
     <string name="invitees" translatable="false">Invitees</string>
     <string name="send_with">Send with</string>
     <string name="chooser_link">Hello,
-I want to tell you about an awesome app. Check out https://www.eventdo.se</string>
+I want to tell you about an awesome app. Check out https://www.eventdo.se/english</string>
     <string name="denied_calendar_access_text_write">You will not be able to write the default calendar</string>
     <string name="denied_calendar_access_text_read">You will not be able to read the default calendar</string>
     <string name="event_saved">Event saved to calendar!</string>

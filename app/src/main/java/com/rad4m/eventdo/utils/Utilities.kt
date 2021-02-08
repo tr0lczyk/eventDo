@@ -60,6 +60,7 @@ class Utilities {
         const val USER_NAME= "userName"
         const val USER_SURNAME= "userSurname"
         const val USER_EMAIL= "userEmail"
+        const val EXTRA_RETURN_MESSAGE= "sendBroadcast"
 
         val sharedPreferences = SharedPreferences(
             EventDoApplication.instance, Moshi.Builder()

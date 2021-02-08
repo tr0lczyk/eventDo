@@ -84,7 +84,7 @@ class EventsDownloadWorker(
                     Result.failure()
                 }
                 is com.rad4m.eventdo.models.Result.Error -> {
-                    if (!Utilities.appInForeground(appContext)) {
+                    if (Utilities.appInForeground(appContext)) {
                         Utilities.toastMessage(
                             appContext,
                             R.string.download_events_internet_fail

@@ -1,7 +1,10 @@
 package com.rad4m.eventdo.ui.mainfragment
 
 import android.Manifest
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
@@ -17,6 +20,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
@@ -27,10 +31,10 @@ import com.rad4m.eventdo.databinding.FragmentMainBinding
 import com.rad4m.eventdo.di.appComponent
 import com.rad4m.eventdo.models.EventModel
 import com.rad4m.eventdo.utils.HeaderItemDecoration
+import com.rad4m.eventdo.utils.Utilities
 import com.rad4m.eventdo.utils.Utilities.Companion.EVENT_ID_NOTIFICATION
 import com.rad4m.eventdo.utils.Utilities.Companion.ITEM_VIEW_TYPE_HEADER
 import com.rad4m.eventdo.utils.Utilities.Companion.NEW_EVENT_PAGE
-import com.rad4m.eventdo.utils.Utilities.Companion.TODAY_APP_START
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_ID
 import com.rad4m.eventdo.utils.Utilities.Companion.makeStatusBarNotTransparent
 import com.rad4m.eventdo.utils.Utilities.Companion.showDialog
@@ -59,9 +63,35 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
 
     private val RECORD_REQUEST_CODE = 101
 
+    lateinit var mMessageReceiver: BroadcastReceiver
+
+    lateinit var networkService: Intent
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         appComponent.inject(this)
+        mMessageReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val eventModel =
+                    intent!!.getParcelableExtra<EventModel>(Utilities.EXTRA_RETURN_MESSAGE)
+                Snackbar.make(
+                    binding.menuDrawer,
+                    getString(R.string.events_added_to_calendar),
+                    Snackbar.LENGTH_LONG
+                )
+                    .setAction(R.string.show_calendar) {
+                        openCalendar(
+                            requireActivity(),
+                            eventModel
+                        )
+                    }
+                    .show()
+            }
+        }
+        networkService = Intent(
+            requireActivity(),
+            NetworkService::class.java
+        )
     }
 
     override fun onCreateView(
@@ -258,12 +288,9 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
         }
     }
 
-    fun startService(){
+    fun startService() {
         requireActivity().startService(
-            Intent(
-                EventDoApplication.instance,
-                NetworkService::class.java
-            )
+            networkService
         )
     }
 
@@ -291,6 +318,8 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
 
     override fun onResume() {
         super.onResume()
+        LocalBroadcastManager.getInstance(requireContext())
+            .registerReceiver(mMessageReceiver, IntentFilter("EVENT_SNACKBAR"));
         if (!viewModel.sharedPrefs.getValueString(EVENT_ID_NOTIFICATION).isNullOrBlank()) {
             viewModel.executrWorkStart(
                 viewModel.sharedPrefs.getValueString(EVENT_ID_NOTIFICATION)!!.toInt()
@@ -359,10 +388,7 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
     override fun onPause() {
         super.onPause()
         requireActivity().stopService(
-            Intent(
-                EventDoApplication.instance,
-                NetworkService::class.java
-            )
+            networkService
         )
     }
 }

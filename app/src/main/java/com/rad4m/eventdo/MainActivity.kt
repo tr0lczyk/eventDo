@@ -1,7 +1,6 @@
 package com.rad4m.eventdo
 
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavOptions
@@ -15,7 +14,6 @@ import com.rad4m.eventdo.utils.Utilities.Companion.FIREBASE_TOKEN
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_TOKEN
 import com.rad4m.eventdo.utils.Utilities.Companion.makeStatusBarTransparent
 import kotlinx.android.synthetic.main.activity_main.*
-import timber.log.Timber
 import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {

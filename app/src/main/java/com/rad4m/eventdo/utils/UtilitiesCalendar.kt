@@ -1,19 +1,21 @@
 package com.rad4m.eventdo.utils
 
 import android.annotation.SuppressLint
+import android.app.Activity
 import android.app.Application
 import android.content.*
 import android.database.Cursor
 import android.net.Uri
 import android.provider.CalendarContract
 import android.text.TextUtils
-import android.text.format.DateUtils
 import androidx.fragment.app.FragmentActivity
+import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import com.rad4m.eventdo.EventDoApplication
 import com.rad4m.eventdo.R
 import com.rad4m.eventdo.database.EventsDatabase
 import com.rad4m.eventdo.models.EventModel
 import com.rad4m.eventdo.models.MyCalendar
+import com.rad4m.eventdo.utils.Utilities.Companion.EXTRA_RETURN_MESSAGE
 import com.rad4m.eventdo.utils.Utilities.Companion.NEW_CURSOR_EVENT
 import com.rad4m.eventdo.utils.Utilities.Companion.NEW_EVENT_ID
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_MAIN_CALENDAR_ID
@@ -28,6 +30,7 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
 import timber.log.Timber
 import java.util.*
+
 
 class UtilitiesCalendar {
 
@@ -51,13 +54,14 @@ class UtilitiesCalendar {
             activity.startActivity(insertCalendarIntent)
         }
 
-        fun openCalendarFromViewModel(
+        fun openCalendarFromActivity(
+            activity: Activity,
             event: EventModel
         ) {
             val builder = CalendarContract.CONTENT_URI.buildUpon().appendPath("time")
             ContentUris.appendId(builder, convertStringToDate(event.dtStart!!).time)
             val insertCalendarIntent = Intent(Intent.ACTION_VIEW, builder.build())
-            application.startActivity(insertCalendarIntent)
+            activity.startActivity(insertCalendarIntent)
         }
 
         fun saveEventToCalendar(
@@ -185,6 +189,11 @@ class UtilitiesCalendar {
                 this.localEventId = eventID
             }
             saveEvent(event)
+            if (Utilities.appInForeground(EventDoApplication.instance.applicationContext)) {
+                val it = Intent("EVENT_SNACKBAR")
+                it.putExtra(EXTRA_RETURN_MESSAGE, event)
+                LocalBroadcastManager.getInstance(context).sendBroadcast(it)
+            }
             Timber.i("eventr added")
         }
 
@@ -334,7 +343,7 @@ class UtilitiesCalendar {
         fun checkWhichEventIsInCalendar(activity: FragmentActivity) {
             for (i in database.eventsDao().getEventWithLocalEventId()!!) {
                 if (!isEventInCal(i.localEventId!!)) {
-                    deleteCalendarEntry(activity,i)
+                    deleteCalendarEntry(activity, i)
                 }
             }
         }
