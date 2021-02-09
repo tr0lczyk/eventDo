@@ -75,7 +75,7 @@
     <string name="add_main_fragment">Lägg till \</string>
     <string name="to_cal_main"> \ i kalendern?</string>
     <string name="event_already_there">Händelsen finns redan i kalendern</string>
-    <string name="event">Lägg till händelsen</string>
+    <string name="event">Händelsen finns redan</string>
     <string name="already_there">i kalendern?</string>
     <string name="delete_main">TA BORT</string>
     <string name="account_delete_text">Är du säker på att du vill radera ditt konto inklusive all data som är sparad hos eventDo? Detta går inte att ångra.</string>
