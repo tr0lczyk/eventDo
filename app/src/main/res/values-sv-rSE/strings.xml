@@ -11,7 +11,7 @@
     <string name="automatic_reservation">Med hjälp av eventDo-appen läggs bokningen automatiskt in i din Kalender</string>
     <string name="automatically_add_events_from_eventdo_to_my_calendar">Lägg automatiskt till händelser från eventDo till min kalender</string>
     <string name="book">Boka</string>
-    <string name="cal_desc">Välj en annan kalender</string>
+    <string name="cal_desc">Välj kalendern som eventDo skall synka med för att lägga in dina händelser.</string>
     <string name="calendar">Kalender</string>
     <string name="calendar_phrase">Vi lägger in dina bokningar automatiskt i din kalender</string>
     <string name="calendar_sync">Kalendersynk</string>
@@ -31,7 +31,7 @@
     <string name="drawer_tell_a_friend">Tipsa en vän</string>
     <string name="email_invalid">Ange en giltig e-postadress.</string>
     <string name="enter_code">Ange koden som du fick via SMS</string>
-    <string name="event_deleted">" Händelsen raderas från kalendern"</string>
+    <string name="event_deleted">Händelsen raderades från kalendern</string>
     <string name="event_saved">" Händelse har sparats i kalendern"</string>
     <string name="events">Händelder</string>
     <string name="upcoming">Kommande</string>
@@ -76,7 +76,7 @@
     <string name="to_cal_main"> \ i kalendern?</string>
     <string name="event_already_there">Händelsen finns redan i kalendern</string>
     <string name="event">Händelsen finns redan</string>
-    <string name="already_there">i kalendern?</string>
+    <string name="already_there">i kalendern</string>
     <string name="delete_main">TA BORT</string>
     <string name="account_delete_text">Är du säker på att du vill radera ditt konto inklusive all data som är sparad hos eventDo? Detta går inte att ångra.</string>
     <string name="yes_button">Ta abort</string>

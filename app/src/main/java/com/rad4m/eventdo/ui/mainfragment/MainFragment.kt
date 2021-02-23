@@ -77,7 +77,7 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
                 Snackbar.make(
                     binding.menuDrawer,
                     getString(R.string.events_added_to_calendar),
-                    Snackbar.LENGTH_LONG
+                    Snackbar.LENGTH_INDEFINITE
                 )
                     .setAction(R.string.show_calendar) {
                         openCalendar(
@@ -148,7 +148,7 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
                 Snackbar.make(
                     binding.menuDrawer,
                     getString(R.string.events_added_to_calendar),
-                    Snackbar.LENGTH_LONG
+                    Snackbar.LENGTH_INDEFINITE
                 )
                     .setAction(R.string.show_calendar) { openCalendar(requireActivity(), event) }
                     .show()
@@ -251,7 +251,7 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
         Snackbar.make(
             binding.menuDrawer,
             getString(R.string.events_added_to_calendar),
-            Snackbar.LENGTH_LONG
+            Snackbar.LENGTH_INDEFINITE
         )
             .setAction(
                 R.string.show_calendar
