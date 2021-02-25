@@ -1,10 +1,7 @@
 package com.rad4m.eventdo.ui.mainfragment
 
 import android.Manifest
-import android.content.BroadcastReceiver
-import android.content.Context
 import android.content.Intent
-import android.content.IntentFilter
 import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
@@ -20,7 +17,6 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
@@ -30,7 +26,6 @@ import com.rad4m.eventdo.databinding.FragmentMainBinding
 import com.rad4m.eventdo.di.appComponent
 import com.rad4m.eventdo.models.EventModel
 import com.rad4m.eventdo.utils.HeaderItemDecoration
-import com.rad4m.eventdo.utils.Utilities
 import com.rad4m.eventdo.utils.Utilities.Companion.EVENT_ID_NOTIFICATION
 import com.rad4m.eventdo.utils.Utilities.Companion.ITEM_VIEW_TYPE_HEADER
 import com.rad4m.eventdo.utils.Utilities.Companion.NEW_EVENT_PAGE
@@ -62,31 +57,11 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
 
     private val RECORD_REQUEST_CODE = 101
 
-    lateinit var mMessageReceiver: BroadcastReceiver
-
     lateinit var networkService: Intent
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         appComponent.inject(this)
-        mMessageReceiver = object : BroadcastReceiver() {
-            override fun onReceive(context: Context?, intent: Intent?) {
-                val eventModel =
-                    intent!!.getParcelableExtra<EventModel>(Utilities.EXTRA_RETURN_MESSAGE)
-                Snackbar.make(
-                    binding.menuDrawer,
-                    getString(R.string.events_added_to_calendar),
-                    Snackbar.LENGTH_LONG
-                )
-                    .setAction(R.string.show_calendar) {
-                        openCalendar(
-                            requireActivity(),
-                            eventModel
-                        )
-                    }
-                    .show()
-            }
-        }
         networkService = Intent(
             requireActivity(),
             NetworkService::class.java
@@ -142,18 +117,18 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
             adapter.submitList(it)
         })
 
-        viewModel.showSnackBarFromNotification.observe(this, Observer { event ->
-            if (event != null) {
-                Snackbar.make(
-                    binding.menuDrawer,
-                    getString(R.string.events_added_to_calendar),
-                    Snackbar.LENGTH_INDEFINITE
-                )
-                    .setAction(R.string.show_calendar) { openCalendar(requireActivity(), event) }
-                    .show()
-                viewModel.showSnackBarFromNotification.value = null
-            }
-        })
+//        viewModel.showSnackBarFromNotification.observe(this, Observer { event ->
+//            if (event != null) {
+//                Snackbar.make(
+//                    binding.menuDrawer,
+//                    getString(R.string.events_added_to_calendar),
+//                    Snackbar.LENGTH_INDEFINITE
+//                )
+//                    .setAction(R.string.show_calendar) { openCalendar(requireActivity(), event) }
+//                    .show()
+//                viewModel.showSnackBarFromNotification.value = null
+//            }
+//        })
 
         viewModel.permissionGranted.observe(this, Observer {
             if (it) {
@@ -317,8 +292,6 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
 
     override fun onResume() {
         super.onResume()
-        LocalBroadcastManager.getInstance(requireContext())
-            .registerReceiver(mMessageReceiver, IntentFilter("EVENT_SNACKBAR"));
         if (!viewModel.sharedPrefs.getValueString(EVENT_ID_NOTIFICATION).isNullOrBlank()) {
             viewModel.executrWorkStart(
                 viewModel.sharedPrefs.getValueString(EVENT_ID_NOTIFICATION)!!.toInt()
