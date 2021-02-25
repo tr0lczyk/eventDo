@@ -28,6 +28,7 @@ import com.rad4m.eventdo.utils.Utilities.Companion.NOT_FIRST_START
 import com.rad4m.eventdo.utils.Utilities.Companion.PUSH_NOTIFICATION
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_LAST_DATE
 import com.rad4m.eventdo.utils.Utilities.Companion.convertDateToStringWithZ
+import com.rad4m.eventdo.utils.Utilities.Companion.convertDateToStringWithZWithoutOneMinute
 import com.rad4m.eventdo.utils.Utilities.Companion.convertStringToDate
 import com.rad4m.eventdo.utils.Utilities.Companion.toastMessage
 import kotlinx.coroutines.CoroutineScope
@@ -59,8 +60,8 @@ class MainViewModel @Inject constructor(
     val permissionGranted = MutableLiveData<Boolean>(false)
     val eventList: LiveData<List<EventModel>> = Transformations.switchMap(showUpcomingEvents) {
         when (it) {
-            true -> database.eventsDao().getUpcomingEvents(convertDateToStringWithZ(Date()))
-            false -> database.eventsDao().getPastEvents(convertDateToStringWithZ(Date()))
+            true -> database.eventsDao().getUpcomingEvents(convertDateToStringWithZWithoutOneMinute(Date()))
+            false -> database.eventsDao().getPastEvents(convertDateToStringWithZWithoutOneMinute(Date()))
         }
     }
     val emptyListInfoVisibility = MutableLiveData<Int>(View.GONE)
@@ -159,9 +160,9 @@ class MainViewModel @Inject constructor(
         for (i in data) {
             i.apply {
                 dtStart =
-                    convertDateToStringWithZ(Date(convertStringToDate(dtStart!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
+                    convertDateToStringWithZWithoutOneMinute(Date(convertStringToDate(dtStart!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
                 dtEnd =
-                    convertDateToStringWithZ(Date(convertStringToDate(dtEnd!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
+                    convertDateToStringWithZWithoutOneMinute(Date(convertStringToDate(dtEnd!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
             }
         }
         database.eventsDao().insertEvents(data)

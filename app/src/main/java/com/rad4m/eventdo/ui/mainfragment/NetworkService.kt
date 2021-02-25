@@ -113,7 +113,7 @@ class NetworkService : Service() {
         for (i in data) {
             i.apply {
                 dtStart =
-                    Utilities.convertDateToStringWithZ(
+                    Utilities.convertDateToStringWithZWithoutOneMinute(
                         Date(
                             Utilities.convertStringToDate(
                                 dtStart!!
@@ -121,7 +121,7 @@ class NetworkService : Service() {
                         )
                     )
                 dtEnd =
-                    Utilities.convertDateToStringWithZ(Date(Utilities.convertStringToDate(dtEnd!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
+                    Utilities.convertDateToStringWithZWithoutOneMinute(Date(Utilities.convertStringToDate(dtEnd!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
             }
         }
         database.eventsDao().insertEvents(data)

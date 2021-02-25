@@ -24,7 +24,6 @@ import androidx.localbroadcastmanager.content.LocalBroadcastManager
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.navigation.NavigationView
 import com.google.android.material.snackbar.Snackbar
-import com.rad4m.eventdo.EventDoApplication
 import com.rad4m.eventdo.R
 import com.rad4m.eventdo.R.id.*
 import com.rad4m.eventdo.databinding.FragmentMainBinding
@@ -77,7 +76,7 @@ class MainFragment : Fragment(), NavigationView.OnNavigationItemSelectedListener
                 Snackbar.make(
                     binding.menuDrawer,
                     getString(R.string.events_added_to_calendar),
-                    Snackbar.LENGTH_INDEFINITE
+                    Snackbar.LENGTH_LONG
                 )
                     .setAction(R.string.show_calendar) {
                         openCalendar(

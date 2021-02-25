@@ -53,6 +53,7 @@ class Utilities {
         const val NEW_CURSOR_EVENT = "newCursorEvent"
         const val NEW_EVENT_ID = "newEventId"
         const val ONE_MINUTE_IN_MILLIS: Long = 60000
+        const val ONE_SECOND_IN_MILLIS: Long = 60000
         const val ONE_HOUR_IN_MILLIS: Long = 3540000
         const val EVENT_ID_NOTIFICATION= "eventIdNotification"
         const val TODAY_APP_START= "todayAppStart"
@@ -78,7 +79,14 @@ class Utilities {
         fun convertDateToStringWithZ(date: Date): String {
             val originalFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
             val t = date.time
-            val newDate = Date(t - ONE_MINUTE_IN_MILLIS)
+            val newDate = Date(t - ONE_SECOND_IN_MILLIS)
+            return originalFormat.format(newDate)
+        }
+
+        fun convertDateToStringWithZWithoutOneMinute(date: Date): String {
+            val originalFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'")
+            val t = date.time
+            val newDate = Date(t)
             return originalFormat.format(newDate)
         }
 
@@ -222,9 +230,9 @@ class Utilities {
                 if (lastDate < eventCreateDate) {
                     i.apply {
                         dtStart =
-                            convertDateToStringWithZ(Date(convertStringToDate(dtStart!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
+                            convertDateToStringWithZWithoutOneMinute(Date(convertStringToDate(dtStart!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
                         dtEnd =
-                            convertDateToStringWithZ(Date(convertStringToDate(dtEnd!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
+                            convertDateToStringWithZWithoutOneMinute(Date(convertStringToDate(dtEnd!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
                     }
                     UtilitiesCalendar.saveCalEventContentResolverBroadcast(i, context)
                 }

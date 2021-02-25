@@ -14,6 +14,7 @@ import com.rad4m.eventdo.networking.EventDoRepository
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_LAST_DATE
 import com.rad4m.eventdo.utils.Utilities.Companion.addEachNewEventToCalendar
 import com.rad4m.eventdo.utils.Utilities.Companion.convertDateToStringWithZ
+import com.rad4m.eventdo.utils.Utilities.Companion.convertDateToStringWithZWithoutOneMinute
 import com.rad4m.eventdo.utils.Utilities.Companion.convertStringToDate
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
@@ -103,9 +104,9 @@ class EventsDownloadWorker(
         for (i in data) {
             i.apply {
                 dtStart =
-                    convertDateToStringWithZ(Date(convertStringToDate(dtStart!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
+                    convertDateToStringWithZWithoutOneMinute(Date(convertStringToDate(dtStart!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
                 dtEnd =
-                    convertDateToStringWithZ(Date(convertStringToDate(dtEnd!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
+                    convertDateToStringWithZWithoutOneMinute(Date(convertStringToDate(dtEnd!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
             }
         }
         database.eventsDao().insertEvents(data)
