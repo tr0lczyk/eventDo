@@ -38,6 +38,24 @@ class MainActivity : AppCompatActivity() {
         appComponent.inject(this)
         makeStatusBarTransparent()
         setContentView(R.layout.activity_main)
+        mMessageReceiver = object : BroadcastReceiver() {
+            override fun onReceive(context: Context?, intent: Intent?) {
+                val eventModel =
+                    intent!!.getParcelableExtra<EventModel>(Utilities.EXTRA_RETURN_MESSAGE)
+                Snackbar.make(
+                    findViewById(android.R.id.content),
+                    getString(R.string.events_added_to_calendar),
+                    Snackbar.LENGTH_INDEFINITE
+                )
+                    .setAction(R.string.show_calendar) {
+                        UtilitiesCalendar.openCalendarFromActivity(
+                            this@MainActivity,
+                            eventModel
+                        )
+                    }
+                    .show()
+            }
+        }
         if (sharedPrefs.getValueString(FIREBASE_TOKEN).isNullOrEmpty()) {
             FirebaseInstanceId.getInstance().instanceId
                 .addOnCompleteListener(OnCompleteListener { task ->
@@ -52,24 +70,6 @@ class MainActivity : AppCompatActivity() {
         sharedPrefs.getValueString(USER_TOKEN)?.let {
             NavHostFragment.findNavController(myNavHostFragment)
                 .navigate(R.id.action_introFragment_to_mainFragment, null, navOptions)
-            mMessageReceiver = object : BroadcastReceiver() {
-                override fun onReceive(context: Context?, intent: Intent?) {
-                    val eventModel =
-                        intent!!.getParcelableExtra<EventModel>(Utilities.EXTRA_RETURN_MESSAGE)
-                    Snackbar.make(
-                        findViewById(android.R.id.content),
-                        getString(R.string.events_added_to_calendar),
-                        Snackbar.LENGTH_INDEFINITE
-                    )
-                        .setAction(R.string.show_calendar) {
-                            UtilitiesCalendar.openCalendarFromActivity(
-                                this@MainActivity,
-                                eventModel
-                            )
-                        }
-                        .show()
-                }
-            }
         }
     }
 
