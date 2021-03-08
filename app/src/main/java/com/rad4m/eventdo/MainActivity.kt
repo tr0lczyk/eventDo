@@ -47,6 +47,7 @@ class MainActivity : AppCompatActivity() {
                     getString(R.string.events_added_to_calendar),
                     Snackbar.LENGTH_INDEFINITE
                 )
+                    .setDuration(4750)
                     .setAction(R.string.show_calendar) {
                         UtilitiesCalendar.openCalendarFromActivity(
                             this@MainActivity,

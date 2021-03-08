@@ -16,7 +16,7 @@
     <string name="calendar_phrase">Vi lägger in dina bokningar automatiskt i din kalender</string>
     <string name="calendar_sync">Kalendersynk</string>
     <string name="cancel">Avbryt</string>
-    <string name="chooser_link">Hello Jag vill tipsa dig om en grym app. Kolla in https://www.eventdo.se</string>
+    <string name="chooser_link">Hej, Jag vill tipsa dig om en grym app. Kolla in https://www.eventdo.se</string>
     <string name="code_not_correct">Koden är inte korrekt, försök igen.</string>
     <string name="continuing">Genom att fortsätta godkänner du eventDos</string>
     <string name="delete_account_internet_fail">i kan inte radera ditt konto. Kontrollera din internetanslutning.</string>
