@@ -7,7 +7,6 @@ import android.content.Context
 import android.content.Context.INPUT_METHOD_SERVICE
 import android.graphics.Color
 import android.os.Build
-import android.text.TextUtils
 import android.text.format.DateUtils
 import android.view.View
 import android.view.WindowManager
@@ -17,11 +16,17 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
 import com.rad4m.eventdo.EventDoApplication
 import com.rad4m.eventdo.R
+import com.rad4m.eventdo.database.EventsDatabase
 import com.rad4m.eventdo.models.EventModel
-import com.rad4m.eventdo.utils.UtilitiesCalendar.Companion.sharedPrefs
 import com.squareup.moshi.Moshi
 import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.launch
 import java.text.SimpleDateFormat
+import java.time.ZonedDateTime
+import java.time.format.DateTimeFormatter
 import java.util.*
 import java.util.concurrent.TimeUnit
 
@@ -63,6 +68,15 @@ class Utilities {
         const val USER_EMAIL= "userEmail"
         const val EXTRA_RETURN_MESSAGE= "sendBroadcast"
 
+        val moshi = Moshi.Builder()
+            .add(KotlinJsonAdapterFactory())
+            .build()
+        val application = EventDoApplication.instance
+        val sharedPrefs = SharedPreferences(application, moshi)
+        val database = EventsDatabase.invoke(application)
+        private val utilitiesJob = Job()
+        private val utilitiesScope = CoroutineScope(Dispatchers.IO + utilitiesJob)
+
         val sharedPreferences = SharedPreferences(
             EventDoApplication.instance, Moshi.Builder()
                 .add(KotlinJsonAdapterFactory())
@@ -101,6 +115,13 @@ class Utilities {
 
         fun convertStringToDate(text: String): Date {
             return SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(text)
+        }
+
+        fun convertStringToDateUtilities(text: String): Date {
+            return Date(
+                SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss'Z'").parse(text)
+                    .getTime() + TimeUnit.HOURS.toMillis(2)
+            )
         }
 
         fun convertStringToDateWithLongerZ(text: String): Date {
@@ -212,11 +233,13 @@ class Utilities {
 
         fun addEachNewEventToCalendar(eventModels: List<EventModel>, context: Context) {
             val lastDate =
-                TimeUnit.MILLISECONDS.toSeconds(convertStringToDate(
+                TimeUnit.MILLISECONDS.toSeconds(
+                    convertStringToDate(
                         sharedPrefs.getValueString(
                             USER_LAST_DATE
                         ) ?: convertDateToStringWithZ(Date(0))
-                    ).time)
+                    ).time
+                )
 
             for (i in eventModels) {
 //                i.apply {
@@ -226,15 +249,25 @@ class Utilities {
 //                        convertDateToStringWithZ(Date(convertStringToDate(dtEnd!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
 //                }
                 val eventCreateDate =
-                    TimeUnit.MILLISECONDS.toSeconds(convertStringToDateWithLongerZ(i.createdDate!!).time)
+                    TimeUnit.MILLISECONDS.toSeconds(convertStringToDateWithLongerZ(i.createdDate!!).time + 1 * DateUtils.HOUR_IN_MILLIS)
                 if (lastDate < eventCreateDate) {
                     i.apply {
                         dtStart =
-                            convertDateToStringWithZWithoutOneMinute(Date(convertStringToDate(dtStart!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
+                            convertDateToStringWithZWithoutOneMinute(
+                                Date(
+                                    convertStringToDate(
+                                        dtStart!!
+                                    ).time + 2 * DateUtils.HOUR_IN_MILLIS
+                                )
+                            )
                         dtEnd =
-                            convertDateToStringWithZWithoutOneMinute(Date(convertStringToDate(dtEnd!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
+                            convertDateToStringWithZWithoutOneMinute(Date(convertStringToDate(dtEnd!!).time + 2 * DateUtils.HOUR_IN_MILLIS))
                     }
-                    UtilitiesCalendar.saveCalEventContentResolverBroadcast(i, context)
+                    utilitiesScope.launch {
+                        if(database.eventsDao().getEvent(i.id.toInt()) == null){
+                            UtilitiesCalendar.saveCalEventContentResolverBroadcast(i, context)
+                        }
+                    }
                 }
             }
         }

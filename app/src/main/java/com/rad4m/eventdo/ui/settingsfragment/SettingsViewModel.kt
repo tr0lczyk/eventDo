@@ -56,7 +56,7 @@ class SettingsViewModel @Inject constructor(
             when (val response = repository.updateFirebaseToken()) {
                 is Result.Success -> sharedPrefs.save(
                     Utilities.DEVICE_ID,
-                    response.data!!.message!!
+                    response.data!!.result!!
                 )
                 is Result.Failure -> Timber.i(response.failure)
                 is Result.Error -> Timber.i(response.error)

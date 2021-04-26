@@ -160,9 +160,9 @@ class MainViewModel @Inject constructor(
         for (i in data) {
             i.apply {
                 dtStart =
-                    convertDateToStringWithZWithoutOneMinute(Date(convertStringToDate(dtStart!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
+                    convertDateToStringWithZWithoutOneMinute(Date(convertStringToDate(dtStart!!).time + 2 * DateUtils.HOUR_IN_MILLIS))
                 dtEnd =
-                    convertDateToStringWithZWithoutOneMinute(Date(convertStringToDate(dtEnd!!).time + 1 * DateUtils.HOUR_IN_MILLIS))
+                    convertDateToStringWithZWithoutOneMinute(Date(convertStringToDate(dtEnd!!).time + 2 * DateUtils.HOUR_IN_MILLIS))
             }
         }
         database.eventsDao().insertEvents(data)

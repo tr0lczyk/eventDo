@@ -112,7 +112,7 @@ class UtilitiesCalendar {
                 put(CalendarContract.Events.TITLE, event.title)
                 put(CalendarContract.Events.DESCRIPTION, event.description)
                 put(CalendarContract.Events.EVENT_LOCATION, event.location)
-                put(CalendarContract.Events.EVENT_TIMEZONE, "${TimeZone.getDefault()}")
+                put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().id)
                 put(CalendarContract.EXTRA_EVENT_ALL_DAY, false)
             }
         }
@@ -131,7 +131,7 @@ class UtilitiesCalendar {
                 put(CalendarContract.Events.TITLE, event.title)
                 put(CalendarContract.Events.DESCRIPTION, event.description)
                 put(CalendarContract.Events.EVENT_LOCATION, event.location)
-                put(CalendarContract.Events.EVENT_TIMEZONE, "${TimeZone.getDefault()}")
+                put(CalendarContract.Events.EVENT_TIMEZONE, TimeZone.getDefault().id)
                 put(CalendarContract.EXTRA_EVENT_ALL_DAY, false)
             }
         }
