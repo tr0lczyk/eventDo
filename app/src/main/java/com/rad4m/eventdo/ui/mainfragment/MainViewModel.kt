@@ -148,7 +148,7 @@ class MainViewModel @Inject constructor(
         if (sharedPrefs.getValueString(DEVICE_ID).isNullOrEmpty()) {
             viewModelScope.launch {
                 when (val response = repository.updateFirebaseToken()) {
-                    is Result.Success -> sharedPrefs.save(DEVICE_ID, response.data!!.message!!)
+                    is Result.Success -> sharedPrefs.save(DEVICE_ID, response.data!!.result!!)
                     is Result.Failure -> Timber.i(response.failure)
                     is Result.Error -> Timber.i(response.error)
                 }

@@ -1,14 +1,6 @@
 package com.rad4m.eventdo.networking
 
-import com.rad4m.eventdo.models.AuthoriseCodeResponse
-import com.rad4m.eventdo.models.AuthoriseNumberResponse
-import com.rad4m.eventdo.models.DeleteUserResponse
-import com.rad4m.eventdo.models.EventsResponse
-import com.rad4m.eventdo.models.FirebaseTokenUpdateResponseModel
-import com.rad4m.eventdo.models.Result
-import com.rad4m.eventdo.models.UserModel
-import com.rad4m.eventdo.models.UserUpdateModel
-import com.rad4m.eventdo.models.UserUpdateResponse
+import com.rad4m.eventdo.models.*
 import com.rad4m.eventdo.utils.SharedPreferences
 import com.rad4m.eventdo.utils.Utilities.Companion.FIREBASE_TOKEN
 import com.rad4m.eventdo.utils.Utilities.Companion.USER_LAST_DATE
@@ -110,8 +102,11 @@ class EventDoRepository @Inject constructor(
             block = {
                 apiService.updateFirebaseToken(
                     userToken,
-                    sharedPrefs.getValueString(FIREBASE_TOKEN)!!,
-                    getUuidId()
+                    FireBaseToken(
+                        sharedPrefs.getValueString(FIREBASE_TOKEN)!!,
+                        "+$userNumber",
+                        getUuidId()
+                    )
                 )
             }
         )

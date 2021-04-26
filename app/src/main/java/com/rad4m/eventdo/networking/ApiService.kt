@@ -1,22 +1,8 @@
 package com.rad4m.eventdo.networking
 
-import com.rad4m.eventdo.models.AuthoriseCodeResponse
-import com.rad4m.eventdo.models.AuthoriseNumberResponse
-import com.rad4m.eventdo.models.DeleteUserResponse
-import com.rad4m.eventdo.models.EventsResponse
-import com.rad4m.eventdo.models.FirebaseTokenUpdateResponseModel
-import com.rad4m.eventdo.models.UserModel
-import com.rad4m.eventdo.models.UserUpdateModel
-import com.rad4m.eventdo.models.UserUpdateResponse
+import com.rad4m.eventdo.models.*
 import retrofit2.Response
-import retrofit2.http.Body
-import retrofit2.http.Field
-import retrofit2.http.FormUrlEncoded
-import retrofit2.http.GET
-import retrofit2.http.Header
-import retrofit2.http.POST
-import retrofit2.http.PUT
-import retrofit2.http.Path
+import retrofit2.http.*
 
 private const val AUTHORISE_MOBILE_NUMBER = "AuthoriseNumber"
 private const val AUTHORISE_USER_CODE = "Authorise"
@@ -67,11 +53,10 @@ interface ApiService {
         @Field("phonenumber") phoneNumber: String
     ): Response<DeleteUserResponse>
 
-    @FormUrlEncoded
+    @Headers("Accept: application/json")
     @POST(FIREBASE_TOKEN_UDPATE)
     suspend fun updateFirebaseToken(
         @Header("Authorization") token: String,
-        @Field("fireToken") fireToken: String,
-        @Field("deviceId") deviceId: String
+        @Body fireBaseToken: FireBaseToken
     ): Response<FirebaseTokenUpdateResponseModel>
 }
